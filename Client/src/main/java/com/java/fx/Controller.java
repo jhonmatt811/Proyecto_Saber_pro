@@ -58,24 +58,37 @@ public class Controller {
     public void goAccMejora() {
         resetButtonStyles();
         btnAccMejora.getStyleClass().add("boton-rojo");
-        contentLabel.setText("Estás en Acciones de Mejora");
-        mainPane.setCenter(contentLabel);
+
+        Label newLabel = new Label("Estás en Acciones de Mejora");
+        newLabel.getStyleClass().add("content-label");
+
+        mainPane.setCenter(null);
+        mainPane.setCenter(newLabel);
     }
+
 
     @FXML
     public void goUsuariosRoles() {
         resetButtonStyles();
-        btnUsuariosRoles.getStyleClass().add("boton-rojo");
-        contentLabel.setText("Estás en Usuarios y Roles");
-        mainPane.setCenter(contentLabel);
+        btnAccMejora.getStyleClass().add("boton-rojo");
+
+        Label newLabel = new Label("Estás en usuarios y roles");
+        newLabel.getStyleClass().add("content-label");
+
+        mainPane.setCenter(null);
+        mainPane.setCenter(newLabel);
     }
 
     @FXML
     public void goConfiguracion() {
         resetButtonStyles();
-        btnConfiguracion.getStyleClass().add("boton-rojo");
-        contentLabel.setText("Accediendo a Configuración");
-        mainPane.setCenter(contentLabel);
+        btnAccMejora.getStyleClass().add("boton-rojo");
+
+        Label newLabel = new Label("Accediendo a configuracion");
+        newLabel.getStyleClass().add("content-label");
+
+        mainPane.setCenter(null);
+        mainPane.setCenter(newLabel);
     }
 
     private void resetButtonStyles() {

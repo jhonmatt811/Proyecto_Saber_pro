@@ -7,7 +7,12 @@ import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.control.Button;
+import javafx.stage.FileChooser;
 import org.springframework.stereotype.Component;
+import javafx.scene.control.Label;
+
+
+import java.io.File;
 
 @Component
 public class ResultadosController {
@@ -55,10 +60,32 @@ public class ResultadosController {
         tablaResultados.getItems().add(new Resultado("Carlos Díaz", "2020", "Medicina", 78));
     }
 
+    @FXML
+    private Label archivoCargadoLabel;
+
     // Método para manejar la carga de archivo
     @FXML
     public void handleSubirArchivo() {
-        System.out.println("Subir archivo...");
+        FileChooser fileChooser = new FileChooser();
+        fileChooser.setTitle("Seleccionar archivo Excel");
+
+        // Filtro para que solo se vean archivos .xlsx y .xls
+        FileChooser.ExtensionFilter extFilter = new FileChooser.ExtensionFilter("Archivos Excel (*.xlsx, *.xls)", "*.xlsx", "*.xls");
+        fileChooser.getExtensionFilters().add(extFilter);
+
+        // Abre el explorador de archivos
+        File selectedFile = fileChooser.showOpenDialog(null);
+
+        if (selectedFile != null) {
+            // Aquí puedes hacer lo que quieras con el archivo
+            archivoCargadoLabel.setText( "  \uD83D\uDCE4 Archivo cargado: " + selectedFile.getName());
+            System.out.println("Archivo seleccionado: " + selectedFile.getAbsolutePath());
+
+            // Por ejemplo: cargarlo, leerlo, etc.
+        } else {
+            archivoCargadoLabel.setText("No se seleccionó ningún archivo.");
+            System.out.println("No se seleccionó ningún archivo.");
+        }
     }
 
     // Clase interna para representar los resultados
