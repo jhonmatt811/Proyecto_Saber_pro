@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.control.*?>
+
+<VBox xmlns:fx="http://javafx.com/fxml"
+      alignment="CENTER" spacing="20" style="-fx-padding: 30;">
+
+    <Label text="📊 Panel de Indicadores" style="-fx-font-size: 20px; -fx-font-weight: bold;"/>
+
+    <HBox spacing="40">
+        <VBox spacing="5" alignment="CENTER">
+            <Label text="Cantidad de Estudiantes" />
+            <Label text="150" style="-fx-font-size: 24px; -fx-text-fill: #2E86C1;" />
+        </VBox>
+
+        <VBox spacing="5" alignment="CENTER">
+            <Label text="Promedio General" />
+            <Label text="3.8" style="-fx-font-size: 24px; -fx-text-fill: #28B463;" />
+        </VBox>
+
+        <VBox spacing="5" alignment="CENTER">
+            <Label text="Cohortes Evaluadas" />
+            <Label text="5" style="-fx-font-size: 24px; -fx-text-fill: #F1C40F;" />
+        </VBox>
+    </HBox>
+</VBox>

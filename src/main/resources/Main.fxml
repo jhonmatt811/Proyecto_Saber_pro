@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.control.*?>
+
+<BorderPane fx:id="mainPane"
+            xmlns:fx="http://javafx.com/fxml"
+            fx:controller="com.java.fx.Controller"
+            stylesheets="@estilos.css"
+            styleClass="BorderPane">
+
+    <left>
+        <VBox spacing="10" prefWidth="200" styleClass="vbox-menu">
+            <Label text="Gestión De Resultados Saber Pro"
+                   maxWidth="Infinity"
+                   wrapText="true"
+                   styleClass="label-titulo" />
+
+            <Button fx:id="btnInicio" text="Inicio"
+                    onAction="#goInicio"
+                    styleClass="boton-invisible"/>
+
+            <Button fx:id="btnResultados" text="Resultados Saber Pro"
+                    onAction="#goResultados"
+                    styleClass="boton-invisible"/>
+
+            <Button fx:id="btnAccMejora" text="Acciones de mejora"
+                    onAction="#goAccMejora"
+                    styleClass="boton-invisible"/>
+
+            <Button fx:id="btnUsuariosRoles" text="Usuarios y roles"
+                    onAction="#goUsuariosRoles"
+                    styleClass="boton-invisible"/>
+
+            <Button fx:id="btnConfiguracion" text="Configuración"
+                    onAction="#goConfiguracion"
+                    styleClass="boton-invisible" />
+
+        </VBox>
+    </left>
+
+    <center>
+        <Label text="Bienvenido a la página de Inicio" fx:id="contentLabel" />
+    </center>
+
+</BorderPane>
