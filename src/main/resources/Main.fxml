@@ -2,6 +2,7 @@
 
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.control.*?>
+<?import javafx.scene.image.*?>
 
 <BorderPane fx:id="mainPane"
             xmlns:fx="http://javafx.com/fxml"
@@ -14,27 +15,76 @@
             <Label text="Gestión De Resultados Saber Pro"
                    maxWidth="Infinity"
                    wrapText="true"
-                   styleClass="label-titulo" />
+                   graphicTextGap="30"
+                   styleClass="label-titulo" >
+                <graphic>
+                    <ImageView fitWidth="50" fitHeight="50">
+                        <image>
+                            <Image url="@/img/logowhite.png" />
+                        </image>
+                    </ImageView>
+                </graphic>
+            </Label>
 
             <Button fx:id="btnInicio" text="Inicio"
                     onAction="#goInicio"
-                    styleClass="boton-invisible"/>
+                    styleClass="boton-invisible">
+                <graphic>
+                    <ImageView fitWidth="14" fitHeight="14">
+                        <image>
+                            <Image url="@/img/icons8-home-50.png" />
+                        </image>
+                    </ImageView>
+                </graphic>
+            </Button>
 
-            <Button fx:id="btnResultados" text="Resultados Saber Pro"
+            <Button fx:id="btnResultados" text="Resultados"
                     onAction="#goResultados"
-                    styleClass="boton-invisible"/>
+                    styleClass="boton-invisible">
+                <graphic>
+                    <ImageView fitWidth="14" fitHeight="14">
+                        <image>
+                            <Image url="@/img/icons8-bar-graph-50.png" />
+                        </image>
+                    </ImageView>
+                </graphic>
+            </Button>
 
             <Button fx:id="btnAccMejora" text="Acciones de mejora"
                     onAction="#goAccMejora"
-                    styleClass="boton-invisible"/>
+                    styleClass="boton-invisible">
+                <graphic>
+                    <ImageView fitWidth="14" fitHeight="14">
+                        <image>
+                            <Image url="@/img/icons8-improvement-50.png" />
+                        </image>
+                    </ImageView>
+                </graphic>
+            </Button>
 
             <Button fx:id="btnUsuariosRoles" text="Usuarios y roles"
                     onAction="#goUsuariosRoles"
-                    styleClass="boton-invisible"/>
+                    styleClass="boton-invisible">
+                <graphic>
+                    <ImageView fitWidth="14" fitHeight="14">
+                        <image>
+                            <Image url="@/img/icons8-roles-48.png" />
+                        </image>
+                    </ImageView>
+                </graphic>
+            </Button>
 
             <Button fx:id="btnConfiguracion" text="Configuración"
                     onAction="#goConfiguracion"
-                    styleClass="boton-invisible" />
+                    styleClass="boton-invisible" >
+                <graphic>
+                    <ImageView fitWidth="14" fitHeight="14">
+                        <image>
+                            <Image url="@/img/icons8-settings-50.png" />
+                        </image>
+                    </ImageView>
+                </graphic>
+            </Button>
 
         </VBox>
     </left>

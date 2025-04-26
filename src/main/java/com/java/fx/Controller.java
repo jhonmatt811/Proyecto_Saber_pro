@@ -36,6 +36,7 @@ public class Controller {
 
     @FXML
     public void initialize() {
+
         resetButtonStyles();
     }
 
