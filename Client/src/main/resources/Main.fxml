@@ -43,6 +43,16 @@
                     </ImageView>
                 </graphic>
             </Button>
+            <Button fx:id="btnCrearUsuarios" onAction="#goCrearUsuarios" styleClass="boton-invisible" text="Crear usuarios">
+                <graphic>
+                    <ImageView fitHeight="14" fitWidth="14">
+                        <image>
+                            <Image url="@/img/icons8-usuario-50.png" />
+                        </image>
+                    </ImageView>
+                </graphic>
+            </Button>
+
 
             <Button fx:id="btnAccMejora" onAction="#goAccMejora" styleClass="boton-invisible" text="Acciones de mejora">
                 <graphic>

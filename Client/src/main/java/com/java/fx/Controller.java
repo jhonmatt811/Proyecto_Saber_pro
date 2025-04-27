@@ -27,6 +27,9 @@ public class Controller {
     private Button btnResultados;
 
     @FXML
+    private Button btnCrearUsuarios;
+
+    @FXML
     private Button btnAccMejora;
 
     @FXML
@@ -52,6 +55,13 @@ public class Controller {
         resetButtonStyles();
         btnResultados.getStyleClass().add("boton-rojo");
         loadCenterView("/Resultados.fxml");
+    }
+
+    @FXML
+    public void goCrearUsuarios() {
+        resetButtonStyles();
+        btnCrearUsuarios.getStyleClass().add("boton-rojo");
+        loadCenterView("/CrearUsuarios.fxml");
     }
 
     @FXML
@@ -94,9 +104,12 @@ public class Controller {
     private void resetButtonStyles() {
         btnInicio.getStyleClass().remove("boton-rojo");
         btnResultados.getStyleClass().remove("boton-rojo");
+        btnCrearUsuarios.getStyleClass().remove("boton-rojo");
         btnAccMejora.getStyleClass().remove("boton-rojo");
         btnUsuariosRoles.getStyleClass().remove("boton-rojo");
         btnConfiguracion.getStyleClass().remove("boton-rojo");
+        btnUsuariosRoles.getStyleClass().remove("boton-rojo");
+
     }
 
     private void loadCenterView(String resource) {
