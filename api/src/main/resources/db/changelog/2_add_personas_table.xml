@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+    xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+        https://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.20.xsd">
+
+    <changeSet id="1-add-personas-table" author="tu_nombre">
+        <createTable tableName="personas">
+            <column name="id" type="UUID">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="cc" type="BIGINT">
+                <constraints unique="true" nullable="false"/>
+            </column>
+            <column name="primer_nombre" type="VARCHAR(255)"/>
+            <column name="segundo_nombre" type="VARCHAR(255)"/>
+            <column name="primer_apellido" type="VARCHAR(255)"/>
+            <column name="segundo_apellido" type="VARCHAR(255)"/>
+            <column name="email" type="VARCHAR(255)"/>
+            <column name="rol_id" type="int" >
+                <constraints nullable="false" foreignKeyName="fk_persona_rol"
+                    referencedTableName="roles" referencedColumnNames="id"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+</databaseChangeLog>
