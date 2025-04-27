@@ -9,7 +9,7 @@ import com.icfes_group.model.Persona;
 import com.icfes_group.model.Rol;
 import com.icfes_group.service.AdminPersonService;
 import java.util.UUID;
-import javax.validation.Valid;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 /**

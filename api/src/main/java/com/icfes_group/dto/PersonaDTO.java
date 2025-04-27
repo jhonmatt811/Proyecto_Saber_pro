@@ -5,8 +5,8 @@
 package com.icfes_group.dto;
 import lombok.Data;
 import java.util.UUID;
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.NotBlank;
 import com.icfes_group.model.Rol;
 /**
  *
@@ -15,7 +15,6 @@ import com.icfes_group.model.Rol;
 
 @Data
 public class PersonaDTO {
-    @NotNull(message = "El ID es obligatorio")
     private UUID id;
     
     @NotNull(message = "El número de cédula es obligatorio")
