@@ -19,7 +19,9 @@ import java.util.Base64;
 public class CrearUsuariosController {
 
     // Constante con la URL de tu API
-    private static final String API_URL = "localhost:8080";
+    // Cambia esto:
+
+    private static final String API_URL = "http://localhost:8080";
 
     @FXML private RadioButton opcion1;
     @FXML private RadioButton opcion2;
@@ -141,7 +143,7 @@ public class CrearUsuariosController {
             // Crear cliente HTTP
             HttpClient client = HttpClient.newBuilder()
                     .version(HttpClient.Version.HTTP_1_1)
-                    .connectTimeout(Duration.ofSeconds(10))
+                    .connectTimeout(Duration.ofSeconds(20))
                     .build();
 
             // Crear request HTTP
