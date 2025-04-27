@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!--interfaz de resultados saber pro -->
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<VBox alignment="TOP_CENTER" spacing="20" style="-fx-padding: 30;" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.java.fx.ResultadosController">
+
+    <Label style="-fx-font-size: 20px; -fx-font-weight: bold;" text="📁 Resultados Saber Pro" />
+
+    <HBox spacing="10">
+        <Button onAction="#handleSubirArchivo" text="📤 Subir Archivo" />
+        <ComboBox fx:id="filtroAno" promptText="Filtrar por año..." />
+        <ComboBox fx:id="filtroPrograma" promptText="Filtrar por programa..." />
+    </HBox>
+     <Label fx:id="archivoCargadoLabel" prefHeight="28.0" prefWidth="498.0" text="Ningún archivo cargado" textAlignment="CENTER" />
+
+    <TableView fx:id="tablaResultados" prefHeight="300">
+        <columns>
+            <TableColumn fx:id="colEstudiante" prefWidth="150" text="Estudiante" />
+            <TableColumn fx:id="colCohorte" prefWidth="100" text="Cohorte" />
+            <TableColumn fx:id="colPrograma" prefWidth="150" text="Programa" />
+            <TableColumn fx:id="colPuntaje" prefWidth="100" text="Puntaje" />
+        </columns>
+    </TableView>
+</VBox>

@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!-- diseño de todo lo referente  visual a el Login-->
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.image.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.shape.*?>
+<?import javafx.scene.text.*?>
+
+<StackPane xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.java.fx.ControllerLogin">
+    <children>
+        <!-- Imagen de fondo -->
+        <ImageView fitHeight="840" fitWidth="1550" preserveRatio="false">
+            <image>
+                <Image url="img/fondo.png" />
+            </image>
+        </ImageView>
+
+        <!-- Pane con los controles encima -->
+        <AnchorPane>
+            <children>
+                <Rectangle arcHeight="15.0" arcWidth="15.0" fill="#ececec" height="337.0" layoutX="193.0" layoutY="340.0" stroke="#e4dada" strokeType="INSIDE" width="294.0" />
+
+                <Label fx:id="Ejemplo" layoutX="277.0" layoutY="406.0" prefHeight="2.0" prefWidth="126.0" style="-fx-font-size-weight: 25px bold" text="Bienvenido" textAlignment="CENTER">
+               <font>
+                  <Font name="Arial Black" size="18.0" />
+               </font></Label>
+
+                <HBox alignment="CENTER_LEFT" spacing="10" />
+
+                <Button layoutX="288.0" layoutY="604.0" onAction="#onLoginClick" prefHeight="35.0" prefWidth="89.0" style="-fx-background-color: #b11212; -fx-text-fill: white;" text="Iniciar Sesión" />
+
+                <StackPane layoutX="225.0" layoutY="509.0" prefHeight="26.0" prefWidth="230.0">
+                    <TextField fx:id="visiblePasswordField" managed="false" prefHeight="26.0" prefWidth="230.0" promptText="Contraseña" visible="false" />
+                </StackPane>
+
+                <CheckBox fx:id="showPasswordCheck" layoutX="225.0" layoutY="560.0" onAction="#onTogglePasswordVisibility" text="Mostrar contraseña" />
+                 <PasswordField fx:id="passwordField" layoutX="225.0" layoutY="509.0" prefHeight="26.0" prefWidth="230.0" promptText="Contraseña" />
+                <TextField fx:id="emailField" layoutX="225.0" layoutY="457.0" prefHeight="26.0" prefWidth="230.0" promptText="Correo electrónico" />
+            </children>
+        </AnchorPane>
+
+    </children>
+</StackPane>
