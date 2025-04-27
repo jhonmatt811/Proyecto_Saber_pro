@@ -8,7 +8,6 @@ import io.github.cdimascio.dotenv.Dotenv;
 public class IcfesMainApplication {
 
 	public static void main(String[] args) {
-		SpringApplication.run(IcfesMainApplication.class, args);
                 Dotenv dotenv = Dotenv.configure()
                               .filename(".env")
                               .load();

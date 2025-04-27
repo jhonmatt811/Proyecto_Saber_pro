@@ -43,17 +43,28 @@ dependencies {
 	//testImplementation 'org.springframework.security:spring-security-test'
 	testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
 
-        compileOnly 'org.projectlombok:lombok'
-        annotationProcessor 'org.projectlombok:lombok'
-        implementation 'io.github.cdimascio:dotenv-java:3.0.0'
-
+	compileOnly 'org.projectlombok:lombok'
+	annotationProcessor 'org.projectlombok:lombok'
+	implementation 'io.github.cdimascio:dotenv-java:3.0.0'
+	implementation "org.liquibase:liquibase-core:4.24.0"
 }
 
 springBoot {
     mainClass = 'com.icfes_group.IcfesMainApplication'  // Ajusta esto según tu clase principal
 }
 
-
 tasks.named('test') {
 	useJUnitPlatform()
+}
+
+task liquibaseUpdate(type: JavaExec) {
+    classpath = sourceSets.main.runtimeClasspath
+    main = 'liquibase.integration.commandline.Main'
+    args = [
+        "--url=${project.findProperty('spring.datasource.url')}",
+        "--username=${project.findProperty('spring.datasource.username')}",
+        "--password=${project.findProperty('spring.datasource.password')}",
+        "--changeLogFile=src/main/resources/db/changelog/db.changelog-master.xml",
+        "update"
+    ]
 }
