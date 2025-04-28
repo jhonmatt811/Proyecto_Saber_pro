@@ -3,10 +3,8 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
 package com.icfes_group.controller;
-import com.icfes_group.controller.PersonController;
-import com.icfes_group.dto.PersonaDTO;
+import com.icfes_group.dto.ChangeRolDTO;
 import com.icfes_group.model.Persona;
-import com.icfes_group.model.Rol;
 import com.icfes_group.service.AdminPersonService;
 import java.util.UUID;
 import jakarta.validation.Valid;
@@ -21,7 +19,12 @@ import org.springframework.web.bind.annotation.*;
 public class AdminPerson extends PersonController{
     @Autowired
     private AdminPersonService adminService;
-    public Persona changeRol(@Valid @RequestBody UUID personId,Integer nuevoRolId){
-        return adminService.changeRol(personId, nuevoRolId);
+    @PutMapping("/change-rol")
+    public Persona changeRol(@Valid @RequestBody ChangeRolDTO dto){
+        return adminService.changeRol(dto.getPersonId(), dto.getNuevoRolId());
     }
+    //@PutMapping("/user/status")
+    //public User changeStatus(){
+        
+    //}
 }
