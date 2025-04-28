@@ -24,8 +24,7 @@ public class PersonaService {
         Persona persona = new Persona(
             dto,
             rol
-        );
-
+        );        
         return personaRepository.save(persona);
     }
 }

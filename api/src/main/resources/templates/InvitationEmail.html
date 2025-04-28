@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="es-CO">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Invitación ICFES</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+        }
+        .email-container {
+            width: 100%;
+            max-width: 600px;
+            margin: 0 auto;
+            background-color: #ffffff;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        .header {
+            background-color: #003366;
+            color: white;
+            padding: 20px;
+            text-align: center;
+        }
+        .header img {
+            width: 120px;
+        }
+        .content {
+            padding: 20px;
+            color: #333333;
+        }
+        .content h2 {
+            color: #003366;
+        }
+        .cta-button {
+            display: inline-block;
+            background-color: #007BFF;
+            color: white;
+            padding: 10px 20px;
+            text-decoration: none;
+            border-radius: 5px;
+            font-weight: bold;
+        }
+        .footer {
+            background-color: #f4f4f4;
+            color: #777777;
+            text-align: center;
+            padding: 10px;
+            font-size: 12px;
+        }
+    </style>
+</head>
+<body>
+    <div class="email-container">
+        <div class="header">
+            <img src="https://www.icfes.gov.co/wp-content/uploads/2024/09/logo-gov-co.png" alt="ICFES Logo">
+        </div>
+        <div class="content">
+           <h2>¡Bienvenido a la Plataforma ICFES, {PrimerNombre}  {PrimerApellido}!</h2>
+            <p>Nos complace informarte que has sido registrado exitosamente en nuestra plataforma. A continuación, encontrarás tus credenciales de acceso:</p>
+            <ul>
+                <li><strong>Usuario:</strong> {email}</li>
+                <li><strong>Contraseña:</strong> {password}</li>
+            </ul>
+            <p>Por favor, accede a la plataforma utilizando el siguiente enlace:</p>
+            <p><a href="https://plataforma.icfes.gov.co" style="color: white" class="cta-button">Acceder a la Plataforma</a></p>
+            <p>Si tienes alguna duda o necesitas asistencia, no dudes en contactarnos.</p>
+        </div>
+        <div class="footer">
+            <p>&copy; 2025 ICFES - Instituto Colombiano para la Evaluación de la Educación</p>
+            <p><a href="https://www.icfes.gov.co" style="color: #007BFF;">www.icfes.gov.co</a></p>
+        </div>
+    </div>
+</body>
+</html>
