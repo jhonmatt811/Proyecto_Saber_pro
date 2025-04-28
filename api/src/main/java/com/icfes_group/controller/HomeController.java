@@ -7,6 +7,6 @@ import org.springframework.web.bind.annotation.RestController;
 public class HomeController {
     @GetMapping(path = "/", produces = "application/json")
     public StatusResponse home() {
-        return new StatusResponse("OK", "Conectado correctamente");
+        return new StatusResponse("ok","conecto");
     }
 }

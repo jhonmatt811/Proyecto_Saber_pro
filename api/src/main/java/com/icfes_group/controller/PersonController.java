@@ -10,7 +10,7 @@ import com.icfes_group.service.PersonaService;
 import com.icfes_group.model.Persona;
 import com.icfes_group.dto.PersonaDTO;
 import com.icfes_group.service.RolService;
-import javax.validation.Valid;
+import jakarta.validation.Valid;
 /**
  *
  * @author juanc
@@ -20,6 +20,7 @@ import javax.validation.Valid;
 public class PersonController {
     @Autowired
     private PersonaService personaService;
+    @Autowired
     private RolService rolService;
     @PostMapping
     public Persona createPerson(@Valid @RequestBody PersonaDTO personaDTO){
