@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!-- Interfaz inicial gestion de usuarios -->
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.image.*?>
+<?import javafx.scene.layout.*?>
+
+<BorderPane fx:id="mainPane" styleClass="BorderPane" stylesheets="@estilos.css" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.java.fx.Controller">
+
+    <left>
+        <VBox layoutX="150" layoutY="100" prefWidth="200" spacing="10" styleClass="vbox-menu">
+            <Label text="Gestión De Resultados Saber Pro"
+                   maxWidth="Infinity"
+                   wrapText="true"
+                   graphicTextGap="30"
+                   styleClass="label-titulo" >
+                <graphic>
+                    <ImageView fitWidth="50" fitHeight="50">
+                        <image>
+                            <Image url="@/img/logowhite.png" />
+                        </image>
+                    </ImageView>
+                </graphic>
+            </Label>
+
+            <Button fx:id="btnInicio" onAction="#goInicio" styleClass="boton-invisible" text="Inicio">
+                <graphic>
+                    <ImageView fitHeight="14" fitWidth="14">
+                        <image>
+                            <Image url="@/img/icons8-home-50.png" />
+                        </image>
+                    </ImageView>
+                </graphic>
+            </Button>
+
+            <Button fx:id="btnResultados" onAction="#goResultados" styleClass="boton-invisible" text="Resultados">
+                <graphic>
+                    <ImageView fitHeight="14" fitWidth="14">
+                        <image>
+                            <Image url="@/img/icons8-bar-graph-50.png" />
+                        </image>
+                    </ImageView>
+                </graphic>
+            </Button>
+            <Button fx:id="btnCrearUsuarios" onAction="#goCrearUsuarios" styleClass="boton-invisible" text="Crear usuarios">
+                <graphic>
+                    <ImageView fitHeight="14" fitWidth="14">
+                        <image>
+                            <Image url="@/img/icons8-usuario-50.png" />
+                        </image>
+                    </ImageView>
+                </graphic>
+            </Button>
+
+
+            <Button fx:id="btnAccMejora" onAction="#goAccMejora" styleClass="boton-invisible" text="Acciones de mejora">
+                <graphic>
+                    <ImageView fitHeight="14" fitWidth="14">
+                        <image>
+                            <Image url="@/img/icons8-improvement-50.png" />
+                        </image>
+                    </ImageView>
+                </graphic>
+            </Button>
+
+            <Button fx:id="btnUsuariosRoles" onAction="#goUsuariosRoles" styleClass="boton-invisible" text="Usuarios y roles">
+                <graphic>
+                    <ImageView fitHeight="14" fitWidth="14">
+                        <image>
+                            <Image url="@/img/icons8-roles-48.png" />
+                        </image>
+                    </ImageView>
+                </graphic>
+            </Button>
+
+            <Button fx:id="btnConfiguracion" onAction="#goConfiguracion" styleClass="boton-invisible" text="Configuración">
+                <graphic>
+                    <ImageView fitHeight="14" fitWidth="14">
+                        <image>
+                            <Image url="@/img/icons8-settings-50.png" />
+                        </image>
+                    </ImageView>
+                </graphic>
+            </Button>
+
+        </VBox>
+    </left>
+   <right>
+        <Label fx:id="contentLabel" BorderPane.alignment="CENTER" />
+   </right>
+
+</BorderPane>
