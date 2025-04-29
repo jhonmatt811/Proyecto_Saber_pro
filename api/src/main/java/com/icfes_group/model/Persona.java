@@ -10,8 +10,6 @@ import jakarta.persistence.Id;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Table;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
 import java.util.UUID;
 import lombok.Data;
 import com.icfes_group.dto.PersonaDTO;
@@ -32,19 +30,15 @@ public class Persona {
     private String segundo_nombre;
     private String primer_apellido;
     private String segundo_apellido;    
-    private String email;
+    private String email;        
     
-    @ManyToOne
-    @JoinColumn(name="rol_id")
-    private Rol rol;    
-    public Persona(PersonaDTO dto,Rol rol){
+    public Persona(PersonaDTO dto){
         this.cc = dto.getCc();
         this.primer_nombre = dto.getPrimer_nombre();
         this.segundo_nombre = dto.getSegundo_nombre();
         this.primer_apellido = dto.getPrimer_apellido();
         this.segundo_apellido = dto.getSegundo_apellido();
         this.email = dto.getEmail();
-        this.rol = rol;
     }
     public Persona(){}
 }

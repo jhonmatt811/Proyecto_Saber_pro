@@ -4,9 +4,8 @@
  */
 package com.icfes_group.controller;
 import com.icfes_group.dto.ChangeRolDTO;
-import com.icfes_group.model.Persona;
+import com.icfes_group.model.User;
 import com.icfes_group.service.AdminPersonService;
-import java.util.UUID;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -20,8 +19,8 @@ public class AdminPerson extends PersonController{
     @Autowired
     private AdminPersonService adminService;
     @PutMapping("/change-rol")
-    public Persona changeRol(@Valid @RequestBody ChangeRolDTO dto){
-        return adminService.changeRol(dto.getPersonId(), dto.getNuevoRolId());
+    public User changeRol(@Valid @RequestBody ChangeRolDTO dto){
+        return adminService.changeRol(dto.getUserId(), dto.getNuevoRolId());
     }
     //@PutMapping("/user/status")
     //public User changeStatus(){

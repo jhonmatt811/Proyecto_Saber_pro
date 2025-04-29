@@ -4,9 +4,9 @@
  */
 package com.icfes_group.service;
 
-import com.icfes_group.model.Persona;
 import com.icfes_group.model.Rol;
-import com.icfes_group.repository.PersonaRepository;
+import com.icfes_group.model.User;
+import com.icfes_group.repository.UserRepository;
 import java.util.UUID;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -18,13 +18,13 @@ import org.springframework.stereotype.Service;
 @Service
 public class AdminPersonService{
     @Autowired
-    private PersonaRepository personaRepository;
+    private UserRepository userRepository;
     @Autowired
     private RolService rolService;
-    public Persona changeRol(UUID personId, Integer nuevoRolId) {
+    public User changeRol(UUID userId, Integer nuevoRolId) {
     // Buscar la persona en la base de datos usando el ID
 
-    Persona persona = personaRepository.findById(personId)
+       User user = userRepository.findById(userId)
             .orElseThrow(() -> new RuntimeException("Persona no encontrada"));
 
     // Buscar el nuevo rol usando el rol ID
@@ -32,9 +32,9 @@ public class AdminPersonService{
     if (nuevoRol == null) {
         throw new RuntimeException("Rol no encontrado");
     }
-    persona.setRol(nuevoRol);
+    user.setRol(nuevoRol);
 
-    return personaRepository.save(persona);
+    return userRepository.save(user);
 }
 
 }

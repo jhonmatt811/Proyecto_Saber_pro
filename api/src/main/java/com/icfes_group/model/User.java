@@ -34,16 +34,21 @@ public class User {
     @Column(nullable = false)
     private Boolean is_active;
 
+    @ManyToOne
+    @JoinColumn(name="rol_id")
+    private Rol rol;    
+
     public User(UserDTO dto){
         this.id = dto.getPersonId();
         this.is_active = true;
         this.password = dto.getPassword();
     }
     
-    public User(PersonaDTO person, String passwd){
+    public User(PersonaDTO person, String passwd,Rol rol){
         this.id = person.getId();
         this.is_active = true;
         this.password = passwd;
+        this.rol = rol;
     }
 
     public User(){}
