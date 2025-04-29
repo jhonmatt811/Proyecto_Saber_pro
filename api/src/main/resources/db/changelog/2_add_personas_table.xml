@@ -17,11 +17,7 @@
             <column name="segundo_nombre" type="VARCHAR(255)"/>
             <column name="primer_apellido" type="VARCHAR(255)"/>
             <column name="segundo_apellido" type="VARCHAR(255)"/>
-            <column name="email" type="VARCHAR(255)"/>
-            <column name="rol_id" type="int" >
-                <constraints nullable="false" foreignKeyName="fk_persona_rol"
-                    referencedTableName="roles" referencedColumnNames="id"/>
-            </column>
+            <column name="email" type="VARCHAR(255)"/>            
         </createTable>
     </changeSet>
 

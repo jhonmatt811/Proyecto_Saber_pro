@@ -20,10 +20,8 @@ public class PersonaService {
     }
 
     public Persona guardarPersona(PersonaDTO dto) {
-        Rol rol = rolService.findById(dto.getRol_id());
         Persona persona = new Persona(
-            dto,
-            rol
+            dto
         );        
         return personaRepository.save(persona);
     }

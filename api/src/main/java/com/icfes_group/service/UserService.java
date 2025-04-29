@@ -12,6 +12,8 @@ import org.springframework.scheduling.annotation.Async;
 import com.icfes_group.repository.UserRepository;
 import com.icfes_group.model.User;
 import com.icfes_group.dto.UserDTO;
+import com.icfes_group.model.Rol;
+import com.icfes_group.repository.UserRepository;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -22,6 +24,8 @@ import java.util.Random;
 public class UserService {
 
     @Autowired
+    private RolService rolService;    
+    @Autowired
     private UserRepository userRepository;
     @Autowired
     private PasswordEncoder passwordEncoder;
@@ -31,12 +35,30 @@ public class UserService {
     private String mailSenderAddress;
 
 
-    public User login(UserDTO dto) {
-        return new User();  // Placeholder
+    public User login(UserDTO dto) throws Exception
+    {
+        User userProps = new User(dto);
+        User userBd = userRepository.findByEmailWithPersona(dto.getEmail());
+        if(userBd == null){
+            throw new Exception("No se econtro el email");
+        }
+        if(!passwordEncoder.matches(userBd.getPassword(), userProps.getPassword())){
+            throw new Exception("La contraseña no coincide");
+        }
+        if(!userBd.getIs_active()){
+            throw new Exception("Uusario no activo");
+        }
+        return userProps;
     }
 
-    public User register(PersonaDTO person, String passwd) {
-        User newUser = new User(person, passwd);
+    public User register(UserDTO dto, String passwd) {
+        Rol rol = rolService.findById(dto.getRol_id());
+        PersonaDTO personDTO = dto.getPerson();
+        System.out.println("\n\n\n");
+        System.out.println(personDTO);
+        System.out.println("\n\n\n");
+        User newUser = new User(personDTO, passwd,rol);
+        
         return userRepository.save(newUser);
     }
 
