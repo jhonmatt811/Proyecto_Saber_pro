@@ -6,7 +6,6 @@ import java.util.stream.Collectors;
 import com.icfes_group.dto.ScoreFileDTO;
 import com.icfes_group.repository.IcfesTestRepository.*;
 import com.icfes_group.model.IcfesTest.*;
-import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 
 @Service
@@ -28,7 +27,8 @@ public class ScoreFileService {
     ReferenceGroupRepository referenceGroupRepository;
     @Autowired
     TestRegistrationRepository testRegistrationRepository;
-    
+    @Autowired
+    ModuleResultRepository moduleResultRepository;
     @Autowired
     GlobalResultRepository globalRespository;
     // Método para agrupar los datos por documento
@@ -121,23 +121,25 @@ public class ScoreFileService {
         cityRepository.saveAll(nuevos);
     }
 
-    private void saveAcademicPrograms(Set<String> academicProg) {
-        Set<String> existentes = academicRepository.findByNombreIn(academicProg)
+    private void saveAcademicPrograms(Set<AcademicProgram> academicProg) { 
+        // Obtener los nombres de los programas ya existentes en la BD
+        Set<String> existentes = academicRepository.findByNombreIn(
+                academicProg.stream()
+                    .map(AcademicProgram::getNombre)
+                    .collect(Collectors.toSet())
+            )
             .stream()
             .map(AcademicProgram::getNombre)
             .collect(Collectors.toSet());
 
+        // Filtrar los programas que no existen aún y prepararlos para guardar
         List<AcademicProgram> nuevos = academicProg.stream()
-            .filter(nombre -> !existentes.contains(nombre))
-            .map(nombre -> {
-                AcademicProgram program = new AcademicProgram();
-                program.setNombre(nombre);
-                return program;
-            })
+            .filter(prog -> !existentes.contains(prog.getNombre()))
             .collect(Collectors.toList());
 
         academicRepository.saveAll(nuevos);
     }
+
 
     private void saveModulesCatalogs(Set<String> modules) {
         Set<String> existentes = moduleCatalogRepository.findByNombreIn(modules)
@@ -159,17 +161,23 @@ public class ScoreFileService {
 
 
     // Método para guardar grupos de referencia
-    /*private void saveReferencesGroups(Set<String> referenceGroup) {
-        List<ReferenceGroup> listReferenceGroup = referenceGroup.stream()
-            .map(nombre -> {
-                ReferenceGroup group = new ReferenceGroup();
-                group.setNombre(nombre);
-                return group;
-            })
-            .collect(Collectors.toList());
-        referenceGroupRepository.saveAll(listReferenceGroup);
-    }*/
+    private void saveReferencesGroups(List<ReferenceGroup> referenceProp) {
+        // Obtener los grupos ya existentes por ID
+        Set<Long> idsExistentes = referenceGroupRepository.findAllById(
+            referenceProp.stream()
+                .map(ReferenceGroup::getId)
+                .collect(Collectors.toSet())
+        ).stream()
+         .map(ReferenceGroup::getId)
+         .collect(Collectors.toSet());
 
+        // Filtrar los que aún no existen en la base de datos
+        List<ReferenceGroup> nuevosReferenceGroups = referenceProp.stream()
+            .filter(group -> !idsExistentes.contains(group.getId()))
+            .collect(Collectors.toList());
+        // Guardar solo los nuevos
+        referenceGroupRepository.saveAll(nuevosReferenceGroups);
+    }
     
    private TestRegistration saveTestRegistrarion(
         ScoreFileDTO dto,
@@ -203,66 +211,90 @@ public class ScoreFileService {
         return testRegistrationRepository.save(test);
     }
     
-    private GlobalResult saveGlobalResuslt(ScoreFileDTO dto, TestRegistration testRegistred){
+    private GlobalResult saveGlobalResuslt(ScoreFileDTO dto, TestRegistration testRegistred,List<ReferenceGroup> bankGroups){
         Optional<GlobalResult> optionalResult = globalRespository.findById(dto.getNumeroRegistro());
         if(optionalResult.isPresent()){
             return optionalResult.get();
         }
-        GlobalResult result = new GlobalResult(dto,testRegistred);
+        ReferenceGroup referenceGroup = bankGroups.stream()
+            .filter(group -> group.getId().equals(dto.getIdNucleoBasicoConocimiento()))
+            .findFirst()
+            .orElse(null);
+
+        GlobalResult result = new GlobalResult(dto, testRegistred, referenceGroup);
+
         return globalRespository.save(result);
     }
-    
+
+    public ModuleResult saveModuleResult (ScoreFileDTO dto,GlobalResult globalResult){
+        Optional<ModuleCatalog> moduleCatalog = moduleCatalogRepository.findByNombre(dto.getModulo());
+        Optional<ModuleResult> optionalModuleResult = moduleResultRepository.findByGlobalRsltAndCatId(moduleCatalog.get().getId(),globalResult.getId());
+        if(optionalModuleResult.isPresent()){
+            return optionalModuleResult.get();
+        }
+        ModuleResult result = new ModuleResult(dto,globalResult,moduleCatalog.get());
+        return moduleResultRepository.save(result);
+    }
+
     // Método para guardar los datos del archivo
     public ScoreFileDTO[] saveDataFile(ScoreFileDTO[] dto) {
-    // Agrupar por documento
         Map<Long, List<ScoreFileDTO>> agrupados = groupByDocument(dto);
 
-        // Extraer tipos de documento y evaluado
-        Set<String> tiposDocumento = Arrays.stream(dto)
-            .map(ScoreFileDTO::getTipoDocumento)
+        // Recolección de valores únicos
+        Set<String> tiposDocumento = Arrays.stream(dto).map(ScoreFileDTO::getTipoDocumento).collect(Collectors.toSet());
+        Set<String> typesEvals = Arrays.stream(dto).map(ScoreFileDTO::getTipoEvaluado).collect(Collectors.toSet());
+        Set<String> cities = Arrays.stream(dto).map(ScoreFileDTO::getCiudad).collect(Collectors.toSet());
+        Set<AcademicProgram> academicPrograms = Arrays.stream(dto)
+            .map(d -> {
+                AcademicProgram ap = new AcademicProgram();
+                ap.setSnies(d.getSniesProgramaAcademico());
+                ap.setNombre(d.getPrograma());
+                return ap;
+            })
             .collect(Collectors.toSet());
 
-        Set<String> typesEvals = Arrays.stream(dto)
-            .map(ScoreFileDTO::getTipoEvaluado)
-            .collect(Collectors.toSet());
-        Set<String> cities = Arrays.stream(dto)
-            .map(ScoreFileDTO::getCiudad)
-            .collect(Collectors.toSet());
+        Set<String> modulesCatalog = Arrays.stream(dto).map(ScoreFileDTO::getModulo).collect(Collectors.toSet());
 
-        Set<String> academicPrograms = Arrays.stream(dto)
-            .map(ScoreFileDTO::getPrograma)
-            .collect(Collectors.toSet());
+        List<ReferenceGroup> referenceGroups = Arrays.stream(dto).map(scoreDto -> {
+            ReferenceGroup group = new ReferenceGroup();
+            group.setId(scoreDto.getIdNucleoBasicoConocimiento());
+            group.setNombre(scoreDto.getNucleoBasicoConocimiento());
+            return group;
+        }).collect(Collectors.toList());
 
-        Set<String> modulesCatalog = Arrays.stream(dto)
-            .map(ScoreFileDTO::getModulo)
-            .collect(Collectors.toSet());
-
-        //Set<String> referenceGroups = Arrays.stream(dto)
-//            .map(ScoreFileDTO::getGrupoReferencia)
-  //          .collect(Collectors.toSet());
-
-        // Guardar documentos, evaluados y demás
+        // Guardar referencias
         saveTypeDocuments(tiposDocumento);
         saveTypesEvals(typesEvals);
         saveCities(cities);
         saveAcademicPrograms(academicPrograms);
         saveModulesCatalogs(modulesCatalog);
+        saveReferencesGroups(referenceGroups);
 
-        // Obtener los tipos de documentos guardados
+        // Obtener bancos de datos
         List<TypeIdentityCard> bankTypeIdCard = typeCardRepository.findAll();       
-//        saveReferencesGroups(referenceGroups);
         List<City> citiesBank = cityRepository.findAll();
         List<AcademicProgram> programsBank = academicRepository.findAll();
         List<ModuleCatalog> modulesBank = moduleCatalogRepository.findAll();            
         List<EvaluatedType> evalTypesBank = evalTypeRepository.findAll();
-        // Guardar Evaluated para cada grupo de documento       
+        List<ReferenceGroup> groupReferencesBank = referenceGroupRepository.findAll();
+
         agrupados.forEach((documento, lista) -> {
             ScoreFileDTO dtoIter = lista.get(0);
-            saveEvaluated(dtoIter, bankTypeIdCard); // Guardar el Evaluado
-            TestRegistration test = saveTestRegistrarion(dtoIter,programsBank,citiesBank,evalTypesBank);
-            saveGlobalResuslt(dtoIter, test);
+
+            // Guardar evaluado
+            Evaluated evaluado = saveEvaluated(dtoIter, bankTypeIdCard);
+
+            // Registrar evaluación
+            TestRegistration test = saveTestRegistrarion(dtoIter, programsBank, citiesBank, evalTypesBank);
+
+            // Resultado global
+            GlobalResult globalResult = saveGlobalResuslt(dtoIter, test,groupReferencesBank);
+
+            // Resultado de módulo
+            ModuleResult resultadoModulo = saveModuleResult(dtoIter, globalResult);
         });
-         
-        return dto; // Retornar los datos procesados
-    }
+
+        return dto;
+        }
+
 }

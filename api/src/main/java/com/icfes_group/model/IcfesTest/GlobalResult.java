@@ -17,9 +17,9 @@ public class GlobalResult {
     @JoinColumn(name = "id")
     private TestRegistration registroEvaluacion;
 
-    //@ManyToOne
-    //@JoinColumn(name = "grupo_referencia_id")
-    //private ReferenceGroup grupoReferencia;
+    @ManyToOne
+    @JoinColumn(name = "grupo_referencia_id")
+    private ReferenceGroup grupoReferencia;
 
     @Column(name = "puntaje_global")
     private Integer puntajeGlobal;
@@ -32,11 +32,12 @@ public class GlobalResult {
 
     private String novedades;
     
-    public GlobalResult(ScoreFileDTO dto,TestRegistration test){
+    public GlobalResult(ScoreFileDTO dto,TestRegistration test,ReferenceGroup groupReference){
         this.registroEvaluacion = test;
         this.puntajeGlobal = dto.getPuntajeGlobal();
         this.percentilNacionalGlobal = dto.getPercentilNacionalGlobal();
         this.percentilGrupoReferencia = dto.getPercentilNacionalNbc();
+        this.grupoReferencia = groupReference;
         this.novedades = dto.getNovedades();
     }
     
