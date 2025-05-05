@@ -68,12 +68,7 @@ public class Controller {
     public void goAccMejora() {
         resetButtonStyles();
         btnAccMejora.getStyleClass().add("boton-rojo");
-
-        Label newLabel = new Label("Estás en Acciones de Mejora");
-        newLabel.getStyleClass().add("content-label");
-
-        mainPane.setCenter(null);
-        mainPane.setCenter(newLabel);
+        loadCenterView("/AccionesDeMejora.fxml");
     }
 
 
