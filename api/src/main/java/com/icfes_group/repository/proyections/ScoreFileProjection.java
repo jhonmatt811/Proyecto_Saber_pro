@@ -34,28 +34,28 @@ public interface ScoreFileProjection {
     String getCiudad();
 
     @Value("#{target.puntajeGlobal}")
-    Integer getPuntajeGlobal();
+    String getPuntajeGlobal();
 
     @Value("#{target.percentilNacionalGlobal}")
-    Integer getPercentilNacionalGlobal();
+    String getPercentilNacionalGlobal();
 
     @Value("#{target.percentilNacionalNbc}")
-    Integer getPercentilNacionalNbc();
+    String getPercentilNacionalNbc();
 
     @Value("#{target.modulo}")
     String getModulo();
 
     @Value("#{target.puntajeModulo}")
-    Integer getPuntajeModulo();
+    String getPuntajeModulo();
 
     @Value("#{target.nivelDesempeño}")
     String getNivelDesempeno();
 
     @Value("#{target.percentilNacionalModulo}")
-    Integer getPercentilNacionalModulo();
+    String getPercentilNacionalModulo();
 
     @Value("#{target.percentilGrupoNbcModulo}")
-    Integer getPercentilGrupoNbcModulo();
+    String getPercentilGrupoNbcModulo();
 
     @Value("#{target.novedades}")
     String getNovedades();
@@ -76,7 +76,7 @@ public interface ScoreFileProjection {
     //String getIes();
 
     @Value("#{target.sniesProgramaAcademico}")
-    Integer getSniesProgramaAcademico();
+    String getSniesProgramaAcademico();
 
     @Value("#{target.idNucleoBasicoConocimiento}")
     Long getIdNucleoBasicoConocimiento();
@@ -84,4 +84,9 @@ public interface ScoreFileProjection {
     @Value("#{target.nucleoBasicoConocimiento}")
     String getNucleoBasicoConocimiento();
 
+    @Value("#{target.ciclo}")
+    Integer getCiclo();
+
+    @Value("#{target.year}")
+    Integer getYear();
 }

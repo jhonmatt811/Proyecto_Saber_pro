@@ -22,13 +22,13 @@ public class GlobalResult {
     private ReferenceGroup grupoReferencia;
 
     @Column(name = "puntaje_global")
-    private Integer puntajeGlobal;
+    private String puntajeGlobal;
 
     @Column(name = "percentil_nacional_global")
-    private Integer percentilNacionalGlobal;
+    private String percentilNacionalGlobal;
 
     @Column(name = "percentil_grupo_referencia")
-    private Integer percentilGrupoReferencia;
+    private String percentilGrupoReferencia;
 
     private String novedades;
     
