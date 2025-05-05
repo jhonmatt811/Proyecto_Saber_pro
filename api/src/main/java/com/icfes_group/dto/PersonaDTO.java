@@ -7,7 +7,6 @@ import lombok.Data;
 import java.util.UUID;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.NotBlank;
-import com.icfes_group.model.Rol;
 /**
  *
  * @author juanc
@@ -37,5 +36,4 @@ public class PersonaDTO {
     
     @NotNull(message = "El rol es obligatorio")
     private Integer rol_id;
-    private Rol rol;
 }

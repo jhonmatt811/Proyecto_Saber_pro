@@ -15,7 +15,7 @@ import jakarta.validation.constraints.NotBlank;
 @Data
 public class ChangeRolDTO {
     @NotNull(message = "Es necesario seleccionar una persona")
-    private UUID personId;
+    private UUID userId;
     @NotNull(message = "Es necesario seleccionar un rol")
     private Integer nuevoRolId;
 }

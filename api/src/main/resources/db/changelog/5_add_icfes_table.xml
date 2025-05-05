@@ -1,0 +1,164 @@
+<?xml version="1.0" encoding="UTF-8"?>  
+<databaseChangeLog
+    xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+        https://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.20.xsd">
+
+    <!-- tipos_documentos -->
+    <changeSet id="1" author="juan">
+        <createTable tableName="tipos_documentos">
+            <column name="id" type="BIGINT" autoIncrement="true" >
+                <constraints primaryKey="true" nullable="false" />
+            </column>
+            <column name="nombre" type="VARCHAR(255)">
+                <constraints unique="true" nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+    <!-- evaluados -->
+    <changeSet id="2" author="juan">
+        <createTable tableName="evaluados">
+            <column name="documento" type="BIGINT">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="tipo_documento_id" type="BIGINT"/>
+            <column name="nombre" type="VARCHAR(255)"/>
+        </createTable>
+        <addForeignKeyConstraint baseTableName="evaluados" baseColumnNames="tipo_documento_id"
+            referencedTableName="tipos_documentos" referencedColumnNames="id"
+            constraintName="fk_evaluados_tipos_documentos"/>
+    </changeSet>
+
+    <!-- tipos_evaluados -->
+    <changeSet id="3" author="juan">
+        <createTable tableName="tipos_evaluados">
+            <column name="id" type="BIGINT" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="nombre" type="VARCHAR(255)">
+                <constraints unique="true" nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+    <!-- ciudades -->
+    <changeSet id="4" author="juan">
+        <createTable tableName="ciudades">
+            <column name="id" type="BIGINT" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="nombre" type="VARCHAR(255)">
+                <constraints unique="true" nullable="false"/>            
+            </column>
+        </createTable>
+    </changeSet>
+
+    <!-- programas_academicos -->
+    <changeSet id="5" author="juan">
+        <createTable tableName="programas_academicos">
+            <column name="id" type="BIGINT" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="snies" type="VARCHAR(100)"/>
+            <column name="nombre" type="VARCHAR(255)">
+                <constraints unique="true" nullable="false"/>           
+            </column>
+        </createTable>
+    </changeSet>
+
+    <!-- catalogos_modulos -->
+    <changeSet id="6" author="juan">
+        <createTable tableName="catalogos_modulos">
+            <column name="id" type="BIGINT" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="nombre" type="VARCHAR(255)">
+                <constraints unique="true" nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="7" author="juan">
+        <createTable tableName="grupos_referencias">
+            <column name="id" type="BIGINT">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="nombre" type="VARCHAR(255)">
+                <constraints unique="true" nullable="false"/>            
+            </column>
+        </createTable>
+    </changeSet>
+
+     <!-- registros_evaluaciones -->
+    <changeSet id="8" author="juan">
+        <createTable tableName="registros_evaluaciones">
+            <column name="id" type="VARCHAR(255)">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="evaluado_id" type="BIGINT"/>
+            <column name="programa_id" type="BIGINT"/>
+            <column name="tipo_evaluado_id" type="BIGINT"/>
+            <column name="ciudad_id" type="BIGINT"/>
+        </createTable>
+        <addForeignKeyConstraint baseTableName="registros_evaluaciones" baseColumnNames="evaluado_id" 
+            referencedTableName="evaluados" referencedColumnNames="documento" 
+            constraintName="fk_registros_evaluaciones_evaluados"/>
+        <addForeignKeyConstraint baseTableName="registros_evaluaciones" baseColumnNames="programa_id" 
+            referencedTableName="programas_academicos" referencedColumnNames="id" 
+            constraintName="fk_registros_evaluaciones_programa"/>
+        <addForeignKeyConstraint baseTableName="registros_evaluaciones" baseColumnNames="tipo_evaluado_id" 
+            referencedTableName="tipos_evaluados" referencedColumnNames="id" 
+            constraintName="fk_registros_evaluaciones_tipo_evaluado"/>
+        <addForeignKeyConstraint baseTableName="registros_evaluaciones" baseColumnNames="ciudad_id" 
+            referencedTableName="ciudades" referencedColumnNames="id" 
+            constraintName="fk_registros_evaluaciones_ciudad"/>
+    </changeSet>
+
+    <!-- resultados_globales -->
+    <changeSet id="9" author="juan">
+         <createTable tableName="resultados_globales">
+             <column name="id" type="VARCHAR(255)">
+                 <constraints primaryKey="true" nullable="false"/>
+             </column>
+             <column name="grupo_referencia_id" type="BIGINT"/>
+             <column name="puntaje_global" type="DOUBLE"/>
+             <column name="percentil_nacional_global" type="DOUBLE"/>
+             <column name="percentil_grupo_referencia" type="DOUBLE"/>
+             <column name="novedades" type="VARCHAR(255)"/>
+         </createTable>
+
+         <addForeignKeyConstraint 
+             baseTableName="resultados_globales"
+             baseColumnNames="id"
+             referencedTableName="registros_evaluaciones"
+             referencedColumnNames="id"
+             constraintName="fk_resultados_globales_registro"/>
+          <addForeignKeyConstraint baseTableName="resultados_globales" baseColumnNames="grupo_referencia_id" 
+            referencedTableName="grupos_referencias" referencedColumnNames="id" 
+            constraintName="fk_resultados_globales_grupo"/>
+    <!-- resultados_modulos -->
+    </changeSet>
+
+    <changeSet id="10" author="juan">
+        <createTable tableName="resultados_modulos">
+            <column name="id" type="UUID">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="resultado_global_id" type="VARCHAR(255)"/>
+            <column name="catalogo_modulo_id" type="BIGINT"/>
+            <column name="puntaje_modulo" type="DOUBLE"/>
+            <column name="nivel_desempeno" type="VARCHAR(255)" defaultValue="Sin novedad"/>
+            <column name="percentil_nacional_modulo" type="DOUBLE"/>
+            <column name="percentil_grupo_referencia_modulo" type="DOUBLE"/>
+            <column name="novedades" type="VARCHAR(255)"/>
+        </createTable>
+        <addForeignKeyConstraint baseTableName="resultados_modulos" baseColumnNames="resultado_global_id" 
+            referencedTableName="resultados_globales" referencedColumnNames="id" 
+            constraintName="fk_resultados_modulos_global"/>
+        <addForeignKeyConstraint baseTableName="resultados_modulos" baseColumnNames="catalogo_modulo_id" 
+            referencedTableName="catalogos_modulos" referencedColumnNames="id" 
+            constraintName="fk_resultados_modulos_catalogo"/>
+    </changeSet>
+</databaseChangeLog>
