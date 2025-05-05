@@ -23,6 +23,6 @@ public class AcademicProgram {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private Integer snies;
+    private String snies;
     private String nombre;
 }

@@ -22,6 +22,7 @@ import lombok.Data;
 public class TestRegistration {
 
     @Id
+    @GeneratedValue(strategy = GenerationType.UUID)
     private String id;
 
     // Aquí solo almacenamos los identificadores en lugar de las instancias completas
@@ -37,13 +38,23 @@ public class TestRegistration {
     @Column(name = "ciudad_id")
     private Long ciudadId;  // En lugar de City ciudad
 
+    @Column(name = "numero_registro")
+    private String numeroRegistro;
+
+    private Integer ciclo;
+    private Integer year;
+
+
+
     // Constructor simplificado que recibe los valores directamente
     public TestRegistration(ScoreFileDTO dto, Long programaId, Long tipoEvaluadoId, Long ciudadId) {
+        this.numeroRegistro = dto.getNumeroRegistro();
+        this.ciclo = dto.getCiclo();
+        this.year = dto.getYear();
         this.evaluadoId = dto.getDocumento();
         this.programaId = programaId;
         this.tipoEvaluadoId = tipoEvaluadoId;
         this.ciudadId = ciudadId;
-        this.id = dto.getNumeroRegistro();
     }
 
     // Constructor vacío

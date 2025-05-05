@@ -22,19 +22,18 @@ public class ModuleResult {
     private ModuleCatalog moduleCatalog;
 
     @Column(name = "puntaje_modulo")
-    private Integer puntajeModulo;
+    private String puntajeModulo;
 
     @Column(name = "nivel_desempeno")
     private String nivelDesempeño;
 
     @Column(name = "percentil_nacional_modulo")
-    private Integer percentilNacionalModulo;
+    private String percentilNacionalModulo;
 
     @Column(name = "percentil_grupo_referencia_modulo")
-    private Integer percentilGrupoReferenciaModulo;
+    private String percentilGrupoReferenciaModulo;
 
-    private String novedades = "Sin novedades";
-    
+
     public ModuleResult(ScoreFileDTO dto,GlobalResult globalResult,ModuleCatalog moduleCatalog){
         this.globalResult = globalResult;
         this.puntajeModulo = dto.getPuntajeModulo();
@@ -42,7 +41,6 @@ public class ModuleResult {
         this.moduleCatalog = moduleCatalog;
         this.percentilGrupoReferenciaModulo = dto.getPercentilGrupoNbcModulo();
         this.percentilNacionalModulo = dto.getPercentilNacionalModulo();
-        this.novedades = dto.getNovedades()!= "" ?dto.getNovedades():"Sin novedades";
     }
     
     public ModuleResult(){}
