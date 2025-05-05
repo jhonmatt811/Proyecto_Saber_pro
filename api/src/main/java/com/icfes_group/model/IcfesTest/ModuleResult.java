@@ -1,5 +1,6 @@
 package com.icfes_group.model.IcfesTest;
 
+import com.icfes_group.dto.ScoreFileDTO;
 import jakarta.persistence.*;
 import java.util.UUID;
 import lombok.Data;
@@ -14,23 +15,35 @@ public class ModuleResult {
 
     @ManyToOne
     @JoinColumn(name = "resultado_global_id")
-    private GlobalResult resultadoGlobal;
+    private GlobalResult globalResult;
 
     @ManyToOne
     @JoinColumn(name = "catalogo_modulo_id")
-    private ModuleCatalog catalogoModulo;
+    private ModuleCatalog moduleCatalog;
 
     @Column(name = "puntaje_modulo")
-    private Double puntajeModulo;
+    private Integer puntajeModulo;
 
     @Column(name = "nivel_desempeno")
-    private Double nivelDesempeno;
+    private String nivelDesempeño;
 
     @Column(name = "percentil_nacional_modulo")
-    private Double percentilNacionalModulo;
+    private Integer percentilNacionalModulo;
 
     @Column(name = "percentil_grupo_referencia_modulo")
-    private Double percentilGrupoReferenciaModulo;
+    private Integer percentilGrupoReferenciaModulo;
 
-    private String novedades;
+    private String novedades = "Sin novedades";
+    
+    public ModuleResult(ScoreFileDTO dto,GlobalResult globalResult,ModuleCatalog moduleCatalog){
+        this.globalResult = globalResult;
+        this.puntajeModulo = dto.getPuntajeModulo();
+        this.nivelDesempeño = dto.getNivelDesempeño();
+        this.moduleCatalog = moduleCatalog;
+        this.percentilGrupoReferenciaModulo = dto.getPercentilGrupoNbcModulo();
+        this.percentilNacionalModulo = dto.getPercentilNacionalModulo();
+        this.novedades = dto.getNovedades()!= "" ?dto.getNovedades():"Sin novedades";
+    }
+    
+    public ModuleResult(){}
 }

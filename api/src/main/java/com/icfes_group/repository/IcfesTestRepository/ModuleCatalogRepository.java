@@ -6,6 +6,7 @@ package com.icfes_group.repository.IcfesTestRepository;
 
 import com.icfes_group.model.IcfesTest.ModuleCatalog;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 import org.springframework.data.jpa.repository.JpaRepository;
 
@@ -14,5 +15,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
  * @author juanc
  */
 public interface ModuleCatalogRepository extends JpaRepository<ModuleCatalog, Long>{
-     List<ModuleCatalog> findByNombreIn(Set<String> nombres);
+    List<ModuleCatalog> findByNombreIn(Set<String> nombres);
+    Optional<ModuleCatalog> findByNombre(String nombre);
+
 }

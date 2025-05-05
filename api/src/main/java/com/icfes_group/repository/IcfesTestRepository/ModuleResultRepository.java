@@ -4,10 +4,24 @@
  */
 package com.icfes_group.repository.IcfesTestRepository;
 
+import com.icfes_group.model.IcfesTest.ModuleResult;
+import java.util.Optional;
+import java.util.UUID;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
+
 /**
  *
  * @author juanc
  */
-public interface ModuleResultRepository {
-    
+public interface ModuleResultRepository extends JpaRepository<ModuleResult, UUID>{
+    @Query("SELECT rm FROM ModuleResult rm " +
+       "WHERE rm.moduleCatalog.id = :catalogoModuloId " +
+       "AND rm.globalResult.id = :resultadoGlobalId")
+    Optional<ModuleResult> findByGlobalRsltAndCatId(
+            @Param("catalogoModuloId") Long catalogoModuloId,
+            @Param("resultadoGlobalId") String resultadoGlobalId
+    );
+
 }

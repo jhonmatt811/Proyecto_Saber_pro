@@ -80,7 +80,6 @@
         </createTable>
     </changeSet>
 
-    <!-- grupos_referencias 
     <changeSet id="7" author="juan">
         <createTable tableName="grupos_referencias">
             <column name="id" type="BIGINT">
@@ -91,7 +90,6 @@
             </column>
         </createTable>
     </changeSet>
-   -->
 
      <!-- registros_evaluaciones -->
     <changeSet id="8" author="juan">
@@ -124,7 +122,7 @@
              <column name="id" type="VARCHAR(255)">
                  <constraints primaryKey="true" nullable="false"/>
              </column>
-             <!--<column name="grupo_referencia_id" type="BIGINT"/>-->
+             <column name="grupo_referencia_id" type="BIGINT"/>
              <column name="puntaje_global" type="DOUBLE"/>
              <column name="percentil_nacional_global" type="DOUBLE"/>
              <column name="percentil_grupo_referencia" type="DOUBLE"/>
@@ -137,9 +135,9 @@
              referencedTableName="registros_evaluaciones"
              referencedColumnNames="id"
              constraintName="fk_resultados_globales_registro"/>
-          <!--<addForeignKeyConstraint baseTableName="resultados_globales" baseColumnNames="grupo_referencia_id" 
+          <addForeignKeyConstraint baseTableName="resultados_globales" baseColumnNames="grupo_referencia_id" 
             referencedTableName="grupos_referencias" referencedColumnNames="id" 
-            constraintName="fk_resultados_globales_grupo"/>-->
+            constraintName="fk_resultados_globales_grupo"/>
     <!-- resultados_modulos -->
     </changeSet>
 
@@ -151,7 +149,7 @@
             <column name="resultado_global_id" type="VARCHAR(255)"/>
             <column name="catalogo_modulo_id" type="BIGINT"/>
             <column name="puntaje_modulo" type="DOUBLE"/>
-            <column name="nivel_desempeno" type="DOUBLE"/>
+            <column name="nivel_desempeno" type="VARCHAR(255)" defaultValue="Sin novedad"/>
             <column name="percentil_nacional_modulo" type="DOUBLE"/>
             <column name="percentil_grupo_referencia_modulo" type="DOUBLE"/>
             <column name="novedades" type="VARCHAR(255)"/>
