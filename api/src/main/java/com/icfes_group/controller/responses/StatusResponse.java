@@ -1,4 +1,4 @@
-package com.icfes_group.controller;
+package com.icfes_group.controller.responses;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -8,6 +8,6 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class StatusResponse {
-    private String status;
-    private String message;
+    protected String status;
+    protected String message;
 }

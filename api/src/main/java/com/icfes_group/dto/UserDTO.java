@@ -15,7 +15,7 @@ import jakarta.validation.constraints.NotBlank;
  */
 @Data
 public class UserDTO {
-    private PersonaDTO person;
+        private PersonaDTO person;
     private UUID personId;
     @Email
     private String email;
