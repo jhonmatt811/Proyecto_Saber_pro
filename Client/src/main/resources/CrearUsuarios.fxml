@@ -55,7 +55,6 @@
                 <RadioButton fx:id="opcion3" text="Director Icfes" />
             </HBox>
         </VBox>
-        <Button fx:id="subirFotoButton" onAction="#subirFoto" style="-fx-background-color: #F02D3A; -fx-text-fill: white; -fx-font-weight: bold;"  text="Subir Foto" />
 
         <Button onAction="#registrarUsuario" prefWidth="150" style="-fx-background-color: #F02D3A; -fx-text-fill: white; -fx-font-weight: bold;" text="Registrar" />
     </VBox>

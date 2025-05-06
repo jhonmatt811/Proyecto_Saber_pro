@@ -34,6 +34,5 @@ public class PersonaDTO {
     @NotBlank(message = "El email es obligatorio")
     private String email;
     
-    @NotNull(message = "El rol es obligatorio")
     private Integer rol_id;
 }
