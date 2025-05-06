@@ -4,6 +4,7 @@
  */
 package com.icfes_group.controller;
 
+import com.icfes_group.controller.responses.StatusResponse;
 import com.icfes_group.dto.ScoreFileDTO;
 import com.icfes_group.service.TestIcfesResultService;
 import org.springframework.beans.factory.annotation.Autowired;

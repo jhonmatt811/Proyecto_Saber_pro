@@ -24,6 +24,7 @@ public class IcfesMainApplication {
         System.setProperty("DB_URL", dotenv.get("DB_URL"));
         System.setProperty("DB_USER", dotenv.get("DB_USER"));
         System.setProperty("DB_PASSWD", dotenv.get("DB_PASSWD"));
+        System.setProperty("JWT_SECRET", dotenv.get("JWT_SECRET"));
 
         SpringApplication.run(IcfesMainApplication.class, args);
     }
