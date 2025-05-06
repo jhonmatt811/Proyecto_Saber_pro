@@ -83,11 +83,11 @@
     <!-- grupos_referencias -->
     <changeSet id="7" author="juan">
         <createTable tableName="grupos_referencias">
-            <column name="id" type="BIGINT">
+            <column name="id" type="BIGINT" autoIncrement="true">
                 <constraints primaryKey="true" nullable="false"/>
             </column>
             <column name="nombre" type="VARCHAR(255)">
-                <constraints unique="true" nullable="false"/>            
+                <constraints unique="true" nullable="false"/>
             </column>
         </createTable>
     </changeSet>
