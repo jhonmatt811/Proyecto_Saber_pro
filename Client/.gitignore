@@ -1,33 +1,66 @@
-HELP.md
+# ==== MAVEN ====
+# Carpetas de compilación
 target/
-!.mvn/wrapper/maven-wrapper.jar
 !**/src/main/**/target/
 !**/src/test/**/target/
 
-### STS ###
-.apt_generated
-.classpath
-.factorypath
-.project
-.settings
-.springBeans
-.sts4-cache
+# Wrapper de Maven
+.mvn/wrapper/maven-wrapper.jar
+mvnw
+mvnw.cmd
 
-### IntelliJ IDEA ###
-.idea
-*.iws
+# Archivos de backup/versión de POM
+pom.xml.tag
+pom.xml.releaseBackup
+pom.xml.versionsBackup
+pom.xml.next
+release.properties
+dependency-reduced-pom.xml
+buildNumber.properties
+
+# ==== JAVA ====
+# Bytecode
+*.class
+
+# Jar/WAR/EAR
+*.jar
+*.war
+*.ear
+
+# Logs
+*.log
+
+# Crash logs de VM
+hs_err_pid*
+
+# ==== JAVAFX SDK LOCAL ====
+# Si lo tienes en el repo y no quieres versionarlo
+javafx-sdk-21.0.7/
+
+# ==== IDEs ====
+# Eclipse / STS
+.project
+.classpath
+.settings/
+.springBeans
+.apt_generated
+
+# IntelliJ IDEA
+.idea/
 *.iml
+*.iws
 *.ipr
 
-### NetBeans ###
-/nbproject/private/
-/nbbuild/
-/dist/
-/nbdist/
-/.nb-gradle/
-build/
-!**/src/main/**/build/
-!**/src/test/**/build/
+# NetBeans
+nbproject/private/
+nbbuild/
+dist/
+nbdist/
+.nb-gradle/
 
-### VS Code ###
+# VS Code
 .vscode/
+
+# ==== S.O. ====
+.DS_Store
+Thumbs.db
