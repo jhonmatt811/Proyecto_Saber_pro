@@ -20,7 +20,7 @@ import lombok.Data;
 @Table(name = "grupos_referencias")
 public class ReferenceGroup {
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
     private String nombre;
 }

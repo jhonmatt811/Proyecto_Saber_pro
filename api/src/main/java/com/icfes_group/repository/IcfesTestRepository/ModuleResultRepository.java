@@ -17,11 +17,11 @@ import org.springframework.data.repository.query.Param;
  */
 public interface ModuleResultRepository extends JpaRepository<ModuleResult, UUID>{
     @Query("SELECT rm FROM ModuleResult rm " +
-       "WHERE rm.moduleCatalog.id = :catalogoModuloId " +
-       "AND rm.globalResult.id = :resultadoGlobalId")
+            "WHERE rm.moduleCatalog.id = :catalogoModuloId " +
+            "AND rm.globalResult.id = :resultadoGlobalId")
     Optional<ModuleResult> findByGlobalRsltAndCatId(
             @Param("catalogoModuloId") Long catalogoModuloId,
-            @Param("resultadoGlobalId") String resultadoGlobalId
+            @Param("resultadoGlobalId") UUID resultadoGlobalId // <- aquí el cambio
     );
 
 }

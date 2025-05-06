@@ -80,13 +80,14 @@
         </createTable>
     </changeSet>
 
+    <!-- grupos_referencias -->
     <changeSet id="7" author="juan">
         <createTable tableName="grupos_referencias">
-            <column name="id" type="BIGINT">
+            <column name="id" type="BIGINT" autoIncrement="true">
                 <constraints primaryKey="true" nullable="false"/>
             </column>
             <column name="nombre" type="VARCHAR(255)">
-                <constraints unique="true" nullable="false"/>            
+                <constraints unique="true" nullable="false"/>
             </column>
         </createTable>
     </changeSet>
@@ -94,15 +95,18 @@
      <!-- registros_evaluaciones -->
     <changeSet id="8" author="juan">
         <createTable tableName="registros_evaluaciones">
-            <column name="id" type="VARCHAR(255)">
+            <column name="id" type="UUID">
                 <constraints primaryKey="true" nullable="false"/>
             </column>
             <column name="evaluado_id" type="BIGINT"/>
             <column name="programa_id" type="BIGINT"/>
             <column name="tipo_evaluado_id" type="BIGINT"/>
             <column name="ciudad_id" type="BIGINT"/>
+            <column name="numero_registro" type="VARCHAR(255)" />
+            <column name="ciclo" type="BIGINT"/>
+            <column name="year" type="BIGINT"/>
         </createTable>
-        <addForeignKeyConstraint baseTableName="registros_evaluaciones" baseColumnNames="evaluado_id" 
+        <addForeignKeyConstraint baseTableName="registros_evaluaciones" baseColumnNames="evaluado_id"
             referencedTableName="evaluados" referencedColumnNames="documento" 
             constraintName="fk_registros_evaluaciones_evaluados"/>
         <addForeignKeyConstraint baseTableName="registros_evaluaciones" baseColumnNames="programa_id" 
@@ -119,17 +123,16 @@
     <!-- resultados_globales -->
     <changeSet id="9" author="juan">
          <createTable tableName="resultados_globales">
-             <column name="id" type="VARCHAR(255)">
+             <column name="id" type="UUID">
                  <constraints primaryKey="true" nullable="false"/>
              </column>
              <column name="grupo_referencia_id" type="BIGINT"/>
-             <column name="puntaje_global" type="DOUBLE"/>
-             <column name="percentil_nacional_global" type="DOUBLE"/>
-             <column name="percentil_grupo_referencia" type="DOUBLE"/>
+             <column name="puntaje_global" type="VARCHAR(50)"/>
+             <column name="percentil_nacional_global" type="VARCHAR(50)"/>
+             <column name="percentil_grupo_referencia" type="VARCHAR(50)"/>
              <column name="novedades" type="VARCHAR(255)"/>
          </createTable>
-
-         <addForeignKeyConstraint 
+         <addForeignKeyConstraint
              baseTableName="resultados_globales"
              baseColumnNames="id"
              referencedTableName="registros_evaluaciones"
@@ -138,21 +141,21 @@
           <addForeignKeyConstraint baseTableName="resultados_globales" baseColumnNames="grupo_referencia_id" 
             referencedTableName="grupos_referencias" referencedColumnNames="id" 
             constraintName="fk_resultados_globales_grupo"/>
-    <!-- resultados_modulos -->
     </changeSet>
+
+    <!-- resultados_modulos -->
 
     <changeSet id="10" author="juan">
         <createTable tableName="resultados_modulos">
             <column name="id" type="UUID">
                 <constraints primaryKey="true" nullable="false"/>
             </column>
-            <column name="resultado_global_id" type="VARCHAR(255)"/>
+            <column name="resultado_global_id" type="UUID"/>
             <column name="catalogo_modulo_id" type="BIGINT"/>
-            <column name="puntaje_modulo" type="DOUBLE"/>
-            <column name="nivel_desempeno" type="VARCHAR(255)" defaultValue="Sin novedad"/>
-            <column name="percentil_nacional_modulo" type="DOUBLE"/>
-            <column name="percentil_grupo_referencia_modulo" type="DOUBLE"/>
-            <column name="novedades" type="VARCHAR(255)"/>
+            <column name="puntaje_modulo" type="VARCHAR(50)"/>
+            <column name="nivel_desempeno" type="VARCHAR(50)" defaultValue="Sin novedad"/>
+            <column name="percentil_nacional_modulo" type="VARCHAR(50)"/>
+            <column name="percentil_grupo_referencia_modulo" type="VARCHAR(50)"/>
         </createTable>
         <addForeignKeyConstraint baseTableName="resultados_modulos" baseColumnNames="resultado_global_id" 
             referencedTableName="resultados_globales" referencedColumnNames="id" 

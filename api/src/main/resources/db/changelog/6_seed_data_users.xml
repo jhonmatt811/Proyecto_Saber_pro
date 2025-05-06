@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="
+        http://www.liquibase.org/xml/ns/dbchangelog
+        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.8.xsd">
+
+    <changeSet id="1" author="juancho">
+        <insert tableName="usuarios">
+            <column name="id" value="1c0d5e33-346f-4b80-a544-5f8a9831071c"/>
+            <column name="cc" valueNumeric="1234567890"/>
+            <column name="primer_nombre" value="Juan"/>
+            <column name="segundo_nombre" value="Carlos"/>
+            <column name="primer_apellido" value="Pérez"/>
+            <column name="segundo_apellido" value="Gómez"/>
+            <column name="email" value="jctobon11.2@gmail.com"/>
+            <column name="passwd" value="$2a$10$z9gqP8N743ToloUpdBFqqOrV.rE.9.68NHc.Rg0Am9gRfCh7iPGVa"/>
+            <column name="is_active" valueBoolean="true"/>
+            <column name="passwd_changed" valueBoolean="false"/>
+            <column name="rol_id" valueNumeric="2"/> <!-- 2 = Decano -->
+        </insert>
+    </changeSet>
+
+</databaseChangeLog>
