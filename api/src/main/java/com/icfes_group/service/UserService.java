@@ -18,7 +18,10 @@ import com.icfes_group.repository.UserRepository;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.NoSuchElementException;
+import java.util.Optional;
 import java.util.Random;
+import java.util.UUID;
 
 @Service
 public class UserService {
@@ -42,24 +45,30 @@ public class UserService {
         if(userBd == null){
             throw new Exception("No se econtro el email");
         }
-        if(!passwordEncoder.matches(userBd.getPassword(), userProps.getPassword())){
+        if(!passwordEncoder.matches(userProps.getPassword(),userBd.getPassword())){
             throw new Exception("La contraseña no coincide");
         }
         if(!userBd.getIs_active()){
             throw new Exception("Uusario no activo");
         }
+        userProps.setRol(userBd.getRol());
         return userProps;
     }
 
     public User register(UserDTO dto, String passwd) {
         Rol rol = rolService.findById(dto.getRol_id());
         PersonaDTO personDTO = dto.getPerson();
-        System.out.println("\n\n\n");
-        System.out.println(personDTO);
-        System.out.println("\n\n\n");
         User newUser = new User(personDTO, passwd,rol);
         
         return userRepository.save(newUser);
+    }
+    
+    public User changeActivate(Boolean activate, UUID id) {
+        User user = userRepository.findById(id)
+            .orElseThrow(() -> new NoSuchElementException("No se encontró el usuario"));
+
+        user.setIs_active(activate);
+        return userRepository.save(user);
     }
 
     public String generateDefPasswd() {
