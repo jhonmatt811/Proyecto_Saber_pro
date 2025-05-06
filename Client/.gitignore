@@ -1,10 +1,28 @@
-HELP.md
-target/
-!.mvn/wrapper/maven-wrapper.jar
+# ---------------------------
+# Archivos generados por compilación (Maven/Java)
+# ---------------------------
+/target/
+build/
+*.class
+*.log
+*.tmp
+
+# Excepciones para que no ignore outputs si están en src
 !**/src/main/**/target/
 !**/src/test/**/target/
+!**/src/main/**/build/
+!**/src/test/**/build/
 
-### STS ###
+# ---------------------------
+# JavaFX SDK - se recomienda no subir binarios
+# ---------------------------
+/javafx-sdk-*/
+
+# ---------------------------
+# IDEs y herramientas de desarrollo
+# ---------------------------
+
+## Spring Tool Suite (STS)
 .apt_generated
 .classpath
 .factorypath
@@ -13,21 +31,29 @@ target/
 .springBeans
 .sts4-cache
 
-### IntelliJ IDEA ###
-.idea
+## IntelliJ IDEA
+.idea/
 *.iws
 *.iml
 *.ipr
 
-### NetBeans ###
+## NetBeans
 /nbproject/private/
 /nbbuild/
 /dist/
 /nbdist/
 /.nb-gradle/
-build/
-!**/src/main/**/build/
-!**/src/test/**/build/
 
-### VS Code ###
+## Visual Studio Code
 .vscode/
+
+# ---------------------------
+# Maven Wrapper (incluye solo el jar)
+# ---------------------------
+.mvn/
+!/.mvn/wrapper/maven-wrapper.jar
+
+# ---------------------------
+# Archivos auxiliares o temporales
+# ---------------------------
+HELP.md

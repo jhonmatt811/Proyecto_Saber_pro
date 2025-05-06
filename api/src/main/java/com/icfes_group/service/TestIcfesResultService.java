@@ -15,8 +15,8 @@ public class TestIcfesResultService {
     @Autowired
     private TestIcfesResultRepository testIcfesResultRepository;
 
-    public ScoreFileDTO[] getTestResults() throws Exception {
-        List<ScoreFileProjection> testResults = testIcfesResultRepository.getReporteDTO();
+    public ScoreFileDTO[] getTestResults(Integer year, Integer ciclo, Long programa, Long documento) throws Exception {
+        List<ScoreFileProjection> testResults = testIcfesResultRepository.getReporteDTO(year, ciclo, programa, documento);
         if (testResults.isEmpty()) {
             throw new Exception("No hay resultados ingresados aún");
         }

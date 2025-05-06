@@ -32,7 +32,7 @@ public class SecurityConfig {
                 .requestMatchers("/usuarios", "/usuarios/inicio-sesion").permitAll() // Rutas públicas
                 .requestMatchers("/usuarios/active").hasRole("Decano")
                 .requestMatchers("/personas","/personas/*").permitAll()
-                .requestMatchers("/resultados/file").hasAnyRole("Decano","Director de Programa","Coordinador de Saber Pro")
+                .requestMatchers("/resultados","/resultados/*").hasAnyRole("Decano","Director de Programa","Coordinador de Saber Pro")
                 .anyRequest().authenticated() // El resto requiere JWT válido
             )
             .httpBasic().disable()  // Desactiva HTTP Basic
