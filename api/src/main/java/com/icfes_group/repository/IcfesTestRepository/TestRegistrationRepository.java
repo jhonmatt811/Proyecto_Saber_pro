@@ -8,10 +8,12 @@ import com.icfes_group.model.IcfesTest.TestRegistration;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
+import java.util.Optional;
 
 /**
  *
  * @author juanc
  */
 public interface TestRegistrationRepository extends JpaRepository<TestRegistration, String>{
+    Optional<TestRegistration> findByNumeroRegistroAndYear(String numeroRegistro, Integer year);
 }

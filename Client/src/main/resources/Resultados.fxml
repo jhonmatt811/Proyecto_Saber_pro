@@ -3,7 +3,6 @@
 <?import javafx.scene.chart.*?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
-<?import javafx.scene.text.*?>
 
 <VBox alignment="TOP_CENTER" spacing="20" style="-fx-padding: 30;" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.java.fx.ResultadosController">
 
@@ -14,42 +13,63 @@
     <VBox spacing="10">
         <Label style="-fx-font-size: 18px; -fx-font-weight: bold;" text="Cargar archivo" />
         <HBox spacing="10" alignment="CENTER_LEFT">
-            <Button onAction="#handleCargarArchivo" style="-fx-background-color: #2196F3; -fx-text-fill: white;" text="📤 Cargar Archivo" />
-            <Button onAction="#handleConectarCFES" style="-fx-background-color: #4CAF50; -fx-text-fill: white;" text="Conectar al CFES" />
+            <Button onAction="#handleCargarArchivo" style="-fx-background-color: #2196F3; -fx-text-fill: white;" text="Cargar Archivo" />
+            <Button onAction="#handleConectarCFES" style="-fx-background-color: #4CAF50; -fx-text-fill: white;" text="Conectar al ICFES" />
             <Label fx:id="archivoCargadoLabel" />
         </HBox>
     </VBox>
 
-    <!-- Filtros -->
-    <HBox spacing="10" alignment="CENTER_LEFT">
-        <ComboBox fx:id="filtroAno" promptText="Filtrar por año..." prefWidth="120"/>
-        <ComboBox fx:id="filtroEstudiante" promptText="Filtrar por estudiante..." prefWidth="150"/>
-        <ComboBox fx:id="filtroCohorte" promptText="Filtrar por cohorte..." prefWidth="120"/>
-        <ComboBox fx:id="filtroArea" promptText="Filtrar por área..." prefWidth="180"/>
-        <ComboBox fx:id="filtroPrograma" promptText="Filtrar por programa..." prefWidth="180"/>
+    <!-- Filtros actualizados -->
+    <HBox spacing="10" alignment="CENTER_LEFT" >
+        <ComboBox fx:id="filtroTipoDocumento" promptText="Tipo documento" prefWidth="120"/>
+        <ComboBox fx:id="filtroPrograma" promptText="Programa" prefWidth="180"/>
+        <ComboBox fx:id="filtroCiudad" promptText="Ciudad" prefWidth="120"/>
+        <ComboBox fx:id="filtroModulo" promptText="Módulo" prefWidth="150"/>
+        <ComboBox fx:id="filtroNivelDesempeno" promptText="Nivel desempeño" prefWidth="150"/>
     </HBox>
 
-    <!-- Tabla de resultados -->
-    <TableView fx:id="tablaResultados" prefHeight="200">
+    <!-- Tabla de resultados actualizada -->
+    <TableView fx:id="tablaResultados" prefHeight="400">
         <columns>
-            <TableColumn fx:id="colAno" prefWidth="80" text="Año" />
-            <TableColumn fx:id="colEstudiante" prefWidth="150" text="Estudiante" />
-            <TableColumn fx:id="colCohorte" prefWidth="80" text="Cohorte" />
-            <TableColumn fx:id="colPrograma" prefWidth="150" text="Programa" />
-            <TableColumn fx:id="colArea" prefWidth="150" text="Área" />
-            <TableColumn fx:id="colPuntaje" prefWidth="80" text="Puntaje" />
+            <!-- Información personal -->
+            <TableColumn fx:id="colTipoDocumento" prefWidth="100" text="Tipo Doc"/>
+            <TableColumn fx:id="colDocumento" prefWidth="100" text="Documento"/>
+            <TableColumn fx:id="colNombre" prefWidth="200" text="Nombre"/>
+            <TableColumn fx:id="colNumeroRegistro" prefWidth="120" text="Núm. Registro"/>
+            <TableColumn fx:id="colTipoEvaluado" prefWidth="120" text="Tipo Evaluado"/>
+
+            <!-- Información académica -->
+            <TableColumn fx:id="colSniesPrograma" prefWidth="120" text="SNIES Programa"/>
+            <TableColumn fx:id="colPrograma" prefWidth="200" text="Programa"/>
+            <TableColumn fx:id="colCiudad" prefWidth="120" text="Ciudad"/>
+            <TableColumn fx:id="colGrupoReferencia" prefWidth="120" text="Grupo Referencia"/>
+
+            <!-- Resultados globales -->
+            <TableColumn fx:id="colPuntajeGlobal" prefWidth="100" text="Puntaje Global"/>
+            <TableColumn fx:id="colPercentilNacionalGlobal" prefWidth="120" text="Nal Global"/>
+            <TableColumn fx:id="colPercentilNacionalNbc" prefWidth="120" text="Nal NBC"/>
+
+            <!-- Resultados por módulo -->
+            <TableColumn fx:id="colModulo" prefWidth="150" text="Módulo"/>
+            <TableColumn fx:id="colPuntajeModulo" prefWidth="100" text="Puntaje Módulo"/>
+            <TableColumn fx:id="colNivelDesempeno" prefWidth="120" text="Nivel Desempeño"/>
+            <TableColumn fx:id="colPercentilNacionalModulo" prefWidth="120" text="Nal Módulo"/>
+            <TableColumn fx:id="colPercentilGrupoNbcModulo" prefWidth="120" text="Grupo NBC"/>
+
+            <!-- Novedades -->
+            <TableColumn fx:id="colNovedades" prefWidth="150" text="Novedades"/>
         </columns>
     </TableView>
 
     <!-- Separador visual -->
     <Separator />
 
-    <!-- Sección de puntajes por área -->
+    <!-- Sección de puntajes por módulo -->
     <VBox spacing="10">
-        <Label style="-fx-font-size: 18px; -fx-font-weight: bold;" text="Puntaje por Área" />
-        <BarChart fx:id="graficaPuntajes" title="Distribución de Puntajes por Área" legendVisible="false" prefHeight="250" prefWidth="600">
+        <Label style="-fx-font-size: 18px; -fx-font-weight: bold;" text="Puntaje por Módulo" />
+        <BarChart fx:id="graficaPuntajes" title="Distribución de Puntajes por Módulo" legendVisible="false" prefHeight="250" prefWidth="600">
             <xAxis>
-                <CategoryAxis label="Áreas" />
+                <CategoryAxis label="Módulos" />
             </xAxis>
             <yAxis>
                 <NumberAxis label="Puntaje" lowerBound="0" upperBound="100" tickUnit="10" />

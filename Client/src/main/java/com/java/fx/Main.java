@@ -37,7 +37,7 @@ public class Main extends Application {
 		stage.setTitle(titulo);
 		stage.setMaximized(true);
 		stage.show();
-		ControllerLogin.StageManager.setStage(stage);
+
 	}
 
 	@Bean

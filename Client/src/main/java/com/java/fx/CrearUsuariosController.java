@@ -3,23 +3,25 @@ package com.java.fx;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.control.Alert.AlertType;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
+import javafx.stage.FileChooser;
 
+import java.io.File;
 import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.net.http.HttpRequest.BodyPublishers;
 import java.time.Duration;
-import org.json.JSONObject;
-import org.json.JSONException;
-import javafx.application.Platform; // Para Platform.runLater
-
-
-
+import java.util.Base64;
 
 public class CrearUsuariosController {
 
-    private static final String API_URL = "http://localhost:8080/personas";
+    // Constante con la URL de tu API
+    // Cambia esto:
+
+    private static final String API_URL = "http://localhost:8080/usuarios";
 
     @FXML private RadioButton opcion1;
     @FXML private RadioButton opcion2;
@@ -32,6 +34,36 @@ public class CrearUsuariosController {
     @FXML private TextField ccField;
     @FXML private TextField correoField;
     @FXML private PasswordField contrasenaField;
+    @FXML private Button subirFotoButton;
+    @FXML private ImageView imagenUsuario;
+
+    private String fotoBase64; // Para almacenar la imagen en base64
+
+    @FXML
+    public void subirFoto() {
+        FileChooser fileChooser = new FileChooser();
+        fileChooser.setTitle("Seleccionar Imagen");
+
+        fileChooser.getExtensionFilters().addAll(
+                new FileChooser.ExtensionFilter("Imágenes", "*.png", "*.jpg", "*.jpeg", "*.gif")
+        );
+
+        File archivoSeleccionado = fileChooser.showOpenDialog(subirFotoButton.getScene().getWindow());
+        if (archivoSeleccionado != null) {
+            try {
+                // Convertir imagen a base64
+                byte[] fileContent = java.nio.file.Files.readAllBytes(archivoSeleccionado.toPath());
+                fotoBase64 = Base64.getEncoder().encodeToString(fileContent);
+
+                // Mostrar imagen en el ImageView
+                Image imagen = new Image(archivoSeleccionado.toURI().toString());
+                imagenUsuario.setImage(imagen);
+            } catch (Exception e) {
+                mostrarAlerta("Error", "No se pudo cargar la imagen", AlertType.ERROR);
+                e.printStackTrace();
+            }
+        }
+    }
 
     @FXML
     public void initialize() {
@@ -40,7 +72,7 @@ public class CrearUsuariosController {
         opcion2.setToggleGroup(grupoOpciones);
         opcion3.setToggleGroup(grupoOpciones);
 
-        // Asignar valores a los radio botones
+        // Asignar valores a los radio buttons según tu lógica de roles
         opcion1.setUserData(1); // ID del rol Directivo
         opcion2.setUserData(2); // ID del rol Docente
         opcion3.setUserData(3); // ID del rol Director Icfes
@@ -61,7 +93,8 @@ public class CrearUsuariosController {
                 apellidoField.getText(),
                 segundoApellidoField.getText(),
                 correoField.getText(),
-                (int) grupoOpciones.getSelectedToggle().getUserData()
+                (int) grupoOpciones.getSelectedToggle().getUserData(),
+                fotoBase64
         );
 
         // Enviar datos a la API
@@ -99,99 +132,59 @@ public class CrearUsuariosController {
             return false;
         }
 
-
         return true;
     }
 
     private void enviarDatosAPI(Usuario usuario) {
-        HttpClient client = HttpClient.newHttpClient();
+        try {
+            // Convertir objeto Usuario a JSON
+            String jsonBody = convertirAJson(usuario);
 
-        // 1. Crear JSON para la persona
-        String personaJson = String.format(
-                "{\"cc\": %d, \"primer_nombre\": \"%s\", \"segundo_nombre\": \"%s\", " +
-                        "\"primer_apellido\": \"%s\", \"segundo_apellido\": \"%s\", \"email\": \"%s\"}",
-                usuario.getCc(),
-                usuario.getPrimerNombre(),
-                usuario.getSegundoNombre(),
-                usuario.getPrimerApellido(),
-                usuario.getSegundoApellido(),
-                usuario.getEmail()
-        );
+            // Crear cliente HTTP
+            HttpClient client = HttpClient.newBuilder()
+                    .version(HttpClient.Version.HTTP_1_1)
+                    .connectTimeout(Duration.ofSeconds(20))
+                    .build();
 
-        // 2. Crear y enviar solicitud para la persona
-        HttpRequest requestPersona = HttpRequest.newBuilder()
-                .uri(URI.create(API_URL))
-                .header("Content-Type", "application/json")
-                .POST(BodyPublishers.ofString(personaJson))
-                .build();
+            // Crear request HTTP
+            HttpRequest request = HttpRequest.newBuilder()
+                    .uri(URI.create(API_URL))
+                    .header("Content-Type", "application/json")
+                    .header("Authorization", "Bearer " + Sesion.jwtToken) // <-- Agrega el token
+                    .POST(HttpRequest.BodyPublishers.ofString(jsonBody))
+                    .build();
 
-        client.sendAsync(requestPersona, HttpResponse.BodyHandlers.ofString())
-                .thenAccept(personaResponse -> {
-                    int statusCode = personaResponse.statusCode();
-                    if (statusCode >= 200 && statusCode < 300) {
-                        try {
-                            JSONObject jsonPersona = new JSONObject(personaResponse.body());
-                            if (jsonPersona.has("id")) {
-                                String personaId = jsonPersona.getString("id"); // Declaración correcta de personaId
+            // Enviar request de forma asíncrona
+            client.sendAsync(request, HttpResponse.BodyHandlers.ofString())
+                    .thenAccept(response -> {
+                        if (response.statusCode() == 201 || response.statusCode() == 200) {
+                            javafx.application.Platform.runLater(() -> {
+                                mostrarAlerta("Éxito", "Usuario creado correctamente", AlertType.INFORMATION);
+                                limpiarFormulario();
+                            });
+                        } else {
+                            javafx.application.Platform.runLater(() -> {
+                                String mensaje = "Código: " + response.statusCode() + "\nRespuesta: " + response.body();
+                                System.err.println(mensaje);
+                                mostrarAlerta("Error", "Error al crear usuario:\n" + mensaje, AlertType.ERROR);
+                                System.out.println("Código de estado: " + response.statusCode());
+                                System.out.println("Cuerpo de la respuesta: " + response.body());
 
-                                // 3. Crear JSON para el usuario usando el ID de la persona
-                                String usuarioJson = String.format(
-                                        "{ \"person\": { \"id\": \"%s\" }, \"rol_id\": %d, \"passwd\": \"%s\" }",
-                                        personaId, // ✅ Variable ahora está definida
-                                        usuario.getRolId(),
-                                        contrasenaField.getText()
-                                );
-
-                                // 4. Crear y enviar solicitud para el usuario
-                                HttpRequest requestUsuario = HttpRequest.newBuilder()
-                                        .uri(URI.create("http://localhost:8080/usuarios"))
-                                        .header("Content-Type", "application/json")
-                                        .POST(BodyPublishers.ofString(usuarioJson))
-                                        .build();
-
-                                client.sendAsync(requestUsuario, HttpResponse.BodyHandlers.ofString())
-                                        .thenAccept(usuarioResponse -> {
-                                            if (usuarioResponse.statusCode() == 200 || usuarioResponse.statusCode() == 201) {
-                                                Platform.runLater(() -> {
-                                                    mostrarAlerta("Éxito", "Usuario creado correctamente.", AlertType.INFORMATION);
-                                                    limpiarFormulario();
-                                                });
-                                            } else {
-                                                Platform.runLater(() -> {
-                                                    mostrarAlerta("Error", "Error al crear usuario: " + usuarioResponse.body(), AlertType.ERROR);
-                                                });
-                                            }
-                                        });
-                            } else {
-                                Platform.runLater(() -> {
-                                    mostrarAlerta("Error", "La respuesta no contiene el ID de la persona.", AlertType.ERROR);
-                                });
-                            }
-                        } catch (JSONException e) {
-                            Platform.runLater(() -> {
-                                mostrarAlerta("Error", "Error en el formato JSON: " + e.getMessage(), AlertType.ERROR);
                             });
                         }
-                    } else {
-                        Platform.runLater(() -> {
-                            mostrarAlerta("Error", "Error al crear persona: " + personaResponse.body(), AlertType.ERROR);
+                    })
+                    .exceptionally(e -> {
+                        javafx.application.Platform.runLater(() -> {
+                            mostrarAlerta("Error", "Error de conexión: " + e.getMessage(), AlertType.ERROR);
                         });
-                    }
-                })
-                .exceptionally(e -> {
-                    Platform.runLater(() -> {
-                        mostrarAlerta("Error", "Error de conexión: " + e.getMessage(), AlertType.ERROR);
+                        return null;
                     });
-                    return null;
-                });
-    }
-    private void showErrorAlert(String message) {
-        Platform.runLater(() -> { // <-- Platform ahora está importado
-            mostrarAlerta("Error", message, AlertType.ERROR);
-        });
-    }
 
-
+        } catch (Exception e) {
+            mostrarAlerta("Error", "Error al enviar datos: " + e.getMessage(), AlertType.ERROR);
+            e.printStackTrace();
+        }
+    }
 
     private String convertirAJson(Usuario usuario) {
         // Formatear el objeto Usuario como JSON
@@ -205,7 +198,8 @@ public class CrearUsuariosController {
                 usuario.getPrimerApellido(),
                 usuario.getSegundoApellido(),
                 usuario.getEmail(),
-                usuario.getRolId()
+                usuario.getRolId(),
+                usuario.getFoto() != null ? usuario.getFoto() : ""
         );
     }
 
@@ -218,6 +212,8 @@ public class CrearUsuariosController {
         correoField.clear();
         contrasenaField.clear();
         grupoOpciones.selectToggle(null);
+        imagenUsuario.setImage(null);
+        fotoBase64 = null;
     }
 
     private void mostrarAlerta(String titulo, String mensaje, AlertType tipo) {
@@ -256,19 +252,6 @@ public class CrearUsuariosController {
             this.foto = foto;
         }
 
-        public Usuario(long cc, String primerNombre, String segundoNombre,
-                       String primerApellido, String segundoApellido,
-                       String email, int rolId) {
-            this.cc = cc;
-            this.primerNombre = primerNombre;
-            this.segundoNombre = segundoNombre;
-            this.primerApellido = primerApellido;
-            this.segundoApellido = segundoApellido;
-            this.email = email;
-            this.rolId = rolId;
-           // O null, si no usas fotos por ahora
-        }
-
         // Getters
         public long getCc() { return cc; }
         public String getPrimerNombre() { return primerNombre; }
@@ -277,6 +260,6 @@ public class CrearUsuariosController {
         public String getSegundoApellido() { return segundoApellido; }
         public String getEmail() { return email; }
         public int getRolId() { return rolId; }
-
+        public String getFoto() { return foto; }
     }
 }
