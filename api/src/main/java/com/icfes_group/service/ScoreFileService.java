@@ -162,21 +162,22 @@ public class ScoreFileService {
 
     // Método para guardar grupos de referencia
     private void saveReferencesGroups(List<ReferenceGroup> referenceProp) {
-        // Obtener los grupos ya existentes por ID
-        Set<Long> idsExistentes = referenceGroupRepository.findAllById(
-            referenceProp.stream()
-                .map(ReferenceGroup::getId)
-                .collect(Collectors.toSet())
-        ).stream()
-         .map(ReferenceGroup::getId)
-         .collect(Collectors.toSet());
+        // Buscar todos los nombres que ya existen
+        Set<String> nombresExistentes = referenceGroupRepository.findByNombreIn(
+                        referenceProp.stream()
+                                .map(ReferenceGroup::getNombre)
+                                .collect(Collectors.toSet())
+                ).stream()
+                .map(ReferenceGroup::getNombre)
+                .collect(Collectors.toSet());
 
-        // Filtrar los que aún no existen en la base de datos
-        List<ReferenceGroup> nuevosReferenceGroups = referenceProp.stream()
-            .filter(group -> !idsExistentes.contains(group.getId()))
-            .collect(Collectors.toList());
-        // Guardar solo los nuevos
-        referenceGroupRepository.saveAll(nuevosReferenceGroups);
+        // Filtrar solo los que no existen
+        List<ReferenceGroup> nuevos = referenceProp.stream()
+                .filter(group -> !nombresExistentes.contains(group.getNombre()))
+                .collect(Collectors.toList());
+
+        // Guardar los nuevos
+        referenceGroupRepository.saveAll(nuevos);
     }
     
    private TestRegistration saveTestRegistrarion(
@@ -185,7 +186,7 @@ public class ScoreFileService {
         List<City> citiesBank,
         List<EvaluatedType> evalTypesBank) {
 
-        Optional<TestRegistration> optionalTest = testRegistrationRepository.findById(dto.getNumeroRegistro());
+        Optional<TestRegistration> optionalTest = testRegistrationRepository.findByNumeroRegistroAndYear(dto.getNumeroRegistro(), dto.getYear());
 
         if (optionalTest.isPresent()) {
             return optionalTest.get(); // Ya existe, lo retornamos
@@ -210,17 +211,22 @@ public class ScoreFileService {
         TestRegistration test = new TestRegistration(dto, program.getId(), eval.getId(), city.getId());
         return testRegistrationRepository.save(test);
     }
-    
-    private GlobalResult saveGlobalResuslt(ScoreFileDTO dto, TestRegistration testRegistred,List<ReferenceGroup> bankGroups){
-        Optional<GlobalResult> optionalResult = globalRespository.findById(dto.getNumeroRegistro());
-        if(optionalResult.isPresent()){
-            return optionalResult.get();
-        }
-        ReferenceGroup referenceGroup = bankGroups.stream()
-            .filter(group -> group.getId().equals(dto.getIdNucleoBasicoConocimiento()))
-            .findFirst()
-            .orElse(null);
 
+    private GlobalResult saveGlobalResult(ScoreFileDTO dto, TestRegistration testRegistred, List<ReferenceGroup> bankGroups) {
+        // Usamos el 'id' de testRegistred (que ya es un UUID) para buscar el GlobalResult
+        Optional<GlobalResult> optionalResult = globalRespository.findById(testRegistred.getId());
+
+        if (optionalResult.isPresent()) {
+            return optionalResult.get(); // Ya existe, lo retornamos
+        }
+
+        // Si no existe, buscamos el grupo de referencia (si no lo encontramos, se lanza una excepción)
+        ReferenceGroup referenceGroup = bankGroups.stream()
+                .filter(group -> group.getNombre().equalsIgnoreCase(dto.getNucleoBasicoConocimiento()))
+                .findFirst()
+                .orElseThrow(() -> new RuntimeException("Grupo de referencia no encontrado: " + dto.getNucleoBasicoConocimiento()));
+
+        // Creamos el nuevo GlobalResult usando el TestRegistration y el grupo de referencia
         GlobalResult result = new GlobalResult(dto, testRegistred, referenceGroup);
 
         return globalRespository.save(result);
@@ -257,7 +263,6 @@ public class ScoreFileService {
 
         List<ReferenceGroup> referenceGroups = Arrays.stream(dto).map(scoreDto -> {
             ReferenceGroup group = new ReferenceGroup();
-            group.setId(scoreDto.getIdNucleoBasicoConocimiento());
             group.setNombre(scoreDto.getNucleoBasicoConocimiento());
             return group;
         }).collect(Collectors.toList());
@@ -288,7 +293,7 @@ public class ScoreFileService {
             TestRegistration test = saveTestRegistrarion(dtoIter, programsBank, citiesBank, evalTypesBank);
 
             // Resultado global
-            GlobalResult globalResult = saveGlobalResuslt(dtoIter, test,groupReferencesBank);
+            GlobalResult globalResult = saveGlobalResult(dtoIter, test,groupReferencesBank);
 
             // Resultado de módulo
             ModuleResult resultadoModulo = saveModuleResult(dtoIter, globalResult);

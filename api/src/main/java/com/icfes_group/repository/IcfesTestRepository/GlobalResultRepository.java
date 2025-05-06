@@ -7,11 +7,11 @@ package com.icfes_group.repository.IcfesTestRepository;
 import com.icfes_group.model.IcfesTest.GlobalResult;
 import java.util.UUID;
 import org.springframework.data.jpa.repository.JpaRepository;
-
+import java.util.Optional;
 /**
  *
  * @author juanc
  */
-public interface GlobalResultRepository extends JpaRepository<GlobalResult, String>{
-    
+public interface GlobalResultRepository extends JpaRepository<GlobalResult, UUID>{
+    Optional<GlobalResult> findById(UUID id);
 }

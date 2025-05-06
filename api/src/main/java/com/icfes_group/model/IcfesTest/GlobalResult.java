@@ -10,7 +10,8 @@ import lombok.Data;
 @Table(name = "resultados_globales")
 public class GlobalResult {
      @Id
-    private String id; // Necesario para que Hibernate sepa cuál es el ID
+     @GeneratedValue(strategy = GenerationType.UUID)
+     private UUID id; // Necesario para que Hibernate sepa cuál es el ID
 
     @OneToOne
     @MapsId // Usa el valor de registroEvaluacion.id como PK y FK

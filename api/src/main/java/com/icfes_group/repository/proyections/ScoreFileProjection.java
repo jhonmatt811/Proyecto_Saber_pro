@@ -60,26 +60,9 @@ public interface ScoreFileProjection {
     @Value("#{target.novedades}")
     String getNovedades();
     
-    //@Value("#{target.periodo}")
-    //String getPeriodo();
-
-    //@Value("#{target.aplicacion}")
-    //String getAplicacion();
-
-    //@Value("#{target.examen}")
-    //String getExamen();
-
-    //@Value("#{target.sniesIes}")
-    //Integer getSniesIes();
-
-    //@Value("#{target.ies}")
-    //String getIes();
 
     @Value("#{target.sniesProgramaAcademico}")
     String getSniesProgramaAcademico();
-
-    @Value("#{target.idNucleoBasicoConocimiento}")
-    Long getIdNucleoBasicoConocimiento();
 
     @Value("#{target.nucleoBasicoConocimiento}")
     String getNucleoBasicoConocimiento();

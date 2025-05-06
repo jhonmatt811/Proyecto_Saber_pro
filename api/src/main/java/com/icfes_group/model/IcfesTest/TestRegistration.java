@@ -23,7 +23,7 @@ public class TestRegistration {
 
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
-    private String id;
+    private UUID id;
 
     // Aquí solo almacenamos los identificadores en lugar de las instancias completas
     @Column(name = "evaluado_id")
