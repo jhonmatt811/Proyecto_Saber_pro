@@ -14,23 +14,17 @@ import com.icfes_group.model.Rol;
  */
 @Service
 public class RolService {
-
-    private final RolRepository rolRepository;
-
-    // Inyección de dependencias del RolRepository
     @Autowired
-    public RolService(RolRepository rolRepository) {
-        this.rolRepository = rolRepository;
-    }
+    private RolRepository rolRepository;
 
     // Método para encontrar un rol por su ID
-    public Rol findById(Integer id) {
+    public Rol findById(Integer id) throws Exception{
         Optional<Rol> rol = rolRepository.findById(id);
         if (rol.isPresent()) {
             return rol.get();
         } else {
             // Maneja el caso cuando no se encuentra el rol (puedes lanzar una excepción si es necesario)
-            throw new RuntimeException("Rol no encontrado con ID: " + id);
+            throw new Exception("Rol no encontrado con ID: " + id);
         }
     }
 

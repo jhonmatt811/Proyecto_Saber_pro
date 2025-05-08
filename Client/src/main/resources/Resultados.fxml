@@ -1,27 +1,69 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<!--interfaz de resultados saber pro -->
-
+<?import javafx.scene.chart.*?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
 
 <VBox alignment="TOP_CENTER" spacing="20" style="-fx-padding: 30;" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.java.fx.ResultadosController">
 
-    <Label style="-fx-font-size: 20px; -fx-font-weight: bold;" text="📁 Resultados Saber Pro" />
+    <!-- Título principal -->
+    <Label style="-fx-font-size: 24px; -fx-font-weight: bold;" text="Resultados Saber Pro" />
 
-    <HBox spacing="10">
-        <Button onAction="#handleSubirArchivo" text="📤 Subir Archivo" />
-        <ComboBox fx:id="filtroAno" promptText="Filtrar por año..." />
-        <ComboBox fx:id="filtroPrograma" promptText="Filtrar por programa..." />
+    <!-- Sección de carga de archivos -->
+    <VBox spacing="10">
+        <Label style="-fx-font-size: 18px; -fx-font-weight: bold;" text="Cargar archivo" />
+        <HBox spacing="10" alignment="CENTER_LEFT">
+            <Button onAction="#handleCargarArchivo" style="-fx-background-color: #2196F3; -fx-text-fill: white;" text="📤 Cargar Archivo" />
+            <Button onAction="#handleConectarCFES" style="-fx-background-color: #4CAF50; -fx-text-fill: white;" text="Conectar al CFES" />
+            <Label fx:id="archivoCargadoLabel" />
+        </HBox>
+    </VBox>
+
+    <!-- Filtros -->
+    <HBox spacing="10" alignment="CENTER_LEFT">
+        <ComboBox fx:id="filtroAno" promptText="Filtrar por año..." prefWidth="120"/>
+        <ComboBox fx:id="filtroEstudiante" promptText="Filtrar por estudiante..." prefWidth="150"/>
+        <ComboBox fx:id="filtroCohorte" promptText="Filtrar por cohorte..." prefWidth="120"/>
+        <ComboBox fx:id="filtroArea" promptText="Filtrar por área..." prefWidth="180"/>
+        <ComboBox fx:id="filtroPrograma" promptText="Filtrar por programa..." prefWidth="180"/>
     </HBox>
-     <Label fx:id="archivoCargadoLabel" prefHeight="28.0" prefWidth="498.0" text="Ningún archivo cargado" textAlignment="CENTER" />
 
-    <TableView fx:id="tablaResultados" prefHeight="300">
+    <!-- Tabla de resultados -->
+    <TableView fx:id="tablaResultados" prefHeight="200">
         <columns>
+            <TableColumn fx:id="colAno" prefWidth="80" text="Año" />
             <TableColumn fx:id="colEstudiante" prefWidth="150" text="Estudiante" />
-            <TableColumn fx:id="colCohorte" prefWidth="100" text="Cohorte" />
+            <TableColumn fx:id="colCohorte" prefWidth="80" text="Cohorte" />
             <TableColumn fx:id="colPrograma" prefWidth="150" text="Programa" />
-            <TableColumn fx:id="colPuntaje" prefWidth="100" text="Puntaje" />
+            <TableColumn fx:id="colArea" prefWidth="150" text="Área" />
+            <TableColumn fx:id="colPuntaje" prefWidth="80" text="Puntaje" />
         </columns>
     </TableView>
+
+    <!-- Separador visual -->
+    <Separator />
+
+    <!-- Sección de puntajes por área -->
+    <VBox spacing="10">
+        <Label style="-fx-font-size: 18px; -fx-font-weight: bold;" text="Puntaje por Área" />
+        <BarChart fx:id="graficaPuntajes" title="Distribución de Puntajes por Área" legendVisible="false" prefHeight="250" prefWidth="600">
+            <xAxis>
+                <CategoryAxis label="Áreas" />
+            </xAxis>
+            <yAxis>
+                <NumberAxis label="Puntaje" lowerBound="0" upperBound="100" tickUnit="10" />
+            </yAxis>
+        </BarChart>
+    </VBox>
+
+    <!-- Separador visual -->
+    <Separator />
+
+    <!-- Botones de exportación -->
+    <HBox spacing="10" alignment="CENTER">
+        <Button onAction="#handleExportarPDF" style="-fx-background-color: #f44336; -fx-text-fill: white;" text="Exportar a PDF" />
+        <Button onAction="#handleExportarExcel" style="-fx-background-color: #4CAF50; -fx-text-fill: white;" text="Exportar a Excel" />
+    </HBox>
+
 </VBox>

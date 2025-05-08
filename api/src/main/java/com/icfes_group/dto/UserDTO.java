@@ -4,6 +4,8 @@
  */
 package com.icfes_group.dto;
 
+import com.icfes_group.model.Rol;
+import jakarta.validation.constraints.Email;
 import lombok.Data;
 import java.util.UUID;
 import jakarta.validation.constraints.NotBlank;
@@ -12,8 +14,13 @@ import jakarta.validation.constraints.NotBlank;
  * @author juanc
  */
 @Data
-public class UserDTO{
+public class UserDTO {
+    private PersonaDTO person;
     private UUID personId;
-    @NotBlank(message = "Se necesita una contraseña")
+    @Email
+    private String email;
     private String password;
+    private Integer rol_id;
+    private Rol rol;
+
 }

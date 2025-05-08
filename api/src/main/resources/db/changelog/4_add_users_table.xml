@@ -19,6 +19,10 @@
             <column name="passwd_changed" type="BOOLEAN" defaultValue="false">
                 <constraints nullable="false"/>
             </column>
+            <column name="rol_id" type="int" >
+                <constraints nullable="false" foreignKeyName="fk_persona_rol"
+                    referencedTableName="roles" referencedColumnNames="id"/>
+            </column>
         </createTable>
 
         <!-- Luego creamos la foreign key -->
