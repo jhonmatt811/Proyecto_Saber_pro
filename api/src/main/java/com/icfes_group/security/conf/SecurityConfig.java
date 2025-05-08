@@ -30,7 +30,7 @@ public class SecurityConfig {
             .authorizeHttpRequests(auth -> auth
                     .requestMatchers("/error").permitAll() 
                 .requestMatchers("/usuarios", "/usuarios/inicio-sesion").permitAll() // Rutas públicas
-                .requestMatchers("/usuarios/active").hasRole("Decano")
+                .requestMatchers("/admin","/admin/*").hasRole("Decano")
                 .requestMatchers("/personas","/personas/*").permitAll()
                 .requestMatchers("/resultados","/resultados/*").hasAnyRole("Decano","Director de Programa","Coordinador de Saber Pro")
                 .anyRequest().authenticated() // El resto requiere JWT válido
