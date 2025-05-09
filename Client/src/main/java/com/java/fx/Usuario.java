@@ -25,6 +25,4 @@ public class Usuario {
         this.rol_id = rol_id;
     }
 
-    // Getters y Setters (puedes generarlos automáticamente en IntelliJ o Eclipse)
-    // ...
 }

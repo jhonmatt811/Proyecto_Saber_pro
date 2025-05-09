@@ -3,25 +3,20 @@ package com.java.fx;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.control.Alert.AlertType;
-import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.stage.FileChooser;
 
-import java.io.File;
 import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
-import java.net.http.HttpRequest.BodyPublishers;
 import java.time.Duration;
-import java.util.Base64;
+
 
 public class CrearUsuariosController {
 
-    // Constante con la URL de tu API
-    // Cambia esto:
 
     private static final String API_URL = "http://localhost:8080/usuarios";
+
 
     @FXML private RadioButton opcion1;
     @FXML private RadioButton opcion2;
@@ -34,36 +29,9 @@ public class CrearUsuariosController {
     @FXML private TextField ccField;
     @FXML private TextField correoField;
     @FXML private PasswordField contrasenaField;
-    @FXML private Button subirFotoButton;
-    @FXML private ImageView imagenUsuario;
 
-    private String fotoBase64; // Para almacenar la imagen en base64
 
-    @FXML
-    public void subirFoto() {
-        FileChooser fileChooser = new FileChooser();
-        fileChooser.setTitle("Seleccionar Imagen");
 
-        fileChooser.getExtensionFilters().addAll(
-                new FileChooser.ExtensionFilter("Imágenes", "*.png", "*.jpg", "*.jpeg", "*.gif")
-        );
-
-        File archivoSeleccionado = fileChooser.showOpenDialog(subirFotoButton.getScene().getWindow());
-        if (archivoSeleccionado != null) {
-            try {
-                // Convertir imagen a base64
-                byte[] fileContent = java.nio.file.Files.readAllBytes(archivoSeleccionado.toPath());
-                fotoBase64 = Base64.getEncoder().encodeToString(fileContent);
-
-                // Mostrar imagen en el ImageView
-                Image imagen = new Image(archivoSeleccionado.toURI().toString());
-                imagenUsuario.setImage(imagen);
-            } catch (Exception e) {
-                mostrarAlerta("Error", "No se pudo cargar la imagen", AlertType.ERROR);
-                e.printStackTrace();
-            }
-        }
-    }
 
     @FXML
     public void initialize() {
@@ -93,9 +61,9 @@ public class CrearUsuariosController {
                 apellidoField.getText(),
                 segundoApellidoField.getText(),
                 correoField.getText(),
-                (int) grupoOpciones.getSelectedToggle().getUserData(),
-                fotoBase64
+                (Integer) grupoOpciones.getSelectedToggle().getUserData()
         );
+
 
         // Enviar datos a la API
         enviarDatosAPI(usuario);
@@ -148,6 +116,7 @@ public class CrearUsuariosController {
 
             // Crear request HTTP
             HttpRequest request = HttpRequest.newBuilder()
+
                     .uri(URI.create(API_URL))
                     .header("Content-Type", "application/json")
                     .header("Authorization", "Bearer " + Sesion.jwtToken) // <-- Agrega el token
@@ -167,9 +136,6 @@ public class CrearUsuariosController {
                                 String mensaje = "Código: " + response.statusCode() + "\nRespuesta: " + response.body();
                                 System.err.println(mensaje);
                                 mostrarAlerta("Error", "Error al crear usuario:\n" + mensaje, AlertType.ERROR);
-                                System.out.println("Código de estado: " + response.statusCode());
-                                System.out.println("Cuerpo de la respuesta: " + response.body());
-
                             });
                         }
                     })
@@ -177,8 +143,10 @@ public class CrearUsuariosController {
                         javafx.application.Platform.runLater(() -> {
                             mostrarAlerta("Error", "Error de conexión: " + e.getMessage(), AlertType.ERROR);
                         });
-                        return null;
+                        // Se debe retornar un valor compatible con el tipo esperado (HttpResponse<String>)
+                        return null; // Otra opción sería un `HttpResponse<String>` vacío si necesario
                     });
+
 
         } catch (Exception e) {
             mostrarAlerta("Error", "Error al enviar datos: " + e.getMessage(), AlertType.ERROR);
@@ -187,21 +155,21 @@ public class CrearUsuariosController {
     }
 
     private String convertirAJson(Usuario usuario) {
-        // Formatear el objeto Usuario como JSON
         return String.format(
                 "{\"cc\": %d, \"primer_nombre\": \"%s\", \"segundo_nombre\": \"%s\", " +
                         "\"primer_apellido\": \"%s\", \"segundo_apellido\": \"%s\", " +
-                        "\"email\": \"%s\", \"rol_id\": %d, \"foto\": \"%s\"}",
-                usuario.getCc(),
-                usuario.getPrimerNombre(),
-                usuario.getSegundoNombre(),
-                usuario.getPrimerApellido(),
-                usuario.getSegundoApellido(),
-                usuario.getEmail(),
-                usuario.getRolId(),
-                usuario.getFoto() != null ? usuario.getFoto() : ""
+                        "\"email\": \"%s\", \"rol_id\": %d}",
+                usuario.cc,
+                usuario.primer_nombre,
+                usuario.segundo_nombre,
+                usuario.primer_apellido,
+                usuario.segundo_apellido,
+                usuario.email,
+                usuario.rol_id
         );
     }
+
+
 
     private void limpiarFormulario() {
         nombreField.clear();
@@ -212,8 +180,8 @@ public class CrearUsuariosController {
         correoField.clear();
         contrasenaField.clear();
         grupoOpciones.selectToggle(null);
-        imagenUsuario.setImage(null);
-        fotoBase64 = null;
+
+
     }
 
     private void mostrarAlerta(String titulo, String mensaje, AlertType tipo) {
@@ -230,36 +198,35 @@ public class CrearUsuariosController {
 
     // Clase interna para representar los datos del usuario
     private static class Usuario {
-        private long cc;
-        private String primerNombre;
-        private String segundoNombre;
-        private String primerApellido;
-        private String segundoApellido;
+        private Long cc;
+        private String primer_nombre;
+        private String segundo_nombre;
+        private String primer_apellido;
+        private String segundo_apellido;
         private String email;
-        private int rolId;
-        private String foto;
+        private Integer rol_id;
 
-        public Usuario(long cc, String primerNombre, String segundoNombre,
-                       String primerApellido, String segundoApellido,
-                       String email, int rolId, String foto) {
+        public Usuario(Long cc, String primer_nombre, String segundo_nombre,
+                       String primer_apellido, String segundo_apellido,
+                       String email, Integer rol_id) {
             this.cc = cc;
-            this.primerNombre = primerNombre;
-            this.segundoNombre = segundoNombre;
-            this.primerApellido = primerApellido;
-            this.segundoApellido = segundoApellido;
+            this.primer_nombre = primer_nombre;
+            this.segundo_nombre = segundo_nombre;
+            this.primer_apellido = primer_apellido;
+            this.segundo_apellido = segundo_apellido;
             this.email = email;
-            this.rolId = rolId;
-            this.foto = foto;
-        }
+            this.rol_id = rol_id;
 
+        }
         // Getters
         public long getCc() { return cc; }
-        public String getPrimerNombre() { return primerNombre; }
-        public String getSegundoNombre() { return segundoNombre; }
-        public String getPrimerApellido() { return primerApellido; }
-        public String getSegundoApellido() { return segundoApellido; }
+        public String getPrimerNombre() { return primer_nombre; }
+        public String getSegundoNombre() { return segundo_nombre; }
+        public String getPrimerApellido() { return primer_apellido; }
+        public String getSegundoApellido() { return segundo_apellido; }
         public String getEmail() { return email; }
-        public int getRolId() { return rolId; }
-        public String getFoto() { return foto; }
+        public int getRolId() { return rol_id; }
+
     }
+
 }
