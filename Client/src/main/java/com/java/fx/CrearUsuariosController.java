@@ -42,9 +42,9 @@ public class CrearUsuariosController {
         opcion3.setToggleGroup(grupoOpciones);
 
         // Asignar valores a los radio buttons según tu lógica de roles
-        opcion1.setUserData(1); // ID del rol Directivo
-        opcion2.setUserData(2); // ID del rol Docente
-        opcion3.setUserData(3); // ID del rol Director Icfes
+        opcion1.setUserData(1); // ID del rol_id Directivo
+        opcion2.setUserData(2); // ID del rol_id Docente
+        opcion3.setUserData(3); // ID del rol_id Director Icfes
     }
 
     @FXML
@@ -94,9 +94,9 @@ public class CrearUsuariosController {
             return false;
         }
 
-        // Validar rol seleccionado
+        // Validar rol_id seleccionado
         if (grupoOpciones.getSelectedToggle() == null) {
-            mostrarAlerta("Rol no seleccionado", "Debe seleccionar un rol antes de registrar.", AlertType.WARNING);
+            mostrarAlerta("Rol no seleccionado", "Debe seleccionar un rol_id antes de registrar.", AlertType.WARNING);
             return false;
         }
 
@@ -254,51 +254,3 @@ public class CrearUsuariosController {
     }
 
 }
-
-/**
-import org.springframework.http.*;
-        import org.springframework.web.client.RestTemplate;
-import java.util.*;
-
-public class ApiConsumer {
-
-    private static final String TOKEN = "Bearer <tu_token>";
-    private static final String PERSON_URL = "http://localhost:8080/admin/personas";
-    private static final String USER_URL = "http://localhost:8080/admin/usuarios";
-
-    public static void main(String[] args) {
-        RestTemplate restTemplate = new RestTemplate();
-
-        // Paso 1: Crear Persona
-        Map<String, Object> personaRequest = new HashMap<>();
-        personaRequest.put("cc", "12345675200");
-        personaRequest.put("primer_nombre", "Juan");
-        personaRequest.put("segundo_nombre", "Carlos");
-        personaRequest.put("primer_apellido", "Pérez");
-        personaRequest.put("segundo_apellido", "Gómez");
-        personaRequest.put("email", "juanacob2on11.4@gmail.com");
-
-        HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(MediaType.APPLICATION_JSON);
-        headers.set("Authorization", TOKEN);
-
-        HttpEntity<Map<String, Object>> entity = new HttpEntity<>(personaRequest, headers);
-
-        ResponseEntity<Map> response = restTemplate.exchange(PERSON_URL, HttpMethod.POST, entity, Map.class);
-        String personaId = (String) response.getBody().get("id");
-
-        // Paso 2: Crear Usuario
-        Map<String, Object> personData = new HashMap<>(personaRequest);
-        personData.put("id", personaId);
-
-        Map<String, Object> userRequest = new HashMap<>();
-        userRequest.put("person", personData);
-        userRequest.put("rol_id", 2);
-
-        HttpEntity<Map<String, Object>> userEntity = new HttpEntity<>(userRequest, headers);
-
-        ResponseEntity<Map> userResponse = restTemplate.exchange(USER_URL, HttpMethod.POST, userEntity, Map.class);
-
-        System.out.println("Usuario creado: " + userResponse.getBody());
-    }
-}*/

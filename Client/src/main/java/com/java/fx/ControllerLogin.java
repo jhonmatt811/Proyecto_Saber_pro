@@ -109,7 +109,7 @@ public class ControllerLogin implements Initializable {
         // Decodificar payload del JWT
         String[] chunks = token.split("\\.");
         JSONObject payload = new JSONObject(new String(Base64.getDecoder().decode(chunks[1])));
-        Sesion.rol = payload.getString("role");
+        Sesion.rol_id = payload.getString("role");
 
         loadMainWindow();
         clearFields();
@@ -164,11 +164,17 @@ public class ControllerLogin implements Initializable {
         if (showPasswordCheck.isSelected()) {
             visiblePasswordField.setText(passwordField.getText());
             visiblePasswordField.setVisible(true);
+            visiblePasswordField.setManaged(true);
+
             passwordField.setVisible(false);
+            passwordField.setManaged(false);
         } else {
             passwordField.setText(visiblePasswordField.getText());
             passwordField.setVisible(true);
+            passwordField.setManaged(true);
+
             visiblePasswordField.setVisible(false);
+            visiblePasswordField.setManaged(false);
         }
     }
 }
