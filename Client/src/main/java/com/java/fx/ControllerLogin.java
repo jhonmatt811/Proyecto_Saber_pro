@@ -15,7 +15,9 @@ import javafx.stage.Stage;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.context.ApplicationContext;
+import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 import java.net.URI;
 import java.net.http.HttpClient;
@@ -24,9 +26,10 @@ import java.net.http.HttpResponse;
 import java.net.URL;
 import java.util.Base64;
 import java.util.ResourceBundle;
-import java.io.IOException; // Importación añadida
+import java.io.IOException;
 
 @Component
+@Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)
 public class ControllerLogin implements Initializable {
 
     @FXML private TextField emailField;

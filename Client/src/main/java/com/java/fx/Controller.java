@@ -1,18 +1,31 @@
 package com.java.fx;
 //controlador de la interfaz general de usuarios
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.layout.BorderPane;
+import javafx.stage.Stage;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.config.ConfigurableBeanFactory;
+import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
+import java.net.URL;
 
 @Component
+@Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)
 public class Controller {
+
+    @Autowired
+    private ApplicationContext context;
 
     @FXML
     private BorderPane mainPane;
@@ -37,6 +50,9 @@ public class Controller {
 
     @FXML
     private Button btnConfiguracion;
+
+    @FXML
+    private Button btnSalir;
 
     @FXML
     public void initialize() {
@@ -116,4 +132,35 @@ public class Controller {
             e.printStackTrace();
         }
     }
+
+    @FXML
+    public void volverLogin() {
+        try {
+            // Limpio token de sesión
+            Sesion.jwtToken = null;
+
+            // Cargo un login NUEVO
+            FXMLLoader loader = new FXMLLoader(
+                    getClass().getResource("/MainLogin.fxml")
+            );
+            loader.setControllerFactory(context::getBean);
+            Parent loginRoot = loader.load();
+
+            // Nuevo Stage
+            Stage loginStage = new Stage();
+            loginStage.setScene(new Scene(loginRoot));
+            loginStage.setTitle("Login");
+            loginStage.show();
+
+            // Cierro el principal
+            ((Stage) mainPane.getScene().getWindow()).close();
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+
 }
+
+

@@ -13,7 +13,7 @@
 
         <Label style="-fx-font-size: 24px; -fx-font-weight: bold;" text="Nuevo Docente" />
         <VBox alignment="CENTER_LEFT" spacing="8">
-            <Label text="Tipo de documento:" />
+            <Label text="Numero de documento:" />
             <TextField fx:id="ccField" prefWidth="250" promptText="Cedula " />
         </VBox>
 
@@ -35,10 +35,6 @@
             <TextField fx:id="segundoApellidoField" prefWidth="250" promptText="Ingrese su apellido" />
         </VBox>
 
-        <VBox alignment="CENTER_LEFT" spacing="8">
-            <Label text="Contraseña:" />
-            <PasswordField fx:id="contrasenaField" prefWidth="250" promptText="Ingrese su contraseña" />
-        </VBox>
 
         <VBox alignment="CENTER_LEFT" spacing="8">
             <Label text="Correo Electrónico:" />

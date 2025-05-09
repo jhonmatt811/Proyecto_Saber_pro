@@ -84,6 +84,16 @@
                 </graphic>
             </Button>
 
+            <Button fx:id="btnSalir" onAction="#volverLogin" styleClass="boton-invisible" text="Salir">
+                <graphic>
+                    <ImageView fitHeight="14" fitWidth="14">
+                        <image>
+                            <Image url="@/img/icons8-exportar-26.png" />
+                        </image>
+                    </ImageView>
+                </graphic>
+            </Button>
+
         </VBox>
     </left>
    <right>

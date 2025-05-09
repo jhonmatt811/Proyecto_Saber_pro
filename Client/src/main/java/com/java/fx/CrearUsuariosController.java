@@ -1,5 +1,6 @@
 package com.java.fx;
 
+import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.control.Alert.AlertType;
@@ -10,12 +11,13 @@ import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.time.Duration;
+import java.util.concurrent.CompletableFuture;
 
 
 public class CrearUsuariosController {
 
 
-    private static final String API_URL = "http://localhost:8080/usuarios";
+    private static final String API_URL = "http://localhost:8080/admin/personas";
 
 
     @FXML private RadioButton opcion1;
@@ -28,7 +30,6 @@ public class CrearUsuariosController {
     @FXML private TextField segundoApellidoField;
     @FXML private TextField ccField;
     @FXML private TextField correoField;
-    @FXML private PasswordField contrasenaField;
 
 
 
@@ -74,8 +75,7 @@ public class CrearUsuariosController {
 
         // Validar campos obligatorios
         if (ccField.getText().isEmpty() || nombreField.getText().isEmpty() ||
-                apellidoField.getText().isEmpty() || correoField.getText().isEmpty() ||
-                contrasenaField.getText().isEmpty()) {
+                apellidoField.getText().isEmpty() || correoField.getText().isEmpty()){
             mostrarAlerta("Campos vacíos", "Debe completar todos los campos obligatorios.", AlertType.ERROR);
             return false;
         }
@@ -105,54 +105,79 @@ public class CrearUsuariosController {
 
     private void enviarDatosAPI(Usuario usuario) {
         try {
-            // Convertir objeto Usuario a JSON
-            String jsonBody = convertirAJson(usuario);
-
-            // Crear cliente HTTP
+            String jsonPersona = convertirAJson(usuario);
             HttpClient client = HttpClient.newBuilder()
                     .version(HttpClient.Version.HTTP_1_1)
                     .connectTimeout(Duration.ofSeconds(20))
                     .build();
 
-            // Crear request HTTP
-            HttpRequest request = HttpRequest.newBuilder()
-
-                    .uri(URI.create(API_URL))
+            // 1) Creo la persona
+            HttpRequest reqPersona = HttpRequest.newBuilder()
+                    .uri(URI.create("http://localhost:8080/admin/personas"))
                     .header("Content-Type", "application/json")
-                    .header("Authorization", "Bearer " + Sesion.jwtToken) // <-- Agrega el token
-                    .POST(HttpRequest.BodyPublishers.ofString(jsonBody))
+                    .header("Authorization", "Bearer " + Sesion.jwtToken)
+                    .POST(HttpRequest.BodyPublishers.ofString(jsonPersona))
                     .build();
 
-            // Enviar request de forma asíncrona
-            client.sendAsync(request, HttpResponse.BodyHandlers.ofString())
-                    .thenAccept(response -> {
-                        if (response.statusCode() == 201 || response.statusCode() == 200) {
-                            javafx.application.Platform.runLater(() -> {
+            client.sendAsync(reqPersona, HttpResponse.BodyHandlers.ofString())
+                    .thenCompose(respPersona -> {
+                        if (respPersona.statusCode() == 201 || respPersona.statusCode() == 200) {
+                            // 2) Recupero el JSON completo de la persona recién creada
+                            String bodyPersonaCreada = respPersona.body();
+
+                            // 3) Construyo el JSON de usuario anidando la persona
+                            String jsonUsuario = String.format(
+                                    "{\"person\": %s, \"rol_id\": %d}",
+                                    bodyPersonaCreada,
+                                    usuario.rol_id
+                            );
+
+                            // 4) Preparo el segundo POST a /admin/usuarios
+                            HttpRequest reqUsuario = HttpRequest.newBuilder()
+                                    .uri(URI.create("http://localhost:8080/admin/usuarios"))
+                                    .header("Content-Type", "application/json")
+                                    .header("Authorization", "Bearer " + Sesion.jwtToken)
+                                    .POST(HttpRequest.BodyPublishers.ofString(jsonUsuario))
+                                    .build();
+
+                            // 5) Devuelvo el CompletableFuture del segundo request
+                            return client.sendAsync(reqUsuario, HttpResponse.BodyHandlers.ofString());
+                        } else {
+                            // si persona no se creó, corto la cadena devolviendo un Future fallido
+                            return CompletableFuture.<HttpResponse<String>>failedFuture(
+                                    new RuntimeException("Error creando persona: " + respPersona.statusCode())
+                            );
+                        }
+                    })
+                    .thenAccept(respUsuario -> {
+                        // 6) Manejo la respuesta final de /admin/usuarios
+                        if (respUsuario.statusCode() == 201 || respUsuario.statusCode() == 200) {
+                            Platform.runLater(() -> {
                                 mostrarAlerta("Éxito", "Usuario creado correctamente", AlertType.INFORMATION);
                                 limpiarFormulario();
                             });
                         } else {
-                            javafx.application.Platform.runLater(() -> {
-                                String mensaje = "Código: " + response.statusCode() + "\nRespuesta: " + response.body();
-                                System.err.println(mensaje);
-                                mostrarAlerta("Error", "Error al crear usuario:\n" + mensaje, AlertType.ERROR);
+                            Platform.runLater(() -> {
+                                mostrarAlerta("Error",
+                                        "Error al crear usuario:\nCódigo: " + respUsuario.statusCode() +
+                                                "\n" + respUsuario.body(),
+                                        AlertType.ERROR);
                             });
                         }
                     })
                     .exceptionally(e -> {
-                        javafx.application.Platform.runLater(() -> {
-                            mostrarAlerta("Error", "Error de conexión: " + e.getMessage(), AlertType.ERROR);
+                        Platform.runLater(() -> {
+                            mostrarAlerta("Error de conexión", e.getMessage(), AlertType.ERROR);
                         });
-                        // Se debe retornar un valor compatible con el tipo esperado (HttpResponse<String>)
-                        return null; // Otra opción sería un `HttpResponse<String>` vacío si necesario
+                        return null;
                     });
-
 
         } catch (Exception e) {
             mostrarAlerta("Error", "Error al enviar datos: " + e.getMessage(), AlertType.ERROR);
             e.printStackTrace();
         }
     }
+
 
     private String convertirAJson(Usuario usuario) {
         return String.format(
@@ -178,7 +203,6 @@ public class CrearUsuariosController {
         segundoApellidoField.clear();
         ccField.clear();
         correoField.clear();
-        contrasenaField.clear();
         grupoOpciones.selectToggle(null);
 
 
@@ -230,3 +254,51 @@ public class CrearUsuariosController {
     }
 
 }
+
+/**
+import org.springframework.http.*;
+        import org.springframework.web.client.RestTemplate;
+import java.util.*;
+
+public class ApiConsumer {
+
+    private static final String TOKEN = "Bearer <tu_token>";
+    private static final String PERSON_URL = "http://localhost:8080/admin/personas";
+    private static final String USER_URL = "http://localhost:8080/admin/usuarios";
+
+    public static void main(String[] args) {
+        RestTemplate restTemplate = new RestTemplate();
+
+        // Paso 1: Crear Persona
+        Map<String, Object> personaRequest = new HashMap<>();
+        personaRequest.put("cc", "12345675200");
+        personaRequest.put("primer_nombre", "Juan");
+        personaRequest.put("segundo_nombre", "Carlos");
+        personaRequest.put("primer_apellido", "Pérez");
+        personaRequest.put("segundo_apellido", "Gómez");
+        personaRequest.put("email", "juanacob2on11.4@gmail.com");
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+        headers.set("Authorization", TOKEN);
+
+        HttpEntity<Map<String, Object>> entity = new HttpEntity<>(personaRequest, headers);
+
+        ResponseEntity<Map> response = restTemplate.exchange(PERSON_URL, HttpMethod.POST, entity, Map.class);
+        String personaId = (String) response.getBody().get("id");
+
+        // Paso 2: Crear Usuario
+        Map<String, Object> personData = new HashMap<>(personaRequest);
+        personData.put("id", personaId);
+
+        Map<String, Object> userRequest = new HashMap<>();
+        userRequest.put("person", personData);
+        userRequest.put("rol_id", 2);
+
+        HttpEntity<Map<String, Object>> userEntity = new HttpEntity<>(userRequest, headers);
+
+        ResponseEntity<Map> userResponse = restTemplate.exchange(USER_URL, HttpMethod.POST, userEntity, Map.class);
+
+        System.out.println("Usuario creado: " + userResponse.getBody());
+    }
+}*/
