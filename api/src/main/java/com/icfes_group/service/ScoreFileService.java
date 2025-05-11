@@ -7,6 +7,7 @@ import com.icfes_group.dto.ScoreFileDTO;
 import com.icfes_group.repository.IcfesTestRepository.*;
 import com.icfes_group.model.IcfesTest.*;
 import org.springframework.beans.factory.annotation.Autowired;
+import java.text.Normalizer;
 
 @Service
 public class ScoreFileService {
@@ -32,6 +33,15 @@ public class ScoreFileService {
     @Autowired
     GlobalResultRepository globalRespository;
     // Método para agrupar los datos por documento
+
+    private static String normalizar(String texto) {
+        if (texto == null) return null;
+        return Normalizer.normalize(texto, Normalizer.Form.NFD)
+                .replaceAll("\\p{InCombiningDiacriticalMarks}+", "")
+                .toUpperCase()
+                .trim();
+    }
+
     private Map<Long, List<ScoreFileDTO>> groupByDocument(ScoreFileDTO[] dto) {
         return Arrays.stream(dto)
                 .collect(Collectors.groupingBy(ScoreFileDTO::getDocumento));
@@ -162,25 +172,34 @@ public class ScoreFileService {
 
     // Método para guardar grupos de referencia
     private void saveReferencesGroups(List<ReferenceGroup> referenceProp) {
-        // Buscar todos los nombres que ya existen
-        Set<String> nombresExistentes = referenceGroupRepository.findByNombreIn(
-                        referenceProp.stream()
-                                .map(ReferenceGroup::getNombre)
-                                .collect(Collectors.toSet())
-                ).stream()
+        // Normalizar los nombres y eliminar duplicados
+        Set<ReferenceGroup> noRepeat = referenceProp.stream()
+                .map(group -> new ReferenceGroup(
+                        normalizar(group.getNombre()) // Normalizamos el nombre
+                ))
+                .distinct()
+                .collect(Collectors.toSet());
+
+        // Obtener todos los grupos existentes en el banco de datos
+        List<ReferenceGroup> bankGroups = referenceGroupRepository.findAll();
+
+        // Crear un set con solo los nombres de los grupos existentes
+        Set<String> existingNames = bankGroups.stream()
                 .map(ReferenceGroup::getNombre)
                 .collect(Collectors.toSet());
 
-        // Filtrar solo los que no existen
-        List<ReferenceGroup> nuevos = referenceProp.stream()
-                .filter(group -> !nombresExistentes.contains(group.getNombre()))
+        // Filtrar solo los grupos que no existen en el banco (por nombre)
+        List<ReferenceGroup> nuevos = noRepeat.stream()
+                .filter(group -> !existingNames.contains(group.getNombre())) // Compara solo el nombre
                 .collect(Collectors.toList());
 
-        // Guardar los nuevos
-        referenceGroupRepository.saveAll(nuevos);
+        // Guardar los nuevos grupos en la base de datos
+        if(!nuevos.isEmpty()){
+            referenceGroupRepository.saveAll(nuevos);
+        }
     }
-    
-   private TestRegistration saveTestRegistrarion(
+
+    private TestRegistration saveTestRegistrarion(
         ScoreFileDTO dto,
         List<AcademicProgram> programsBank,
         List<City> citiesBank,
@@ -222,7 +241,7 @@ public class ScoreFileService {
 
         // Si no existe, buscamos el grupo de referencia (si no lo encontramos, se lanza una excepción)
         ReferenceGroup referenceGroup = bankGroups.stream()
-                .filter(group -> group.getNombre().equalsIgnoreCase(dto.getNucleoBasicoConocimiento()))
+                .filter(group -> group.getNombre().equalsIgnoreCase(normalizar(dto.getNucleoBasicoConocimiento())))
                 .findFirst()
                 .orElseThrow(() -> new RuntimeException("Grupo de referencia no encontrado: " + dto.getNucleoBasicoConocimiento()));
 
