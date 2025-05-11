@@ -9,6 +9,7 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
+import lombok.AllArgsConstructor;
 import lombok.Data;
 
 /**
@@ -23,4 +24,9 @@ public class ReferenceGroup {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String nombre;
+
+    public ReferenceGroup(String nombre) {
+        this.nombre = nombre;
+    }
+    public ReferenceGroup() {}
 }

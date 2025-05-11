@@ -13,5 +13,4 @@ import java.util.Set;
  * @author juanc
  */
 public interface ReferenceGroupRepository extends JpaRepository<ReferenceGroup, Long>{
-    List<ReferenceGroup> findByNombreIn(Set<String> nombres);
 }
