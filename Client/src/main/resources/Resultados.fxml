@@ -13,19 +13,22 @@
     <VBox spacing="10">
         <Label style="-fx-font-size: 18px; -fx-font-weight: bold;" text="Cargar archivo" />
         <HBox spacing="10" alignment="CENTER_LEFT">
+            <Label text="Año:"/>
+            <TextField fx:id="inputYear" promptText="2023" prefWidth="80"/>
+            <Label text="Ciclo:"/>
+            <TextField fx:id="inputCiclo" promptText="1" prefWidth="50"/>
             <Button onAction="#handleCargarArchivo" style="-fx-background-color: #2196F3; -fx-text-fill: white;" text="Cargar Archivo" />
             <Button onAction="#handleConectarCFES" style="-fx-background-color: #4CAF50; -fx-text-fill: white;" text="Conectar al ICFES" />
             <Label fx:id="archivoCargadoLabel" />
         </HBox>
     </VBox>
 
-    <!-- Filtros actualizados -->
-    <HBox spacing="10" alignment="CENTER_LEFT" >
-        <ComboBox fx:id="filtroTipoDocumento" promptText="Tipo documento" prefWidth="120"/>
+    <!-- Filtros personalizados -->
+    <HBox spacing="10" alignment="CENTER_LEFT">
+        <TextField fx:id="inputDocumento" promptText="Documento Estudiante" prefWidth="160"/>
         <ComboBox fx:id="filtroPrograma" promptText="Programa" prefWidth="180"/>
-        <ComboBox fx:id="filtroCiudad" promptText="Ciudad" prefWidth="120"/>
-        <ComboBox fx:id="filtroModulo" promptText="Módulo" prefWidth="150"/>
-        <ComboBox fx:id="filtroNivelDesempeno" promptText="Nivel desempeño" prefWidth="150"/>
+        <ComboBox fx:id="filtroModulo" promptText="Área" prefWidth="150"/>
+        <Button onAction="#handleRestablecerFiltros" text="Restablecer" />
     </HBox>
 
     <!-- Tabla de resultados actualizada -->
