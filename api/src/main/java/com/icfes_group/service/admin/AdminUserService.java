@@ -13,10 +13,8 @@ import com.icfes_group.service.RolService;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.NoSuchElementException;
-import java.util.Optional;
-import java.util.Random;
-import java.util.UUID;
+import java.util.*;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.mail.javamail.JavaMailSender;
@@ -41,6 +39,15 @@ public class AdminUserService{
     private String mailSenderAddress;    
     @Autowired
     private PasswordEncoder passwordEncoder;
+
+    public List<User> loadUserPeople() throws Exception{
+        List<User> people = userRepository.findWithPersona();
+        if(people.isEmpty()){
+            throw new Exception("No se encontraron usuarios");
+        }
+        return people;
+    }
+
     private String loadHtmlTemplate(PersonaDTO person, String passwd) throws IOException {
         // Aquí cargamos la plantilla HTML desde un archivo local
         Path path = Path.of("src/main/resources/templates/InvitationEmail.html");
