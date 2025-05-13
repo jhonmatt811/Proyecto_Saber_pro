@@ -140,6 +140,8 @@ public class Controller {
     private void loadCenterView(String resource) {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource(resource));
+            // Usar Spring para instanciar el controller
+            loader.setControllerFactory(context::getBean);
             Node view = loader.load();
             mainPane.setCenter(view);
         } catch (IOException e) {

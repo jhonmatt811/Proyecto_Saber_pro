@@ -5,6 +5,9 @@ import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.image.ImageView;
+import org.springframework.beans.factory.config.ConfigurableBeanFactory;
+import org.springframework.context.annotation.Scope;
+import org.springframework.stereotype.Component;
 
 import java.net.URI;
 import java.net.http.HttpClient;
@@ -13,7 +16,8 @@ import java.net.http.HttpResponse;
 import java.time.Duration;
 import java.util.concurrent.CompletableFuture;
 
-
+@Component
+@Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)
 public class CrearUsuariosController {
 
 
@@ -41,7 +45,7 @@ public class CrearUsuariosController {
         opcion2.setToggleGroup(grupoOpciones);
         opcion3.setToggleGroup(grupoOpciones);
 
-        // Asignar valores a los radio buttons según tu lógica de roles
+        // Asignar valores a los radio buttons según la lógica de roles
         opcion1.setUserData(1); // ID del rol_id Directivo
         opcion2.setUserData(2); // ID del rol_id Docente
         opcion3.setUserData(3); // ID del rol_id Director Icfes

@@ -3,9 +3,14 @@ package com.java.fx;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.stage.FileChooser;
+import org.springframework.beans.factory.config.ConfigurableBeanFactory;
+import org.springframework.context.annotation.Scope;
+import org.springframework.stereotype.Component;
+
 import java.io.File;
 import java.time.LocalDate;
-
+@Component
+@Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)
 public class AccionesMejoraController {
     @FXML private TextField txtNombre;
     @FXML private TextArea txtObjetivo;
