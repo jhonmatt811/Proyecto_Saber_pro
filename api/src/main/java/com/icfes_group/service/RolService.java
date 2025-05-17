@@ -5,6 +5,8 @@
 package com.icfes_group.service;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 import java.util.Optional;
 import com.icfes_group.repository.RolRepository;
 import com.icfes_group.model.Rol;
@@ -26,6 +28,14 @@ public class RolService {
             // Maneja el caso cuando no se encuentra el rol (puedes lanzar una excepción si es necesario)
             throw new Exception("Rol no encontrado con ID: " + id);
         }
+    }
+
+    public List<Rol> findAll() throws Exception{
+        List<Rol> roles = rolRepository.findAll();
+        if (roles.isEmpty()) {
+            throw new Exception("No se encontraron roles");
+        }
+        return roles;
     }
 
 }
