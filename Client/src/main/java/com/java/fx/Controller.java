@@ -1,5 +1,7 @@
 package com.java.fx;
 //controlador de la interfaz general de usuarios
+import com.java.fx.Usuarios_y_Roles.PermisosRoles;
+import com.java.fx.Usuarios_y_Roles.Sesion;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
@@ -105,19 +107,14 @@ public class Controller {
     @FXML
     public void goUsuariosRoles() {
         resetButtonStyles();
-        btnAccMejora.getStyleClass().add("boton-rojo");
-
-        Label newLabel = new Label("Estás en usuarios y roles");
-        newLabel.getStyleClass().add("content-label");
-
-        mainPane.setCenter(null);
-        mainPane.setCenter(newLabel);
+        btnUsuariosRoles.getStyleClass().add("boton-rojo");
+        loadCenterView("/UsuariosRoles.fxml");
     }
 
     @FXML
     public void goConfiguracion() {
         resetButtonStyles();
-        btnAccMejora.getStyleClass().add("boton-rojo");
+        btnConfiguracion.getStyleClass().add("boton-rojo");
 
         Label newLabel = new Label("Accediendo a configuracion");
         newLabel.getStyleClass().add("content-label");
@@ -180,5 +177,3 @@ public class Controller {
 
 
 }
-
-

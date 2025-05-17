@@ -1,10 +1,9 @@
-package com.java.fx;
+package com.java.fx.Usuarios_y_Roles;
 
 import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.control.Alert.AlertType;
-import javafx.scene.image.ImageView;
 
 import java.net.URI;
 import java.net.http.HttpClient;
@@ -20,9 +19,11 @@ public class CrearUsuariosController {
     private static final String API_URL = "http://localhost:8080/admin/personas";
 
 
-    @FXML private RadioButton opcion1;
+    @FXML private RadioButton opcion1 ;
     @FXML private RadioButton opcion2;
     @FXML private RadioButton opcion3;
+    @FXML private RadioButton opcion4;
+    @FXML private RadioButton opcion5;
     @FXML private ToggleGroup grupoOpciones;
     @FXML private TextField nombreField;
     @FXML private TextField segundoNombreField;
@@ -44,7 +45,10 @@ public class CrearUsuariosController {
         // Asignar valores a los radio buttons según tu lógica de roles
         opcion1.setUserData(1); // ID del rol_id Directivo
         opcion2.setUserData(2); // ID del rol_id Docente
-        opcion3.setUserData(3); // ID del rol_id Director Icfes
+        opcion3.setUserData(3);// ID del rol_id Director Icfes
+        opcion4.setUserData(4);
+        opcion5.setUserData(5);
+
     }
 
     @FXML
