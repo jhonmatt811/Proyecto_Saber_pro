@@ -22,7 +22,7 @@ import java.io.IOException;
 
 @Component
 @Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)
-public class Controller {
+public class ControllerMain {
 
     @Autowired
     private ApplicationContext context;
@@ -39,8 +39,8 @@ public class Controller {
     @FXML
     private Button btnResultados;
 
-    @FXML
-    private Button btnCrearUsuarios;
+    //@FXML
+    //private Button btnCrearUsuarios;
 
     @FXML
     private Button btnAccMejora;
@@ -67,7 +67,7 @@ public class Controller {
 
         btnInicio.setVisible(permisos.tienePermiso("inicio"));
         btnResultados.setVisible(permisos.tienePermiso("resultados"));
-        btnCrearUsuarios.setVisible(permisos.tienePermiso("crearUsuarios"));
+        //btnCrearUsuarios.setVisible(permisos.tienePermiso("crearUsuarios"));
         btnAccMejora.setVisible(permisos.tienePermiso("accMejora"));
         btnUsuariosRoles.setVisible(permisos.tienePermiso("usuariosRoles"));
         btnConfiguracion.setVisible(permisos.tienePermiso("configuracion"));
@@ -89,12 +89,7 @@ public class Controller {
         loadCenterView("/Resultados.fxml");
     }
 
-    @FXML
-    public void goCrearUsuarios() {
-        resetButtonStyles();
-        btnCrearUsuarios.getStyleClass().add("boton-rojo");
-        loadCenterView("/CrearUsuarios.fxml");
-    }
+
 
     @FXML
     public void goAccMejora() {
@@ -126,7 +121,7 @@ public class Controller {
     private void resetButtonStyles() {
         btnInicio.getStyleClass().remove("boton-rojo");
         btnResultados.getStyleClass().remove("boton-rojo");
-        btnCrearUsuarios.getStyleClass().remove("boton-rojo");
+        //btnCrearUsuarios.getStyleClass().remove("boton-rojo");
         btnAccMejora.getStyleClass().remove("boton-rojo");
         btnUsuariosRoles.getStyleClass().remove("boton-rojo");
         btnConfiguracion.getStyleClass().remove("boton-rojo");

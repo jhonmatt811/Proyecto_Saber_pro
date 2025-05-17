@@ -5,10 +5,14 @@
 <?import javafx.scene.*?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
+<?import com.java.fx.ControllerMain.*?>
+
+<BorderPane fx:id="mainPane" xmlns:fx="http://javafx.com/fxml" fx:controller="com.java.fx.Usuarios_y_Roles.UsuariosRolesController">
+    <!-- Aquí van los elementos interiores -->
+
 
 <AnchorPane xmlns="http://javafx.com/javafx"
             xmlns:fx="http://javafx.com/fxml"
-            fx:controller="com.java.fx.Usuarios_y_Roles.UsuariosRolesController"
             prefHeight="400.0" prefWidth="600.0">
 
     <TableView fx:id="tablaUsuarios" layoutX="20" layoutY="20" prefHeight="300" prefWidth="750">
@@ -23,6 +27,11 @@
     </TableView>
 
     <ComboBox fx:id="comboNuevoRol" layoutX="20" layoutY="330" prefWidth="150"/>
-    <Button fx:id="btnCambiarRol" text="Cambiar Rol" layoutX="200" layoutY="330"/>
+    <Button fx:id="btnCambiarRol"  layoutX="220" layoutY="330" style="-fx-background-color: #F02D3A; -fx-text-fill: white; -fx-font-weight: bold;" text="Cambiar Rol" />
+
+    <Button fx:id="btnCrearUsuarios" layoutX="330" layoutY="330" onAction="#goCrearUsuarios" style="-fx-background-color: #F02D3A; -fx-text-fill: white; -fx-font-weight: bold;" text="Crear usuarios"/>
+
 
 </AnchorPane>
+
+</BorderPane>

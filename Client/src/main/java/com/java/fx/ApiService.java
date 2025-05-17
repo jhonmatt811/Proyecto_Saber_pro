@@ -83,7 +83,7 @@ public class ApiService {
                     return null;
                 });
     }
-    /*public List<Rol> obtenerRoles() throws Exception {
+    public List<Rol> obtenerRoles() throws Exception {
         String url = BASE_URL + "/roles";
         System.out.println("Llamando a URL: " + url);
 
@@ -105,7 +105,7 @@ public class ApiService {
         } else {
             throw new RuntimeException("Error al obtener roles: " + response.statusCode());
         }
-    }*/
+    }
 
 
 

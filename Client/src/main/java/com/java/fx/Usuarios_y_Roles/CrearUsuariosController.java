@@ -4,6 +4,8 @@ import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.control.Alert.AlertType;
+import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.BorderPane;
 
 import java.net.URI;
 import java.net.http.HttpClient;
@@ -17,6 +19,7 @@ public class CrearUsuariosController {
 
 
     private static final String API_URL = "http://localhost:8080/admin/personas";
+    public AnchorPane formularioUsuario;
 
 
     @FXML private RadioButton opcion1 ;
@@ -31,6 +34,9 @@ public class CrearUsuariosController {
     @FXML private TextField segundoApellidoField;
     @FXML private TextField ccField;
     @FXML private TextField correoField;
+    @FXML private BorderPane mainPane;
+    @FXML private Button btnVolver;
+
 
 
 
@@ -41,6 +47,9 @@ public class CrearUsuariosController {
         opcion1.setToggleGroup(grupoOpciones);
         opcion2.setToggleGroup(grupoOpciones);
         opcion3.setToggleGroup(grupoOpciones);
+        opcion4.setToggleGroup(grupoOpciones);
+        opcion5.setToggleGroup(grupoOpciones);
+
 
         // Asignar valores a los radio buttons según tu lógica de roles
         opcion1.setUserData(1); // ID del rol_id Directivo
@@ -52,11 +61,12 @@ public class CrearUsuariosController {
     }
 
     @FXML
-    public void registrarUsuario() {
+        public void registrarUsuario() {
         // Validar campos obligatorios
         if (!validarCampos()) {
             return;
         }
+
 
         // Crear objeto con los datos del usuario
         Usuario usuario = new Usuario(
@@ -159,6 +169,8 @@ public class CrearUsuariosController {
                             Platform.runLater(() -> {
                                 mostrarAlerta("Éxito", "Usuario creado correctamente", AlertType.INFORMATION);
                                 limpiarFormulario();
+
+                                volverATabla();
                             });
                         } else {
                             Platform.runLater(() -> {
@@ -224,6 +236,7 @@ public class CrearUsuariosController {
         return email.matches("^[\\w.-]+@[\\w.-]+\\.(com|net|org|edu|gov|co)$");
     }
 
+
     // Clase interna para representar los datos del usuario
     private static class Usuario {
         private Long cc;
@@ -256,5 +269,22 @@ public class CrearUsuariosController {
         public int getRolId() { return rol_id; }
 
     }
+    private UsuariosRolesController usuariosRolesController;
+
+    public void setUsuariosRolesController(UsuariosRolesController controller) {
+        this.usuariosRolesController = controller;
+    }
+    @FXML
+    public void volverATabla() {
+        if (usuariosRolesController != null) {
+            usuariosRolesController.getMainPane().setCenter(null); // Oculta el formulario
+            usuariosRolesController.cargarUsuarios();              // ✅ Actualiza la tabla con el nuevo usuario
+            usuariosRolesController.getTablaUsuarios().setVisible(true);
+            usuariosRolesController.getComboNuevoRol().setVisible(true);
+            usuariosRolesController.getBtnCrearUsuarios().setVisible(true);
+            usuariosRolesController.getBtnCambiarRol().setVisible(true);
+        }
+    }
+
 
 }
