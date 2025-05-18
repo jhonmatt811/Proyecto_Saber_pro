@@ -6,6 +6,7 @@ package com.icfes_group.service.admin;
 
 import com.icfes_group.dto.PersonaDTO;
 import com.icfes_group.dto.UserDTO;
+import com.icfes_group.email.components.EmailUtil;
 import com.icfes_group.model.Rol;
 import com.icfes_group.model.User;
 import com.icfes_group.repository.UserRepository;
@@ -15,10 +16,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.*;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.mail.javamail.JavaMailSender;
-import org.springframework.mail.javamail.MimeMessageHelper;
+import lombok.AllArgsConstructor;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -27,18 +25,13 @@ import org.springframework.stereotype.Service;
  *
  * @author juanc
  */
+@AllArgsConstructor
 @Service
-public class AdminUserService{
-    @Autowired
-    private RolService rolService;    
-    @Autowired
-    private UserRepository userRepository;
-    @Autowired
-    private JavaMailSender mailSender;
-    @Value("${spring.mail.username}")
-    private String mailSenderAddress;    
-    @Autowired
-    private PasswordEncoder passwordEncoder;
+public class AdminUserService  {
+    private final RolService rolService;
+    private final UserRepository userRepository;
+    private final PasswordEncoder passwordEncoder;
+    private final EmailUtil emailUtil;
 
     public List<User> loadUserPeople() throws Exception{
         List<User> people = userRepository.findWithPersona();
@@ -48,20 +41,18 @@ public class AdminUserService{
         return people;
     }
 
-    private String loadHtmlTemplate(PersonaDTO person, String passwd) throws IOException {
-        // Aquí cargamos la plantilla HTML desde un archivo local
-        Path path = Path.of("src/main/resources/templates/InvitationEmail.html");
-        String htmlTemplate = Files.readString(path);
+    public void sendEmail(PersonaDTO person,String passwd) throws Exception{
+        Map<String, Object> params = new HashMap<>();
+        params.put("PrimerNombre", person.getPrimer_nombre());
+        params.put("PrimerApellido", person.getPrimer_apellido());
+        params.put("email", person.getEmail());
+        params.put("password", passwd);
 
-        // Reemplazar las variables en la plantilla
-        htmlTemplate = htmlTemplate.replace("{PrimerNombre}", person.getPrimer_nombre());
-        htmlTemplate = htmlTemplate.replace("{PrimerApellido}", person.getPrimer_apellido());
-        htmlTemplate = htmlTemplate.replace("{email}", person.getEmail());
-        htmlTemplate = htmlTemplate.replace("{password}", passwd);
-
-        return htmlTemplate;
+        emailUtil.loadHtmlBody("src/main/resources/templates/InvitationEmail.html");
+        emailUtil.addTextParams(params);
+        emailUtil.sendEmail(person.getEmail(),"Registro Exitoso - ICFES");
     }
-    
+
      public User changeActivate(Boolean activate, UUID id) {
         User user = userRepository.findById(id)
             .orElseThrow(() -> new NoSuchElementException("No se encontró el usuario"));
@@ -105,23 +96,4 @@ public class AdminUserService{
     public String hashPasswd(String passwd){
         return passwordEncoder.encode(passwd);
     }
-    
-    @Async
-    public void sendEmail(PersonaDTO person, String passwd) throws Exception {
-        String subject = "Registro Exitoso - ICFES";
-
-        // Cargar el contenido HTML de un archivo o desde un String
-        String htmlContent = loadHtmlTemplate(person, passwd);
-
-        // Crear el MimeMessage y configurar el correo
-        var message = mailSender.createMimeMessage();
-        var helper = new MimeMessageHelper(message, true); // true para contenido HTML
-        helper.setTo(person.getEmail());
-        helper.setSubject(subject);
-        helper.setFrom(mailSenderAddress);  // Usar la variable cargada desde el entorno
-        helper.setText(htmlContent, true);  // true indica que es HTML
-
-        mailSender.send(message);  // Enviar el correo
-    }    
-    
 }
