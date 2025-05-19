@@ -3,10 +3,12 @@ package com.icfes_group;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import io.github.cdimascio.dotenv.Dotenv;
+import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.scheduling.annotation.EnableAsync;
 
 @SpringBootApplication(scanBasePackages = "com.icfes_group")
 @EnableAsync
+@EnableCaching
 public class IcfesMainApplication {
 
     public static void main(String[] args) {
