@@ -25,11 +25,16 @@ public class UserController {
         try {
             User user = userService.login(dto);
             String token = jwtUtil.generateToken(dto.getEmail(),user.getRol().getNombre());
+            System.out.println(user);
+            if(userService.mustChangePassword(user)){
+                return new ResponseEntity<>(new StatusResponse("WARN","¡Debe cambiar la contraseña!"),HttpStatus.FORBIDDEN);
+            }
             return new ResponseEntity<>(new LoginResponse("OK","Inicio de Sesion Correcto",token),HttpStatus.ACCEPTED);
         } catch (Exception e) {
             return new ResponseEntity<>(new StatusResponse("BAD",e.getMessage()), HttpStatus.BAD_REQUEST);
         }
     }
+
     @PutMapping("/contraseña")
     public ResponseEntity<?> resetPassword(@Valid @RequestBody UserDTO dto){
         try{
