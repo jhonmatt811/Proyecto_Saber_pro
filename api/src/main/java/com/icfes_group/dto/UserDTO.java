@@ -22,5 +22,6 @@ public class UserDTO {
     private String password;
     private Integer rol_id;
     private Rol rol;
+    private Integer code;
 
 }
