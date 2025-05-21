@@ -32,5 +32,5 @@ public class UserController {
         } catch (Exception e) {
             return new ResponseEntity<>(new StatusResponse("BAD",e.getMessage()), HttpStatus.BAD_REQUEST);
         }
-    }    
-}
+    }}
+

@@ -1,4 +1,4 @@
-package com.java.fx;
+package com.java.fx.Usuarios_y_Roles;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -13,6 +13,9 @@ public class PermisosRoles {
         jerarquiaRoles.put("coordinador de saber pro", 1);
         jerarquiaRoles.put("director de programa", 2);
         jerarquiaRoles.put("decano", 3);
+        jerarquiaRoles.put("DocenteyEstudiante",1 );
+        jerarquiaRoles.put("Comitedelprograma",2);
+
 
         // Definir niveles mínimos por acción
         nivelMinimoPorAccion.put("inicio", 1);

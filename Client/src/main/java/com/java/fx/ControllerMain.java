@@ -1,5 +1,7 @@
 package com.java.fx;
 //controlador de la interfaz general de usuarios
+import com.java.fx.Usuarios_y_Roles.PermisosRoles;
+import com.java.fx.Usuarios_y_Roles.Sesion;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
@@ -20,7 +22,7 @@ import java.io.IOException;
 
 @Component
 @Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)
-public class Controller {
+public class ControllerMain {
 
     @Autowired
     private ApplicationContext context;
@@ -37,8 +39,8 @@ public class Controller {
     @FXML
     private Button btnResultados;
 
-    @FXML
-    private Button btnCrearUsuarios;
+    //@FXML
+    //private Button btnCrearUsuarios;
 
     @FXML
     private Button btnAccMejora;
@@ -65,7 +67,7 @@ public class Controller {
 
         btnInicio.setVisible(permisos.tienePermiso("inicio"));
         btnResultados.setVisible(permisos.tienePermiso("resultados"));
-        btnCrearUsuarios.setVisible(permisos.tienePermiso("crearUsuarios"));
+        //btnCrearUsuarios.setVisible(permisos.tienePermiso("crearUsuarios"));
         btnAccMejora.setVisible(permisos.tienePermiso("accMejora"));
         btnUsuariosRoles.setVisible(permisos.tienePermiso("usuariosRoles"));
         btnConfiguracion.setVisible(permisos.tienePermiso("configuracion"));
@@ -87,12 +89,7 @@ public class Controller {
         loadCenterView("/Resultados.fxml");
     }
 
-    @FXML
-    public void goCrearUsuarios() {
-        resetButtonStyles();
-        btnCrearUsuarios.getStyleClass().add("boton-rojo");
-        loadCenterView("/CrearUsuarios.fxml");
-    }
+
 
     @FXML
     public void goAccMejora() {
@@ -105,19 +102,14 @@ public class Controller {
     @FXML
     public void goUsuariosRoles() {
         resetButtonStyles();
-        btnAccMejora.getStyleClass().add("boton-rojo");
-
-        Label newLabel = new Label("Estás en usuarios y roles");
-        newLabel.getStyleClass().add("content-label");
-
-        mainPane.setCenter(null);
-        mainPane.setCenter(newLabel);
+        btnUsuariosRoles.getStyleClass().add("boton-rojo");
+        loadCenterView("/UsuariosRoles.fxml");
     }
 
     @FXML
     public void goConfiguracion() {
         resetButtonStyles();
-        btnAccMejora.getStyleClass().add("boton-rojo");
+        btnConfiguracion.getStyleClass().add("boton-rojo");
 
         Label newLabel = new Label("Accediendo a configuracion");
         newLabel.getStyleClass().add("content-label");
@@ -129,7 +121,7 @@ public class Controller {
     private void resetButtonStyles() {
         btnInicio.getStyleClass().remove("boton-rojo");
         btnResultados.getStyleClass().remove("boton-rojo");
-        btnCrearUsuarios.getStyleClass().remove("boton-rojo");
+        //btnCrearUsuarios.getStyleClass().remove("boton-rojo");
         btnAccMejora.getStyleClass().remove("boton-rojo");
         btnUsuariosRoles.getStyleClass().remove("boton-rojo");
         btnConfiguracion.getStyleClass().remove("boton-rojo");
@@ -182,5 +174,3 @@ public class Controller {
 
 
 }
-
-
