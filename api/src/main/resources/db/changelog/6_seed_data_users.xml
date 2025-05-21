@@ -14,7 +14,7 @@
             <column name="segundo_nombre" value="Carlos"/>
             <column name="primer_apellido" value="Pérez"/>
             <column name="segundo_apellido" value="Gómez"/>
-            <column name="email" value="jctobon11.2@gmail.com"/>
+            <column name="email" value="icfes.project.soft1@gmail.com"/>
         </insert>
     </changeSet>
 
