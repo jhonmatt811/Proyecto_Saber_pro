@@ -10,11 +10,12 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
 import javafx.scene.control.*;
 import javafx.scene.layout.BorderPane;
+import org.springframework.stereotype.Component;
 
 import java.io.IOException;
 import java.util.List;
 
-
+@Component
 public class UsuariosRolesController {
     @FXML private TableView<Usuario> tablaUsuarios;
     @FXML private ComboBox<Rol> comboNuevoRol;

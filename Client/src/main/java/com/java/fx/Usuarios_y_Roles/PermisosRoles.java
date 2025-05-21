@@ -19,7 +19,7 @@ public class PermisosRoles {
 
         // Definir niveles mínimos por acción
         nivelMinimoPorAccion.put("inicio", 1);
-        nivelMinimoPorAccion.put("resultados", 1);
+        nivelMinimoPorAccion.put("resultados", 2);
         nivelMinimoPorAccion.put("crearUsuarios", 3);
         nivelMinimoPorAccion.put("accMejora", 1);
         nivelMinimoPorAccion.put("usuariosRoles", 3);
