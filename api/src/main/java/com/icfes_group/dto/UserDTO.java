@@ -8,7 +8,6 @@ import com.icfes_group.model.Rol;
 import jakarta.validation.constraints.Email;
 import lombok.Data;
 import java.util.UUID;
-import jakarta.validation.constraints.NotBlank;
 /**
  *
  * @author juanc
