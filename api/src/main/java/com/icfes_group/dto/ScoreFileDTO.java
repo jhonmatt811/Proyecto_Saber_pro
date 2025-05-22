@@ -8,6 +8,9 @@ import lombok.Data;
 /**
  *
  * @author juanc
+ *
+ * Esta clase aunque parecida a @{@link com.icfes_group.integrate.icfes.dto.IcfesIntegrationDTO}, no son iguales
+ * esta lee y envia los datos tal cual como estan descritos a continuacion:
  */
 @Data
 public class ScoreFileDTO {
@@ -33,7 +36,7 @@ public class ScoreFileDTO {
     @NotBlank(message = "Programa no definido")
     private String programa;
 
-    @NotBlank(message = "Ciudad no definida")
+    @NotBlank(message = "Ciu    dad no definida")
     private String ciudad;
 
     @NotBlank(message = "Núcleo básico de conocimiento no definido")
