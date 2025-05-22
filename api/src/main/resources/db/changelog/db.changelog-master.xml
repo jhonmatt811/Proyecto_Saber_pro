@@ -12,5 +12,6 @@
     <include file="db/changelog/4_add_users_table.xml" />
     <include file="db/changelog/5_add_icfes_table.xml" />
     <include file="/db/changelog/6_seed_data_users.xml" />
+    <include file="/db/changelog/7_add_history_password_table.xml" />
 
 </databaseChangeLog>

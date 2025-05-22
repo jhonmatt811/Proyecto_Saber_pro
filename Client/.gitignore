@@ -37,6 +37,10 @@ build/
 *.iml
 *.ipr
 
+# Run configurations, caches, etc.
+out/
+*.run.xml
+
 ## NetBeans
 /nbproject/private/
 /nbbuild/
@@ -52,8 +56,23 @@ build/
 # ---------------------------
 .mvn/
 !/.mvn/wrapper/maven-wrapper.jar
+mvnw
+mvnw.cmd
 
 # ---------------------------
 # Archivos auxiliares o temporales
 # ---------------------------
-HELP.md
+*.swp
+*.swo
+*.bak
+*.tmp
+*.old
+
+# Archivos de sistema
+.DS_Store
+Thumbs.db
+
+# Archivos de entorno
+.env
+.env.*
+*.env

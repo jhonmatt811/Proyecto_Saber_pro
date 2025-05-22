@@ -3,10 +3,12 @@ package com.icfes_group;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import io.github.cdimascio.dotenv.Dotenv;
+import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.scheduling.annotation.EnableAsync;
 
 @SpringBootApplication(scanBasePackages = "com.icfes_group")
 @EnableAsync
+@EnableCaching
 public class IcfesMainApplication {
 
     public static void main(String[] args) {
@@ -26,6 +28,9 @@ public class IcfesMainApplication {
         System.setProperty("DB_PASSWD", dotenv.get("DB_PASSWD"));
         System.setProperty("JWT_SECRET", dotenv.get("JWT_SECRET"));
 
+        System.setProperty("ICFES_TOKEN", dotenv.get("ICFES_TOKEN"));
+        System.setProperty("ICFES_EMAIL", dotenv.get("ICFES_EMAIL"));
+        System.setProperty("ICFES_PASSWORD", dotenv.get("ICFES_PASSWORD"));
         SpringApplication.run(IcfesMainApplication.class, args);
     }
 }
