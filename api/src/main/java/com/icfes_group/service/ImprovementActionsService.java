@@ -11,7 +11,6 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.UUID;
 
 @Service
 @AllArgsConstructor
@@ -24,13 +23,6 @@ public class ImprovementActionsService {
         return improvementActionsRepository.save(improvementActions);
     }
 
-    public ImprovementActions getSuggestActions(UUID id) throws Exception{
-        if(id == null){
-            throw new Exception("El id es obligatorio");
-        }
-        return improvementActionsRepository.findById(id)
-            .orElseThrow(() -> new Exception("No se encontró el aporte"));
-    }
     public List<ImprovementActions> findAll() throws Exception{
         List<ImprovementActions> actions =  improvementActionsRepository.findAll();
         if(actions.isEmpty()){
