@@ -35,6 +35,7 @@ public class ImprovementActionsController {
         }
     }
 
+    //Endpoint para consultar gemmini AI por sugerencias
     @GetMapping("/sugerencias")
     public ResponseEntity<?> getSuggest(@RequestBody ImprovementActionsAnalyzeDTO dto){
         try {
