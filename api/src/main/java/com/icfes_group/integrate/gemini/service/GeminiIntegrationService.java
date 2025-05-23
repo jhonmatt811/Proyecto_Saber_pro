@@ -20,7 +20,6 @@ public class GeminiIntegrationService {
     private final GeminiIntegrationSettings geminiIntegrationSettings;
     public String getGeminiData(ImprovementActionsAnalyzeDTO params) throws JsonProcessingException {
         String url = geminiIntegrationSettings.getUrl() + geminiIntegrationSettings.getApiKey();
-        System.out.println("URL final: " + url);
         String prompt = geminiIntegrationSettings.buildPrompt(params);
 
         HttpHeaders headers = new HttpHeaders();

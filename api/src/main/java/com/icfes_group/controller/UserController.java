@@ -25,7 +25,6 @@ public class UserController {
         try {
             User user = userService.login(dto);
             String token = jwtUtil.generateToken(dto.getEmail(),user.getRol().getNombre());
-            System.out.println(user);
             if(userService.mustChangePassword(user)){
                 return new ResponseEntity<>(new StatusResponse("WARN","¡Debe cambiar la contraseña!"),HttpStatus.FORBIDDEN);
             }
