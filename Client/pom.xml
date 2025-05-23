@@ -1,4 +1,3 @@
-<?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0"
 		 xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 		 xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
@@ -8,11 +7,11 @@
 		<groupId>org.springframework.boot</groupId>
 		<artifactId>spring-boot-starter-parent</artifactId>
 		<version>3.4.5</version>
-		<relativePath/> <!-- lookup parent from repository -->
+		<relativePath/>
 	</parent>
 
 	<groupId>com.java</groupId>
-	<artifactId>fx</artifactId>
+	<artifactId>fx-spring</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<name>fx</name>
 	<description>Aplicación de login con JavaFX y Spring Boot</description>
@@ -29,29 +28,30 @@
 			<artifactId>spring-boot-starter</artifactId>
 		</dependency>
 
-		<!-- Jackson para manejo de JSON -->
+		<!-- JSON -->
 		<dependency>
 			<groupId>com.fasterxml.jackson.core</groupId>
 			<artifactId>jackson-databind</artifactId>
 		</dependency>
 
-		<!-- org.json para usar JSONObject -->
 		<dependency>
 			<groupId>org.json</groupId>
 			<artifactId>json</artifactId>
 			<version>20240303</version>
 		</dependency>
 
-		<!-- Lombok para anotaciones como @Getter, @Setter, etc. -->
+		<!-- HTTP Client -->
 		<dependency>
 			<groupId>org.apache.httpcomponents</groupId>
 			<artifactId>httpclient</artifactId>
 			<version>4.5.13</version>
 		</dependency>
+
+		<!-- Lombok -->
 		<dependency>
 			<groupId>org.projectlombok</groupId>
 			<artifactId>lombok</artifactId>
-			<optional>true</optional>
+			<scope>provided</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.springframework</groupId>
@@ -60,18 +60,20 @@
 		</dependency>
 
 
-		<!-- Dependencias de prueba -->
+		<!-- Testing -->
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-test</artifactId>
 			<scope>test</scope>
 		</dependency>
 
+		<!-- JavaFX -->
 		<dependency>
 			<groupId>org.openjfx</groupId>
 			<artifactId>javafx-controls</artifactId>
 			<version>${javafx.version}</version>
 		</dependency>
+
 		<dependency>
 			<groupId>org.openjfx</groupId>
 			<artifactId>javafx-fxml</artifactId>
@@ -81,10 +83,11 @@
 
 	<build>
 		<plugins>
-			<!-- Compilador de Maven -->
+			<!-- Compilador -->
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-compiler-plugin</artifactId>
+				<version>3.11.0</version>
 				<configuration>
 					<source>${java.version}</source>
 					<target>${java.version}</target>
@@ -92,26 +95,13 @@
 						<path>
 							<groupId>org.projectlombok</groupId>
 							<artifactId>lombok</artifactId>
+							<version>1.18.32</version>
 						</path>
 					</annotationProcessorPaths>
 				</configuration>
 			</plugin>
 
-			<!-- Plugin de Spring Boot -->
-			<plugin>
-				<groupId>org.springframework.boot</groupId>
-				<artifactId>spring-boot-maven-plugin</artifactId>
-				<configuration>
-					<excludes>
-						<exclude>
-							<groupId>org.projectlombok</groupId>
-							<artifactId>lombok</artifactId>
-						</exclude>
-					</excludes>
-				</configuration>
-			</plugin>
-
-			<!-- Plugin para ejecutar JavaFX correctamente -->
+			<!-- Plugin JavaFX -->
 			<plugin>
 				<groupId>org.openjfx</groupId>
 				<artifactId>javafx-maven-plugin</artifactId>
@@ -120,14 +110,35 @@
 					<mainClass>com.java.fx.Main</mainClass>
 				</configuration>
 			</plugin>
+
+
+			<!-- Plugin Spring Boot -->
+			<plugin>
+				<groupId>org.springframework.boot</groupId>
+				<artifactId>spring-boot-maven-plugin</artifactId>
+			</plugin>
+
+			<!-- Copiar JAR al raíz del proyecto -->
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-antrun-plugin</artifactId>
+				<version>3.0.0</version>
+				<executions>
+					<execution>
+						<id>copy-jar-to-root</id>
+						<phase>verify</phase>
+						<goals>
+							<goal>run</goal>
+						</goals>
+						<configuration>
+							<target>
+								<copy file="${project.build.directory}/${project.build.finalName}.jar"
+									  todir="${project.basedir}" />
+							</target>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
 		</plugins>
 	</build>
-
-	<repositories>
-		<repository>
-			<id>central</id>
-			<url>https://repo.maven.apache.org/maven2</url>
-		</repository>
-	</repositories>
-
 </project>
