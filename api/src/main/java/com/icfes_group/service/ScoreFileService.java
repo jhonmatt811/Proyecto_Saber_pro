@@ -315,7 +315,7 @@ public class ScoreFileService {
             GlobalResult globalResult = saveGlobalResult(dtoIter, test,groupReferencesBank);
 
             // Resultado de módulo
-            ModuleResult resultadoModulo = saveModuleResult(dtoIter, globalResult);
+            lista.forEach(dtoI ->saveModuleResult(dtoI, globalResult));
         });
 
         return dto;

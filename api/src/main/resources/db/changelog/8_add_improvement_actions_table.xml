@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+        https://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.20.xsd">
+
+    <!-- tipos_documentos -->
+    <changeSet id="1" author="juan">
+        <createTable tableName="acciones_mejoras">
+            <column name="id" type="UUID">
+                <constraints primaryKey="true" nullable="false" />
+            </column>
+            <column name="programa_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="module_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="propuesta_mejora" type="TEXT">
+                <constraints nullable="false" />
+            </column>
+            <column name="year_inicio" type="BIGINT">
+                <constraints nullable="false" />
+            </column>
+            <column name="year_fin" type="BIGINT">
+                <constraints nullable="false" />
+            </column>
+        </createTable>
+        <addForeignKeyConstraint baseTableName="acciones_mejoras" baseColumnNames="programa_id" constraintName="programa_id_fk" referencedTableName="programas_academicos"
+                                 referencedColumnNames="id" />
+        <addForeignKeyConstraint baseTableName="acciones_mejoras" baseColumnNames="module_id" constraintName="module_id_fk" referencedTableName="catalogos_modulos"
+                                 referencedColumnNames="id" />
+    </changeSet>
+</databaseChangeLog>
