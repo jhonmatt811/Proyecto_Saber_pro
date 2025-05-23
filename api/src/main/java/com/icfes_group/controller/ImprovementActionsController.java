@@ -35,14 +35,6 @@ public class ImprovementActionsController {
         }
     }
 
-    @GetMapping("/{id}/sugerencias")
-    public ResponseEntity<?> getSuggestActions(@PathVariable UUID id){
-        try {
-            return new ResponseEntity<>(improvementActionsService.getSuggestActions(id),HttpStatus.OK);
-        } catch (Exception e) {
-            return new ResponseEntity<>(new StatusResponse("BAD",e.getMessage()),HttpStatus.BAD_REQUEST);
-        }
-    }
     @GetMapping("/sugerencias")
     public ResponseEntity<?> getSuggest(@RequestBody ImprovementActionsAnalyzeDTO dto){
         try {
