@@ -4,15 +4,22 @@ import com.java.fx.model.Resultado;
 import com.java.fx.service.AutenticacionService;
 import com.java.fx.service.ResultadoService;
 import com.java.fx.service.ResultadoUploader;
+import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.collections.transformation.FilteredList;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.chart.BarChart;
+import javafx.scene.chart.CategoryAxis;
+import javafx.scene.chart.NumberAxis;
 import javafx.scene.chart.XYChart;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.stage.FileChooser;
+import javafx.stage.Stage;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.context.annotation.Scope;
@@ -21,6 +28,7 @@ import org.springframework.stereotype.Component;
 import java.io.File;
 import java.io.IOException;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 @Component
@@ -51,7 +59,6 @@ public class ResultadosController {
     @FXML private TextField inputDocumento;
     @FXML private ComboBox<String> filtroPrograma;
     @FXML private ComboBox<String> filtroModulo;
-    @FXML private BarChart<String, Number> graficaPuntajes;
     @FXML private Label archivoCargadoLabel;
 
     private ObservableList<Resultado> datosOriginales;
@@ -59,7 +66,6 @@ public class ResultadosController {
     // Inyectamos los servicios por campo
     @Autowired private ResultadoService resultadoService;
     @Autowired private ResultadoUploader uploader;
-    @Autowired private AutenticacionService authService;
 
     @FXML private Button btnObtenerResultados;
 
@@ -78,7 +84,7 @@ public class ResultadosController {
             // Llamada al API
             List<Resultado> lista = apiService.obtenerResultados(year, ciclo, documento, progId);
 
-            // **Aquí imprimimos en consola cuántas filas vinieron**
+            // Aquí imprimimos en consola cuántas filas vinieron
             System.out.println("Filas recibidas desde la API: " + lista.size());
 
             // Actualizar la tabla y gráfica
@@ -87,7 +93,10 @@ public class ResultadosController {
             tablaResultados.setItems(datosFiltrados);
             actualizarOpcionesFiltros();
             aplicarFiltros();
-            actualizarGrafica();
+            Platform.runLater(() -> {
+                actualizarOpcionesFiltros();
+                aplicarFiltros();
+            });
 
         } catch (NumberFormatException nfe) {
             mostrarAlerta("Filtro inválido", "Año, ciclo o documento no tienen un formato numérico correcto.", Alert.AlertType.ERROR);
@@ -96,54 +105,26 @@ public class ResultadosController {
             mostrarAlerta("Error al obtener resultados", ex.getMessage(), Alert.AlertType.ERROR);
         }
     }
-    /*
-    @FXML
-    public void handleObtenerResultados() {
-        try {
-            Integer year = inputYear.getText().isBlank()
-                    ? null : Integer.parseInt(inputYear.getText());
-            Integer ciclo = inputCiclo.getText().isBlank()
-                    ? null : Integer.parseInt(inputCiclo.getText());
-            Long doc = inputDocumento.getText().isBlank()
-                    ? null : Long.parseLong(inputDocumento.getText());
-            // Si quisieras filtrar por programaId numérico, podrías parsearlo aquí:
-            Integer programaId = null;
 
-            List<Resultado> lista = resultadoService
-                    .obtenerResultados(year, ciclo, doc, programaId);
-
-            datosOriginales.setAll(lista);
-            datosFiltrados = new FilteredList<>(datosOriginales, r -> true);
-            tablaResultados.setItems(datosFiltrados);
-
-            actualizarOpcionesFiltros();
-            aplicarFiltros();
-            actualizarGrafica();
-
-        } catch (NumberFormatException nfe) {
-            mostrarAlerta("Error", "Año, ciclo o documento inválido.", Alert.AlertType.ERROR);
-        } catch (Exception ex) {
-            mostrarAlerta("Error al obtener resultados", ex.getMessage(), Alert.AlertType.ERROR);
-        }
-    }
-    */
     public ResultadosController() {
         // constructor vacío para JavaFX
     }
 
     public ResultadosController(ResultadoService resultadoService,
-                                ResultadoUploader uploader,
-                                AutenticacionService authService) {
+                                ResultadoUploader uploader) {
         this.resultadoService = resultadoService;
         this.uploader = uploader;
-        this.authService = authService;
     }
 
     @FXML
     public void initialize() {
         configurarColumnas();
-        cargarDatosEjemplo();
-        configurarGrafica();
+
+        // Inicializar listas vacías
+        datosOriginales = FXCollections.observableArrayList();
+        datosFiltrados = new FilteredList<>(datosOriginales, r -> true);
+        tablaResultados.setItems(datosFiltrados);
+
         configurarFiltros();
         filtroPrograma.setButtonCell(new ListCell<>() {
             @Override protected void updateItem(String item, boolean empty) {
@@ -181,36 +162,6 @@ public class ResultadosController {
         colNovedades.setCellValueFactory(new PropertyValueFactory<>("novedades"));
     }
 
-    private void cargarDatosEjemplo() {
-        datosOriginales = FXCollections.observableArrayList(
-                new Resultado(1, 2023, "CC", 123456, "Juan Pérez", "R001", "Estudiante", "1010", "Ingeniería", "Bogotá", "G1",
-                        "88", "90", "85", "Matemáticas", "92", "Alto", "89", "88", "Ninguna"),
-                new Resultado(1, 2023, "TI", 987654, "Ana Gómez", "R002", "Estudiante", "1020", "Medicina", "Medellín", "G2",
-                        "75", "70", "72", "Lectura crítica", "78", "Medio", "73", "71", "Aplazada")
-        );
-        datosFiltrados = new FilteredList<>(datosOriginales, r -> true);
-        tablaResultados.setItems(datosFiltrados);
-        actualizarOpcionesFiltros();
-    }
-
-    private void configurarGrafica() {
-        graficaPuntajes.setTitle("Distribución de Puntajes por Módulo");
-        actualizarGrafica();
-    }
-
-    private void actualizarGrafica() {
-        graficaPuntajes.getData().clear();
-        XYChart.Series<String, Number> series = new XYChart.Series<>();
-        datosFiltrados.stream()
-                .filter(r -> r.getPuntajeModulo()!=null && r.getPuntajeModulo().matches("\\d+(\\.\\d+)?"))
-                .collect(Collectors.groupingBy(
-                        Resultado::getModulo,
-                        Collectors.averagingDouble(r -> Double.parseDouble(r.getPuntajeModulo()))
-                ))
-                .forEach((mod, avg) -> series.getData().add(new XYChart.Data<>(mod, avg)));
-        graficaPuntajes.getData().add(series);
-    }
-
     private void configurarFiltros() {
         filtroPrograma.valueProperty().addListener((o, ov, nv) -> aplicarFiltros());
         filtroModulo.valueProperty().addListener((o, ov, nv) -> aplicarFiltros());
@@ -232,7 +183,9 @@ public class ResultadosController {
                         &&(progF==null||progF.equals(r.getPrograma()))
                         &&(modF==null||modF.equals(r.getModulo()))
         );
-        actualizarGrafica();
+        Platform.runLater(() -> {
+            System.out.println("Filtros aplicados. Gráfica actualizada."); // Debug
+        });
     }
 
     @FXML
@@ -249,7 +202,7 @@ public class ResultadosController {
         fc.setTitle("Seleccionar archivo de resultados");
         fc.getExtensionFilters().addAll(
                 new FileChooser.ExtensionFilter("Archivos de datos", "*.xlsx", "*.csv", "*.json"),
-                new FileChooser.ExtensionFilter("Todos los archivos", "*.*")
+                new FileChooser.ExtensionFilter("Todos los archivos", "*")
         );
         File archivo = fc.showOpenDialog(null);
         if (archivo != null) {
@@ -262,6 +215,10 @@ public class ResultadosController {
                 tablaResultados.setItems(datosFiltrados);
                 actualizarOpcionesFiltros();
                 aplicarFiltros();
+                Platform.runLater(() -> {
+                    actualizarOpcionesFiltros();
+                    aplicarFiltros();
+                });
                 // Enviar al backend
                 uploader.subirArchivo(archivo, cycle, year);
             } catch (IOException ex) {
@@ -275,7 +232,6 @@ public class ResultadosController {
         filtroPrograma.setValue(null);
         filtroModulo.setValue(null);
         datosFiltrados.setPredicate(r->true);
-        actualizarGrafica();
     }
 
     private void mostrarAlerta(String titulo, String mensaje, Alert.AlertType tipo) {
@@ -304,5 +260,23 @@ public class ResultadosController {
         // Lógica para exportar a Excel
         System.out.println("Exportando a Excel...");
         // Implementar exportación real aquí
+    }
+    @FXML
+    private void handleMostrarGrafica() {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/GraficaModulos.fxml"));
+            Parent root = loader.load();
+
+            // Pasar los datos filtrados a la nueva ventana
+            GraficaModulosController controller = loader.getController();
+            controller.inicializarDatos(datosFiltrados);
+
+            Stage stage = new Stage();
+            stage.setTitle("Gráfica Comparativa");
+            stage.setScene(new Scene(root, 800, 600));
+            stage.show();
+        } catch (IOException e) {
+            mostrarAlerta("Error", "No se pudo cargar la gráfica.", Alert.AlertType.ERROR);
+        }
     }
 }
