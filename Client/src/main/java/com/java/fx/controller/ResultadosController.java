@@ -61,6 +61,72 @@ public class ResultadosController {
     @Autowired private ResultadoUploader uploader;
     @Autowired private AutenticacionService authService;
 
+    @FXML private Button btnObtenerResultados;
+
+    @Autowired
+    private ResultadoService apiService;
+
+    @FXML
+    public void handleObtenerResultados() {
+        try {
+            // Leer filtros (si el campo está vacío, lo pasamos como null)
+            Integer year    = inputYear.getText().isBlank()    ? null : Integer.parseInt(inputYear.getText());
+            Integer ciclo   = inputCiclo.getText().isBlank()   ? null : Integer.parseInt(inputCiclo.getText());
+            Long documento  = inputDocumento.getText().isBlank()? null : Long.parseLong(inputDocumento.getText());
+            Integer progId  = null; // si tu ComboBox de programa guardara un ID, haz algo similar
+
+            // Llamada al API
+            List<Resultado> lista = apiService.obtenerResultados(year, ciclo, documento, progId);
+
+            // **Aquí imprimimos en consola cuántas filas vinieron**
+            System.out.println("Filas recibidas desde la API: " + lista.size());
+
+            // Actualizar la tabla y gráfica
+            datosOriginales.setAll(lista);
+            datosFiltrados = new FilteredList<>(datosOriginales, r->true);
+            tablaResultados.setItems(datosFiltrados);
+            actualizarOpcionesFiltros();
+            aplicarFiltros();
+            actualizarGrafica();
+
+        } catch (NumberFormatException nfe) {
+            mostrarAlerta("Filtro inválido", "Año, ciclo o documento no tienen un formato numérico correcto.", Alert.AlertType.ERROR);
+        } catch (IOException | InterruptedException ex) {
+            ex.printStackTrace();  // para ver el stack en la consola
+            mostrarAlerta("Error al obtener resultados", ex.getMessage(), Alert.AlertType.ERROR);
+        }
+    }
+    /*
+    @FXML
+    public void handleObtenerResultados() {
+        try {
+            Integer year = inputYear.getText().isBlank()
+                    ? null : Integer.parseInt(inputYear.getText());
+            Integer ciclo = inputCiclo.getText().isBlank()
+                    ? null : Integer.parseInt(inputCiclo.getText());
+            Long doc = inputDocumento.getText().isBlank()
+                    ? null : Long.parseLong(inputDocumento.getText());
+            // Si quisieras filtrar por programaId numérico, podrías parsearlo aquí:
+            Integer programaId = null;
+
+            List<Resultado> lista = resultadoService
+                    .obtenerResultados(year, ciclo, doc, programaId);
+
+            datosOriginales.setAll(lista);
+            datosFiltrados = new FilteredList<>(datosOriginales, r -> true);
+            tablaResultados.setItems(datosFiltrados);
+
+            actualizarOpcionesFiltros();
+            aplicarFiltros();
+            actualizarGrafica();
+
+        } catch (NumberFormatException nfe) {
+            mostrarAlerta("Error", "Año, ciclo o documento inválido.", Alert.AlertType.ERROR);
+        } catch (Exception ex) {
+            mostrarAlerta("Error al obtener resultados", ex.getMessage(), Alert.AlertType.ERROR);
+        }
+    }
+    */
     public ResultadosController() {
         // constructor vacío para JavaFX
     }

@@ -29,6 +29,11 @@
         <ComboBox fx:id="filtroPrograma" promptText="Programa" prefWidth="180"/>
         <ComboBox fx:id="filtroModulo" promptText="Área" prefWidth="150"/>
         <Button onAction="#handleRestablecerFiltros" text="Restablecer" />
+        <!-- boton para hacer el get de resultados -->
+        <Button fx:id="btnObtenerResultados"
+                onAction="#handleObtenerResultados"
+                text="Obtener Resultados"
+                style="-fx-background-color: #009688; -fx-text-fill: white;" />
     </HBox>
 
     <!-- Tabla de resultados actualizada -->

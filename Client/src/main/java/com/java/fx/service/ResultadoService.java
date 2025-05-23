@@ -1,12 +1,9 @@
 package com.java.fx.service;
-import com.java.fx.controller.ResultadosController;
 import com.java.fx.model.Resultado;
 
-
-import com.java.fx.model.Resultado;
-import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectWriter;
+import com.fasterxml.jackson.core.type.TypeReference;
 import org.springframework.stereotype.Service;
 
 import java.io.*;
@@ -15,12 +12,68 @@ import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
+
+import com.java.fx.Usuarios_y_Roles.Sesion;
+
+import java.io.IOException;
+import java.net.URI;
+import java.net.http.*;
+
+import java.util.stream.Stream;
 
 @Service
 public class ResultadoService {
-    private String authToken;
+    private static final String BASE_URL = "http://localhost:8080";
+    private final HttpClient client = HttpClient.newHttpClient();
+    private final ObjectMapper mapper = new ObjectMapper();
 
+    /*
+      Llama al endpoint GET /resultados con los filtros opcionales.
+      Crea la URL con query params si no son nulos.
+     */
+    public List<Resultado> obtenerResultados(
+            Integer year,
+            Integer ciclo,
+            Long documento,
+            Integer programaId
+    ) throws IOException, InterruptedException {
+        StringBuilder sb = new StringBuilder(BASE_URL + "/resultados");
+
+        List<String> params = Stream.of(
+                        year      != null ? "year="     + year       : null,
+                        ciclo     != null ? "ciclo="    + ciclo      : null,
+                        documento != null ? "documento="+ documento  : null,
+                        programaId!= null ? "programa="  + programaId : null
+                )
+                .filter(Objects::nonNull)
+                .collect(Collectors.toList());
+
+        if (!params.isEmpty()) {
+            sb.append("?").append(String.join("&", params));
+        }
+
+        HttpRequest req = HttpRequest.newBuilder()
+                .uri(URI.create(sb.toString()))
+                .header("Authorization", "Bearer " + Sesion.getJwtToken())
+                .GET()
+                .build();
+
+        HttpResponse<String> resp =
+                client.send(req, HttpResponse.BodyHandlers.ofString());
+
+        if (resp.statusCode() != 200) {
+            throw new IOException("Error al obtener resultados: " + resp.statusCode()
+                    + " / " + resp.body());
+        }
+
+        // Parseamos directamente un array de Resultado
+        return mapper.readValue(
+                resp.body(),
+                new TypeReference<List<Resultado>>() {}
+        );
+    }
     /**
      * Carga resultados desde un archivo CSV o similar.
      * @param archivo File con los datos.
@@ -70,24 +123,36 @@ public class ResultadoService {
     private String normalizePercentil(String raw) {
         return "-".equals(raw) ? "0" : raw;
     }
-
     /**
-     * Envía la lista de resultados al backend vía HTTP POST.
+     * Envía la lista de resultados al backend vía HTTP POST,
+     * usando el token almacenado en Sesion.jwtToken.
      */
     public void enviarResultadosAlBackend(List<Resultado> resultados) throws IOException {
-        ensureAuthToken();
+        String token = Sesion.getJwtToken();
+        if (token == null || token.isBlank()) {
+            throw new IOException("No hay token de autenticación. Debes iniciar sesión primero.");
+        }
+
+        System.out.println("→ Filas a enviar al backend: " + resultados.size());
 
         URL url = new URL("http://localhost:8080/resultados/file");
         HttpURLConnection con = (HttpURLConnection) url.openConnection();
         con.setRequestMethod("POST");
         con.setRequestProperty("Content-Type", "application/json; utf-8");
         con.setRequestProperty("Accept", "application/json");
-        con.setRequestProperty("Authorization", "Bearer " + authToken);
+        con.setRequestProperty("Authorization", "Bearer " + token);
         con.setDoOutput(true);
 
-        ObjectWriter ow = new ObjectMapper().writer().withDefaultPrettyPrinter();
+        // Serializar la lista de resultados a JSON
+        ObjectWriter ow = new ObjectMapper()
+                .writer()
+                .withDefaultPrettyPrinter();
         String json = ow.writeValueAsString(resultados);
 
+        //imprimir los json
+        //System.out.println(json);
+
+        // Enviar cuerpo
         try (OutputStream os = con.getOutputStream()) {
             byte[] input = json.getBytes(StandardCharsets.UTF_8);
             os.write(input, 0, input.length);
@@ -102,48 +167,4 @@ public class ResultadoService {
         con.disconnect();
     }
 
-    /**
-     * Asegura tener un token válido, llamando a login si es necesario.
-     */
-    private void ensureAuthToken() throws IOException {
-        if (authToken == null) {
-            if (!loginYObtenerToken("jctobon11.2@gmail.com", "HRCTKMZ")) {
-                throw new IOException("No fue posible iniciar sesión en el backend");
-            }
-        }
-    }
-
-    /**
-     * Realiza login para obtener JWT.
-     */
-    private boolean loginYObtenerToken(String email, String password) {
-        try {
-            URL url = new URL("http://localhost:8080/usuarios/inicio-sesion");
-            HttpURLConnection con = (HttpURLConnection) url.openConnection();
-            con.setRequestMethod("POST");
-            con.setRequestProperty("Content-Type", "application/json; utf-8");
-            con.setDoOutput(true);
-
-            String loginJson = String.format("{\"email\":\"%s\",\"password\":\"%s\"}",
-                    email, password);
-            try (OutputStream os = con.getOutputStream()) {
-                os.write(loginJson.getBytes(StandardCharsets.UTF_8));
-            }
-
-            int code = con.getResponseCode();
-            if (code != HttpURLConnection.HTTP_OK && code != HttpURLConnection.HTTP_ACCEPTED) {
-                return false;
-            }
-
-            String responseBody = new String(con.getInputStream().readAllBytes(), StandardCharsets.UTF_8);
-            JsonNode root = new ObjectMapper().readTree(responseBody);
-            if (root.has("token")) {
-                authToken = root.get("token").asText();
-                return true;
-            }
-            return false;
-        } catch (Exception e) {
-            return false;
-        }
-    }
 }

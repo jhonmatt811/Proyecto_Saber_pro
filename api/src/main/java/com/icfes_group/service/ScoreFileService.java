@@ -263,6 +263,9 @@ public class ScoreFileService {
 
     // Método para guardar los datos del archivo
     public ScoreFileDTO[] saveDataFile(ScoreFileDTO[] dto) {
+        // Depuracion 1) Imprimir cuántas filas llegaron desde el cliente
+        System.out.println(">> ScoreFileService.saveDataFile: filas recibidas = " + dto.length);
+
         Map<Long, List<ScoreFileDTO>> agrupados = groupByDocument(dto);
 
         // Recolección de valores únicos
@@ -316,8 +319,12 @@ public class ScoreFileService {
 
             // Resultado de módulo
             ModuleResult resultadoModulo = saveModuleResult(dtoIter, globalResult);
-        });
 
+            // Recorremos todos los DTOs para guardar cada módulo
+            lista.forEach(d -> saveModuleResult(d, globalResult));
+        });
+        // Depuracion 2) Y justo antes de devolver:
+        System.out.println(">> ScoreFileService.saveDataFile: filas despachadas (DTOs) = " + dto.length);
         return dto;
         }
 
