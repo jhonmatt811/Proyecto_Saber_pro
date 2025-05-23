@@ -5,6 +5,7 @@ import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.CheckBox;
@@ -89,7 +90,7 @@ public class ControllerLogin implements Initializable {
     private void handleResponse(HttpResponse<String> response) {
         Platform.runLater(() -> {
             try {
-                if (response.statusCode() == 200 || response.statusCode() == 202) {
+                if (response.statusCode() == 200 || response.statusCode() ==202) {
                     JSONObject jsonResponse = new JSONObject(response.body());
                     handleSuccessfulLogin(jsonResponse);
                 } else {
@@ -178,4 +179,21 @@ public class ControllerLogin implements Initializable {
             visiblePasswordField.setManaged(false);
         }
     }
+
+    @FXML
+    private void handleForgotPasswordLink() {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/olvido_contraseña.fxml"));
+            Parent root = loader.load();
+
+            Stage stage = new Stage();
+            stage.setTitle("Recuperar contraseña");
+            stage.setScene(new Scene(root,500,400));
+            stage.getIcons().add(new Image(getClass().getResource("/img/images.png").toExternalForm()));
+            stage.show();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
 }

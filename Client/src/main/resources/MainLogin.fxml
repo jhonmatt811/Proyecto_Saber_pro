@@ -29,7 +29,7 @@
 
                 <HBox alignment="CENTER_LEFT" spacing="10" />
 
-                <Button layoutX="288.0" layoutY="604.0" onAction="#onLoginClick" prefHeight="35.0" prefWidth="89.0" style="-fx-background-color: #b11212; -fx-text-fill: white;" text="Iniciar Sesión" />
+                <Button layoutX="288.0" layoutY="615.0" onAction="#onLoginClick" prefHeight="35.0" prefWidth="89.0" style="-fx-background-color: #b11212; -fx-text-fill: white;" text="Iniciar Sesión" />
 
                 <StackPane layoutX="225.0" layoutY="509.0" prefHeight="26.0" prefWidth="230.0">
                     <TextField fx:id="visiblePasswordField" managed="false" prefHeight="26.0" prefWidth="230.0" promptText="Contraseña" visible="false" />
@@ -37,8 +37,11 @@
 
                 <CheckBox fx:id="showPasswordCheck" layoutX="225.0" layoutY="560.0" onAction="#onTogglePasswordVisibility" text="Mostrar contraseña" />
                  <PasswordField fx:id="passwordField" layoutX="225.0" layoutY="509.0" prefHeight="26.0" prefWidth="230.0" promptText="Contraseña" />
+
+
                 <TextField fx:id="emailField" layoutX="225.0" layoutY="457.0" prefHeight="26.0" prefWidth="230.0" promptText="Correo electrónico" />
             </children>
+            <Hyperlink text="¿Olvidaste tu contraseña?" layoutX="250.0" layoutY="580.0" onAction="#handleForgotPasswordLink" />
         </AnchorPane>
 
     </children>
