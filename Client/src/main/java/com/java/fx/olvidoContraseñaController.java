@@ -5,23 +5,20 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.application.Platform;
-import javafx.scene.image.Image;
-import javafx.scene.paint.Color;
-import org.springframework.web.client.RestTemplate;
-import org.springframework.http.*;
+import javafx.scene.layout.BorderPane;
+import lombok.Setter;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.config.ConfigurableBeanFactory;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.annotation.Scope;
+import org.springframework.stereotype.Component;
 import javafx.stage.Stage;
-import javafx.fxml.FXML;
 import javafx.scene.control.*;
-import javafx.application.Platform;
+import java.io.*;
 
-import java.io.BufferedReader;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.OutputStream;
-import java.net.HttpURLConnection;
-import java.net.URL;
-import java.util.stream.Collectors;
 
+@Component
+@Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)
 public class olvidoContraseñaController {
 
     @FXML private TextField emailField;
@@ -30,112 +27,118 @@ public class olvidoContraseñaController {
     @FXML private Button sendEmailButton;
     @FXML private Button confirmButton;
     @FXML private Label statusLabel;
+    @FXML private BorderPane mainPane;
+    @Autowired private ApplicationContext context;
 
+    @FXML private TextField visiblenewPasswordField;
+    @FXML private CheckBox showPasswordCheckForgot;
+
+    @Setter private Stage loginStage;
+    @Setter private Stage recoveryStage;
+
+    private final ApiService apiService = new ApiService();
     private String storedEmail; // Guarda el correo para el segundo paso
 
     @FXML
     private void handleSendEmail() {
         storedEmail = emailField.getText().trim();
 
-        String email = emailField.getText();
-
-        if (email == null || email.isEmpty()) {
+        if (storedEmail == null || storedEmail.isEmpty()) {
             statusLabel.setText("El correo es obligatorio");
             return;
         }
 
-        try {
-            RestTemplate restTemplate = new RestTemplate();
-            String url = "http://localhost:8080/usuarios/contraseña/olvidado";
-
-            HttpHeaders headers = new HttpHeaders();
-            headers.setContentType(MediaType.APPLICATION_JSON);
-
-            String json = "{\"email\": \"" + email + "\"}";
-            HttpEntity<String> request = new HttpEntity<>(json, headers);
-
-            ResponseEntity<String> response = restTemplate.postForEntity(url, request, String.class);
-
-            if (response.getStatusCode().is2xxSuccessful()) {
-                statusLabel.setText("Correo enviado exitosamente");
-                statusLabel.setTextFill(javafx.scene.paint.Color.GREEN);
-            } else {
-                statusLabel.setText("Error al enviar el correo");
-            }
-
-        } catch (Exception e) {
-            statusLabel.setText("No se pudo enviar el correo");
-            e.printStackTrace();
+        // Validar formato de correo antes de enviar
+        if (!storedEmail.matches("^[\\w-.]+@[\\w-]+\\.[a-zA-Z]{2,}$")) {
+            statusLabel.setText("Correo con formato inválido");
+            statusLabel.setTextFill(javafx.scene.paint.Color.RED);
+            return;
         }
 
+        boolean success = apiService.sendPasswordRecoveryEmail(storedEmail);
 
-        // Mostrar los campos para ingresar código y nueva contraseña
-        codeField.setVisible(true);
-        codeField.setManaged(true);
-        newPasswordField.setVisible(true);
-        newPasswordField.setManaged(true);
-        confirmButton.setVisible(true);
-        confirmButton.setManaged(true);
+        if (success) {
+            statusLabel.setText("Correo enviado exitosamente");
+            statusLabel.setTextFill(javafx.scene.paint.Color.GREEN);
 
-        // Deshabilita el envío de más correos
-        sendEmailButton.setDisable(true);
-        emailField.setDisable(true);
+            // Mostrar los campos para ingresar código y nueva contraseña
+            codeField.setVisible(true);
+            codeField.setManaged(true);
+            newPasswordField.setVisible(true);
+            newPasswordField.setManaged(true);
+            confirmButton.setVisible(true);
+            confirmButton.setManaged(true);
+            showPasswordCheckForgot.setVisible(true);
+            showPasswordCheckForgot.setManaged(true);
 
 
+            // Deshabilita el envío de más correos SOLO si fue exitoso
+            sendEmailButton.setDisable(true);
+            emailField.setDisable(true);
+        } else {
+            statusLabel.setText("Error al enviar el correo");
+            statusLabel.setTextFill(javafx.scene.paint.Color.RED);
+
+            // Mantén el campo editable si falla
+            sendEmailButton.setDisable(false);
+            emailField.setDisable(false);
+            showPasswordCheckForgot.setVisible(false);
+            showPasswordCheckForgot.setManaged(false);
+
+        }
     }
+
 
     @FXML
     private void handleConfirmNewPassword() {
         String code = codeField.getText().trim();
-        String password = newPasswordField.getText().trim();
+        String newPassword = newPasswordField.getText().trim();
 
-        if (code.isEmpty() || password.isEmpty()) {
+        if (code.isEmpty() || newPassword.isEmpty()) {
             statusLabel.setText("Llena todos los campos.");
             return;
         }
 
+        ApiService apiService = new ApiService();
         try {
-            URL url = new URL("http://localhost:8080/usuarios/contrasena");
-            HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-            conn.setRequestMethod("PUT");
-            conn.setRequestProperty("Content-Type", "application/json");
-            conn.setDoOutput(true);
+            boolean success = apiService.resetPassword(storedEmail, newPassword, code);
 
-            String jsonInputString = String.format(
-                    "{\"email\":\"%s\",\"password\":\"%s\", \"code\":\"%s\"}",
-                    storedEmail, password ,code
-            );
-
-            try (OutputStream os = conn.getOutputStream()) {
-                byte[] input = jsonInputString.getBytes("utf-8");
-                os.write(input, 0, input.length);
-            }
-
-            int responseCode = conn.getResponseCode();
-            if (responseCode == 200) {
+            if (success) {
                 statusLabel.setText("Contraseña actualizada correctamente.");
+
+                // Cerrar esta ventana y volver al login
                 Platform.runLater(() -> {
                     confirmButton.setDisable(true);
                     newPasswordField.setDisable(true);
                     codeField.setDisable(true);
 
-                    Stage currentStage = (Stage) confirmButton.getScene().getWindow();
-                    currentStage.close();
+                    recoveryStage.close(); // <-- asegurarte que tienes esta variable seteada
+                    loginStage.show();     // <-- mostrar login otra vez
                 });
             } else {
-                statusLabel.setText("Error al actualizar la contraseña.");
-                InputStream errorStream = conn.getErrorStream();
-                if (errorStream != null) {
-                    String errorMessage = new BufferedReader(new InputStreamReader(errorStream))
-                            .lines().collect(Collectors.joining("\n"));
-                    System.out.println("Error del servidor: " + errorMessage);
-                }
-
+                statusLabel.setText("Error al actualizar la contraseña." );
             }
-
-        } catch (Exception e) {
+        } catch (IOException e) {
+            statusLabel.setText("Error de conexión.");
             e.printStackTrace();
-            statusLabel.setText("Fallo al conectar con el servidor.");
+        }
+    }
+    @FXML
+    private void  onTogglePasswordVisibility(){
+        if (showPasswordCheckForgot.isSelected()) {
+            visiblenewPasswordField.setText(newPasswordField.getText());
+            visiblenewPasswordField.setVisible(true);
+            visiblenewPasswordField.setManaged(true);
+
+            newPasswordField.setVisible(false);
+            newPasswordField.setManaged(false);
+        } else {
+            newPasswordField.setText(visiblenewPasswordField.getText());
+            newPasswordField.setVisible(true);
+            newPasswordField.setManaged(true);
+
+            visiblenewPasswordField.setVisible(false);
+            visiblenewPasswordField.setManaged(false);
         }
     }
 }

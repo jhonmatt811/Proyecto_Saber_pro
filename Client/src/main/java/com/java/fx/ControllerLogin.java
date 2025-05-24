@@ -7,12 +7,10 @@ import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.Alert;
-import javafx.scene.control.CheckBox;
-import javafx.scene.control.PasswordField;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.layout.BorderPane;
+import javafx.stage.Modality;
 import javafx.stage.Stage;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -27,6 +25,7 @@ import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.net.URL;
 import java.util.Base64;
+import java.util.Objects;
 import java.util.ResourceBundle;
 import java.io.IOException;
 
@@ -44,7 +43,6 @@ public class ControllerLogin implements Initializable {
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
-        // Inicialización si es necesaria
     }
 
     @FXML
@@ -181,19 +179,35 @@ public class ControllerLogin implements Initializable {
     }
 
     @FXML
-    private void handleForgotPasswordLink() {
-        try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/olvido_contraseña.fxml"));
-            Parent root = loader.load();
+    private Hyperlink forgotPasswordLink;
 
-            Stage stage = new Stage();
-            stage.setTitle("Recuperar contraseña");
-            stage.setScene(new Scene(root,500,400));
-            stage.getIcons().add(new Image(getClass().getResource("/img/images.png").toExternalForm()));
-            stage.show();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+    @FXML
+    private void onForgotPasswordClicked() throws IOException {
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("/olvido_contraseña.fxml"));
+        Parent root = loader.load();
+
+        // Obtener el controlador de la ventana de recuperación
+        olvidoContraseñaController controller = loader.getController();
+
+        // Pasar la ventana actual (login) y la nueva (recovery)
+        Stage loginStage = (Stage) forgotPasswordLink.getScene().getWindow();
+        Stage recoveryStage = new Stage();
+
+        controller.setLoginStage(loginStage);
+        controller.setRecoveryStage(recoveryStage);
+
+        recoveryStage.setTitle("Recuperar contraseña");
+
+        Image icon = new Image(getClass().getResourceAsStream("/img/images.png"));
+        recoveryStage.getIcons().add(icon);
+        recoveryStage.setScene(new Scene(root));
+        recoveryStage.setWidth(600);   // Ancho personalizado
+        recoveryStage.setHeight(400);
+        recoveryStage.initModality(Modality.WINDOW_MODAL);
+        recoveryStage.initOwner(loginStage); // hace que el login quede bloqueado mientras tanto
+        recoveryStage.show();
+
     }
+
 
 }

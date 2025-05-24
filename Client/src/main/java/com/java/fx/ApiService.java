@@ -8,17 +8,25 @@ import com.java.fx.Usuarios_y_Roles.Sesion;
 import com.java.fx.Usuarios_y_Roles.Usuario;
 import javafx.application.Platform;
 import javafx.scene.control.Alert;
-
-import java.io.IOException;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.client.RestTemplate;
+import org.springframework.http.HttpHeaders;
+import java.io.*;
+import java.net.HttpURLConnection;
 import java.net.URI;
+import java.net.URL;
 import java.net.http.*;
 import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 public class ApiService {
     private static final String BASE_URL = "http://localhost:8080";
     private final HttpClient client = HttpClient.newHttpClient();
     private final ObjectMapper mapper = new ObjectMapper();
+    public HttpResponse<Object> response;
 
     public List<Usuario> obtenerUsuarios() throws IOException, InterruptedException {
         HttpRequest request = HttpRequest.newBuilder()
@@ -51,8 +59,6 @@ public class ApiService {
 
         throw new RuntimeException("No se encontró el arreglo de usuarios en la respuesta");
     }
-
-
 
     public void cambiarRol(UUID userId, int rolId) {
         String url = BASE_URL + "/admin/usuarios/" + userId + "/rol?rolId=" + rolId;
@@ -107,9 +113,6 @@ public class ApiService {
         }
     }
 
-
-
-
     private void mostrarAlerta(String titulo, String mensaje) {
         Alert alert = new Alert(Alert.AlertType.INFORMATION); // Tipo de alerta
         alert.setTitle(titulo); // Título de la ventana
@@ -118,5 +121,53 @@ public class ApiService {
         alert.showAndWait(); // Muestra la alerta y espera
     }
 
+    public boolean resetPassword(String email, String password, String code) throws IOException {
+        URL url = new URL(BASE_URL + "/usuarios/contrasena");
+        HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+        conn.setRequestMethod("PUT");
+        conn.setRequestProperty("Content-Type", "application/json");
+        conn.setDoOutput(true);
 
+        String jsonInputString = String.format(
+                "{\"email\":\"%s\",\"password\":\"%s\", \"code\":\"%s\"}",
+                email, password, code
+        );
+
+        try (OutputStream os = conn.getOutputStream()) {
+            byte[] input = jsonInputString.getBytes("utf-8");
+            os.write(input, 0, input.length);
+        }
+
+        int responseCode = conn.getResponseCode();
+
+        if (responseCode == 200) {
+            return true;
+        } else {
+            InputStream errorStream = conn.getErrorStream();
+            if (errorStream != null) {
+                String errorMessage = new BufferedReader(new InputStreamReader(errorStream))
+                        .lines().collect(Collectors.joining("\n"));
+                System.out.println("Error del servidor: " + errorMessage);
+            }
+            return false;
+        }
+    }
+    public boolean sendPasswordRecoveryEmail(String email) {
+        try {
+            RestTemplate restTemplate = new RestTemplate();
+            String url = BASE_URL + "/usuarios/contraseña/olvidado";
+
+            HttpHeaders headers = new HttpHeaders();
+            headers.setContentType(MediaType.APPLICATION_JSON);
+
+            String json = String.format("{\"email\": \"%s\"}", email);
+            HttpEntity<String> request = new HttpEntity<>(json, headers);
+
+            ResponseEntity<String> response = restTemplate.postForEntity(url, request, String.class);
+
+            return response.getStatusCode().is2xxSuccessful();
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }}
 }

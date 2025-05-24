@@ -7,6 +7,7 @@
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.VBox?>
 
+<?import javafx.scene.control.CheckBox?>
 <VBox alignment="CENTER" spacing="10" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.java.fx.olvidoContraseñaController">
 
     <padding>
@@ -27,8 +28,10 @@
 
         <!-- Campo para nueva contraseña (oculto al inicio) -->
         <PasswordField fx:id="newPasswordField" promptText="Nueva contraseña" visible="false" managed="false" />
+        <TextField fx:id="visiblenewPasswordField" managed="false"  promptText="Contraseña" visible="false" />
 
-        <!-- Botón para confirmar cambio de contraseña (oculto al inicio) -->
+    <CheckBox fx:id="showPasswordCheckForgot" layoutX="225.0" layoutY="560.0" onAction="#onTogglePasswordVisibility" visible="false" managed="false" text="Mostrar contraseña" />
+    <!-- Botón para confirmar cambio de contraseña (oculto al inicio) -->
         <Button fx:id="confirmButton" text="Confirmar nueva contraseña" onAction="#handleConfirmNewPassword"
                 visible="false" managed="false" />
 
