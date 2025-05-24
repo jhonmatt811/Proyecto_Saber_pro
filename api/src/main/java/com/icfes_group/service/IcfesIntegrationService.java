@@ -22,8 +22,6 @@ public class IcfesIntegrationService {
         RestTemplate restTemplate = new RestTemplate();
 
         String fullUrl = icfesIntegrationConfig.buildUrlWithParams(queryParams);
-        System.out.println("URL final: " + fullUrl);
-
         // Crear los headers
         HttpHeaders headers = new HttpHeaders();
         headers.set("X-App-Token", icfesIntegrationConfig.getICFES_TOKEN()); // o el nombre real del header

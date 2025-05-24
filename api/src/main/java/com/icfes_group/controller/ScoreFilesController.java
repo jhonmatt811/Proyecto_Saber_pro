@@ -8,7 +8,6 @@ import com.icfes_group.dto.ScoreFileDTO;
 import jakarta.validation.Valid;
 import com.icfes_group.service.ScoreFileService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -25,8 +24,7 @@ public class ScoreFilesController {
     @PostMapping    
     public ScoreFileDTO[] saveDataFile(@Valid @RequestBody ScoreFileDTO[] dto){
         // Depuracion Imprimir cuántos resultados llegan desde el cliente
-        ScoreFileDTO[] score = scoreFileService.saveDataFile(dto);
-        System.out.println(">>> Backend recibió " + dto.length + " resultados");
-        return score;
+        scoreFileService.saveDataFile(dto);
+        return dto;
     }
 }

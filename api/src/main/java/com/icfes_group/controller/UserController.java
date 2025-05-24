@@ -2,7 +2,6 @@ package com.icfes_group.controller;
 
 import com.icfes_group.controller.responses.LoginResponse;
 import com.icfes_group.controller.responses.StatusResponse;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -27,7 +26,6 @@ public class UserController {
         try {
             User user = userService.login(dto);
             String token = jwtUtil.generateToken(dto.getEmail(),user.getRol().getNombre());
-            System.out.println(user);
             if(userService.mustChangePassword(user)){
                 return new ResponseEntity<>(new StatusResponse("WARN","¡Debe cambiar la contraseña!"),HttpStatus.FORBIDDEN);
             }

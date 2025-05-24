@@ -1,7 +1,6 @@
 package com.java.fx.controller;
 
 import com.java.fx.model.Resultado;
-import com.java.fx.service.AutenticacionService;
 import com.java.fx.service.ResultadoService;
 import com.java.fx.service.ResultadoUploader;
 import javafx.application.Platform;
@@ -12,24 +11,26 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.chart.BarChart;
-import javafx.scene.chart.CategoryAxis;
-import javafx.scene.chart.NumberAxis;
-import javafx.scene.chart.XYChart;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
+import javafx.scene.control.Alert;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
+
+// Apache POI
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+import org.apache.poi.xssf.usermodel.XSSFSheet;
+import org.apache.poi.xssf.usermodel.XSSFRow;
 
 @Component
 @Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)
@@ -201,7 +202,7 @@ public class ResultadosController {
         FileChooser fc = new FileChooser();
         fc.setTitle("Seleccionar archivo de resultados");
         fc.getExtensionFilters().addAll(
-                new FileChooser.ExtensionFilter("Archivos de datos", "*.xlsx", "*.csv", "*.json"),
+                new FileChooser.ExtensionFilter("Archivos de datos", "*.xlsx", "*.csv"),
                 new FileChooser.ExtensionFilter("Todos los archivos", "*")
         );
         File archivo = fc.showOpenDialog(null);
@@ -248,18 +249,74 @@ public class ResultadosController {
         System.out.println("Conectando al ICFES...");
     }
 
-    @FXML
-    public void handleExportarPDF() {
-        // Lógica para exportar a PDF
-        System.out.println("Exportando a PDF...");
-        // Implementar exportación real aquí
-    }
 
     @FXML
     public void handleExportarExcel() {
-        // Lógica para exportar a Excel
-        System.out.println("Exportando a Excel...");
-        // Implementar exportación real aquí
+        FileChooser fileChooser = new FileChooser();
+        fileChooser.setTitle("Guardar como Excel");
+        fileChooser.getExtensionFilters().add(
+                new FileChooser.ExtensionFilter("Excel Files", "*.xlsx")
+        );
+        File file = fileChooser.showSaveDialog(null);
+
+        if (file != null) {
+            try (XSSFWorkbook workbook = new XSSFWorkbook()) {
+                XSSFSheet sheet = workbook.createSheet("Resultados Saber Pro");
+
+                // Crear encabezados
+                String[] headers = {
+                        "Tipo Documento", "Documento", "Nombre", "Número Registro",
+                        "Tipo Evaluado", "SNIES Programa", "Programa", "Ciudad",
+                        "Núcleo Básico", "Puntaje Global", "% Nal. Global", "% Nal. NBC",
+                        "Módulo", "Puntaje Módulo", "Nivel Desempeño", "% Nal. Módulo",
+                        "% Grupo NBC Módulo", "Novedades"
+                };
+
+                // Escribir encabezados
+                XSSFRow headerRow = sheet.createRow(0);
+                for (int i = 0; i < headers.length; i++) {
+                    headerRow.createCell(i).setCellValue(headers[i]);
+                }
+
+                // Escribir datos
+                int rowNum = 1;
+                for (Resultado resultado : datosFiltrados) {
+                    XSSFRow row = sheet.createRow(rowNum++);
+                    row.createCell(0).setCellValue(resultado.getTipoDocumento());
+                    row.createCell(1).setCellValue(resultado.getDocumento());
+                    row.createCell(2).setCellValue(resultado.getNombre());
+                    row.createCell(3).setCellValue(resultado.getNumeroRegistro());
+                    row.createCell(4).setCellValue(resultado.getTipoEvaluado());
+                    row.createCell(5).setCellValue(resultado.getSniesProgramaAcademico());
+                    row.createCell(6).setCellValue(resultado.getPrograma());
+                    row.createCell(7).setCellValue(resultado.getCiudad());
+                    row.createCell(8).setCellValue(resultado.getNucleoBasicoConocimiento());
+                    row.createCell(9).setCellValue(resultado.getPuntajeGlobal());
+                    row.createCell(10).setCellValue(resultado.getPercentilNacionalGlobal());
+                    row.createCell(11).setCellValue(resultado.getPercentilNacionalNbc());
+                    row.createCell(12).setCellValue(resultado.getModulo());
+                    row.createCell(13).setCellValue(resultado.getPuntajeModulo());
+                    row.createCell(14).setCellValue(resultado.getNivelDesempeno());
+                    row.createCell(15).setCellValue(resultado.getPercentilNacionalModulo());
+                    row.createCell(16).setCellValue(resultado.getPercentilGrupoNbcModulo());
+                    row.createCell(17).setCellValue(resultado.getNovedades());
+                }
+
+                // Autoajustar columnas
+                for (int i = 0; i < headers.length; i++) {
+                    sheet.autoSizeColumn(i);
+                }
+
+                // Guardar archivo
+                try (FileOutputStream outputStream = new FileOutputStream(file)) {
+                    workbook.write(outputStream);
+                    mostrarAlerta("Éxito", "Archivo exportado correctamente.", Alert.AlertType.INFORMATION);
+                }
+            } catch (IOException e) {
+                mostrarAlerta("Error", "No se pudo exportar el archivo.", Alert.AlertType.ERROR);
+                e.printStackTrace();
+            }
+        }
     }
     @FXML
     private void handleMostrarGrafica() {
@@ -277,6 +334,25 @@ public class ResultadosController {
             stage.show();
         } catch (IOException e) {
             mostrarAlerta("Error", "No se pudo cargar la gráfica.", Alert.AlertType.ERROR);
+        }
+    }
+
+    // Método para abrir gráfica de líneas
+    @FXML
+    private void handleMostrarTendencias() {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/LineChartView.fxml"));
+            Parent root = loader.load();
+
+            LineaController controller = loader.getController();
+            controller.inicializarDatos(datosFiltrados);
+
+            Stage stage = new Stage();
+            stage.setScene(new Scene(root));
+            stage.setTitle("Tendencias por Ciclo");
+            stage.show();
+        } catch (IOException e) {
+            mostrarAlerta("Error", "No se pudo cargar la gráfica de tendencias.", Alert.AlertType.ERROR);
         }
     }
 }
