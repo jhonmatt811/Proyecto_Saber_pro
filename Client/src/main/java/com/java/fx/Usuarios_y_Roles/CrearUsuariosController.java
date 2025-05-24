@@ -6,6 +6,8 @@ import javafx.scene.control.*;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.BorderPane;
+import com.java.fx.ApiService;
+
 
 import java.net.URI;
 import java.net.http.HttpClient;
@@ -20,6 +22,7 @@ public class CrearUsuariosController {
 
     private static final String API_URL = "http://localhost:8080/admin/personas";
     public AnchorPane formularioUsuario;
+
 
 
     @FXML private RadioButton opcion1 ;
@@ -283,6 +286,7 @@ public class CrearUsuariosController {
             usuariosRolesController.getComboNuevoRol().setVisible(true);
             usuariosRolesController.getBtnCrearUsuarios().setVisible(true);
             usuariosRolesController.getBtnCambiarRol().setVisible(true);
+            usuariosRolesController.getbtnCargarUsuarios().setVisible(true);
         }
     }
 

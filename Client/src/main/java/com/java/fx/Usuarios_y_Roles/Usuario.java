@@ -1,5 +1,7 @@
 package com.java.fx.Usuarios_y_Roles;
 
+import com.java.fx.model.Rol;
+
 import java.util.UUID;
 
 public class Usuario {

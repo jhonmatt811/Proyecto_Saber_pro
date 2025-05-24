@@ -118,7 +118,7 @@ public class olvidoContraseñaController {
             } else {
                 statusLabel.setText("Error al actualizar la contraseña." );
             }
-        } catch (IOException e) {
+        } catch (RuntimeException e) {
             statusLabel.setText("Error de conexión.");
             e.printStackTrace();
         }

@@ -1,19 +1,30 @@
 package com.java.fx.Usuarios_y_Roles;
 
 import com.java.fx.ApiService;
+import com.java.fx.model.Rol;
+import com.java.fx.model.UsuarioDTO;
 import javafx.application.Platform;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
-import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
 import javafx.scene.control.*;
 import javafx.scene.layout.BorderPane;
+import javafx.stage.FileChooser;
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.stereotype.Component;
 
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 @Component
 public class UsuariosRolesController {
@@ -186,6 +197,8 @@ public class UsuariosRolesController {
         this.btnCambiarRol = btnCambiarRol;
     }
 
+    public Button getbtnCargarUsuarios() {return btnCargarUsuarios;}
+
     @FXML
     public void goCrearUsuarios() {
         if (btnCrearUsuarios.getOnAction() != null) {
@@ -202,6 +215,7 @@ public class UsuariosRolesController {
             comboNuevoRol.setVisible(false);
             btnCrearUsuarios.setVisible(false);
             btnCambiarRol.setVisible(false);
+            btnCargarUsuarios.setVisible(false);
         } catch (IOException e) {
             e.printStackTrace();
         }}
@@ -217,29 +231,52 @@ public class UsuariosRolesController {
     }
 
     @FXML
-    public void goCargarUsuarios() {
-        try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/CrearUsuarios.fxml"));
-            Node view = loader.load();
+    private void onCargarUsuariosClick() {
+        FileChooser fileChooser = new FileChooser();
+        fileChooser.setTitle("Seleccionar archivo Excel");
+        fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("Excel Files", "*.xlsx"));
+        File selectedFile = fileChooser.showOpenDialog(null);
 
-            // Obtener el controlador de la vista cargada
-            CrearUsuariosController controller = loader.getController();
-            controller.setUsuariosRolesController(this); // para actualizar la tabla luego
+        if (selectedFile != null) {
+            try (FileInputStream fis = new FileInputStream(selectedFile);
+                 Workbook workbook = new XSSFWorkbook(fis)) {
 
-            // Cargar la vista en el panel central
-            mainPane.setCenter(view);
+                Sheet sheet = workbook.getSheetAt(0);
+                List<UsuarioDTO> usuarios = new ArrayList<>();
 
-            // Ocultar controles innecesarios
-            tablaUsuarios.setVisible(false);
-            comboNuevoRol.setVisible(false);
-            btnCrearUsuarios.setVisible(false);
-            btnCambiarRol.setVisible(false);
-            btnCargarUsuarios.setVisible(false);
+                for (Row row : sheet) {
+                    if (row.getRowNum() == 0) continue;
 
-        } catch (IOException e) {
-            e.printStackTrace();
+                    Long cc = (long) row.getCell(0).getNumericCellValue();
+                    String nombre = row.getCell(1).getStringCellValue();
+                    String segundoNombre = row.getCell(2).getStringCellValue();
+                    String apellido = row.getCell(3).getStringCellValue();
+                    String segundoApellido = row.getCell(4).getStringCellValue();
+                    String correo = row.getCell(5).getStringCellValue();
+                    String nombreRol = row.getCell(6).getStringCellValue();
+
+                    usuarios.add(new UsuarioDTO(cc,nombre, segundoNombre, apellido, segundoApellido, correo, nombreRol));
+                }
+
+                ApiService api = new ApiService();
+                List<Rol> roles = api.obtenerRoles();
+                Map<String, Integer> rolMap = roles.stream()
+                        .collect(Collectors.toMap(Rol::getNombre, Rol::getId));
+
+                for (UsuarioDTO u : usuarios) {
+                    u.setIdRol(rolMap.get(u.getNombreRol()));
+                }
+
+                api.enviarUsuariosEnLote(usuarios);
+
+            } catch (Exception e) {
+                e.printStackTrace();
+                // Muestra alerta en UI si deseas
+            }
         }
-    }}
+    }
+
+}
 
 
 

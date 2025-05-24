@@ -3,53 +3,50 @@ package com.java.fx;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.java.fx.Usuarios_y_Roles.Rol;
+import com.java.fx.model.Rol;
+import com.java.fx.model.UsuarioDTO;
 import com.java.fx.Usuarios_y_Roles.Sesion;
 import com.java.fx.Usuarios_y_Roles.Usuario;
 import javafx.application.Platform;
 import javafx.scene.control.Alert;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.client.RestTemplate;
-import java.io.*;
-import java.net.HttpURLConnection;
+
+import java.io.BufferedReader;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.net.URI;
-import java.net.URL;
-import java.net.http.*;
+import java.net.http.HttpClient;
+import java.net.http.HttpRequest;
+import java.net.http.HttpResponse;
+import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
 public class ApiService {
+
     private static final String BASE_URL = "http://localhost:8080";
     private final HttpClient client = HttpClient.newHttpClient();
     private final ObjectMapper mapper = new ObjectMapper();
 
-    public List<Usuario> obtenerUsuarios() throws IOException, InterruptedException {
-        HttpRequest request = HttpRequest.newBuilder()
-                .uri(URI.create(BASE_URL + "/admin/usuarios"))
-                .header("Authorization", "Bearer " + Sesion.getJwtToken())
-                .GET()
-                .build();
+    private HttpRequest.Builder builderConAutorizacion(String url) {
+        return HttpRequest.newBuilder()
+                .uri(URI.create(url))
+                .header("Authorization", "Bearer " + Sesion.getJwtToken());
+    }
 
+    // -------------------- USUARIOS ------------------------
+
+    public List<Usuario> obtenerUsuarios() throws Exception {
+        HttpRequest request = builderConAutorizacion(BASE_URL + "/admin/usuarios").GET().build();
         HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
-
-        System.out.println("Respuesta completa:");
-        System.out.println(response.body());
+        manejarErrores(response);
 
         JsonNode rootNode = mapper.readTree(response.body());
 
-        // Verifica las claves del objeto JSON
-        System.out.println("Claves disponibles en el JSON:");
-        rootNode.fieldNames().forEachRemaining(System.out::println);
-
-        // Si rootNode es directamente una lista
         if (rootNode.isArray()) {
             return mapper.readValue(response.body(), new TypeReference<List<Usuario>>() {});
         }
 
-        // Si hay alguna clave como "usuarios"
         JsonNode usuariosNode = rootNode.get("usuarios");
         if (usuariosNode != null && usuariosNode.isArray()) {
             return mapper.readValue(usuariosNode.toString(), new TypeReference<List<Usuario>>() {});
@@ -58,114 +55,139 @@ public class ApiService {
         throw new RuntimeException("No se encontró el arreglo de usuarios en la respuesta");
     }
 
+    public void enviarUsuariosEnLote(List<UsuarioDTO> usuarios) {
+        try {
+            String json = mapper.writeValueAsString(usuarios);
+            HttpRequest request = builderConAutorizacion(BASE_URL + "/admin/personas/lote")
+                    .header("Content-Type", "application/json")
+                    .POST(HttpRequest.BodyPublishers.ofString(json))
+                    .build();
+
+            HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+            manejarErrores(response);
+            System.out.println("Respuesta del servidor: " + response.body());
+
+            Platform.runLater(() -> mostrarAlertaInfo("Éxito", "Usuarios importados correctamente."));
+        } catch (Exception e) {
+            e.printStackTrace();
+            Platform.runLater(() -> mostrarAlertaError("Error al enviar los usuarios en lote."));
+        }
+    }
+
+
+
+    // ---------------------- ROLES ------------------------
+
     public void cambiarRol(UUID userId, int rolId) {
         String url = BASE_URL + "/admin/usuarios/" + userId + "/rol?rolId=" + rolId;
 
-        System.out.println("URL final = " + url);
-
-        HttpRequest request = HttpRequest.newBuilder()
-                .uri(URI.create(url))
-                .header("Authorization", "Bearer " + Sesion.getJwtToken())
+        HttpRequest request = builderConAutorizacion(url)
                 .PUT(HttpRequest.BodyPublishers.noBody())
                 .build();
 
         client.sendAsync(request, HttpResponse.BodyHandlers.ofString())
                 .thenAccept(response -> {
-                    System.out.println("Código de respuesta: " + response.statusCode());
-                    System.out.println("Cuerpo: " + response.body());
                     Platform.runLater(() -> {
                         if (response.statusCode() == 200) {
-                            mostrarAlerta("Éxito", "Rol actualizado correctamente.");
+                            mostrarAlertaInfo("Éxito", "Rol actualizado correctamente.");
                         } else {
-                            mostrarAlerta("Error", "Error del servidor: " + response.statusCode());
+                            mostrarAlertaError("Error al actualizar el rol. Código: " + response.statusCode());
                         }
                     });
                 })
                 .exceptionally(e -> {
                     e.printStackTrace();
-                    Platform.runLater(() -> mostrarAlerta("Error", "No se pudo actualizar el rol."));
+                    Platform.runLater(() -> mostrarAlertaError("No se pudo actualizar el rol."));
                     return null;
                 });
     }
-    public static List<Rol> obtenerRoles() throws Exception {
-        String url = BASE_URL + "/roles";
-        System.out.println("Llamando a URL: " + url);
 
-        HttpRequest request = HttpRequest.newBuilder()
-                .uri(URI.create(url))
-                .header("Authorization", "Bearer " + Sesion.getJwtToken())
+    public List<Rol> obtenerRoles() throws Exception {
+        HttpRequest request = builderConAutorizacion(BASE_URL + "/roles")
                 .GET()
                 .build();
 
         HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+        manejarErrores(response);
 
-        System.out.println("Response status: " + response.statusCode());
-        System.out.println("Response body: " + response.body());
-
-        if (response.statusCode() == 200) {
-            ObjectMapper mapper = new ObjectMapper();
-            List<Rol> roles = mapper.readValue(response.body(), new TypeReference<List<Rol>>() {});
-            return roles;
-        } else {
-            throw new RuntimeException("Error al obtener roles: " + response.statusCode());
-        }
+        return mapper.readValue(response.body(), new TypeReference<List<Rol>>() {});
     }
 
-    private void mostrarAlerta(String titulo, String mensaje) {
-        Alert alert = new Alert(Alert.AlertType.INFORMATION); // Tipo de alerta
-        alert.setTitle(titulo); // Título de la ventana
-        alert.setHeaderText(null); // Encabezado (opcional)
-        alert.setContentText(mensaje); // Mensaje principal
-        alert.showAndWait(); // Muestra la alerta y espera
-    }
-    public boolean resetPassword(String email, String password, String code) throws IOException {
-        URL url = new URL(BASE_URL + "/usuarios/contrasena");
-        HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-        conn.setRequestMethod("PUT");
-        conn.setRequestProperty("Content-Type", "application/json");
-        conn.setDoOutput(true);
+    // ---------------------- CONTRASEÑAS ------------------------
 
-        String jsonInputString = String.format(
-                "{\"email\":\"%s\",\"password\":\"%s\", \"code\":\"%s\"}",
-                email, password, code
-        );
-
-        try (OutputStream os = conn.getOutputStream()) {
-            byte[] input = jsonInputString.getBytes("utf-8");
-            os.write(input, 0, input.length);
-        }
-
-        int responseCode = conn.getResponseCode();
-
-        if (responseCode == 200) {
-            return true;
-        } else {
-            InputStream errorStream = conn.getErrorStream();
-            if (errorStream != null) {
-                String errorMessage = new BufferedReader(new InputStreamReader(errorStream))
-                        .lines().collect(Collectors.joining("\n"));
-                System.out.println("Error del servidor: " + errorMessage);
-            }
-            return false;
-        }
-    }
     public boolean sendPasswordRecoveryEmail(String email) {
         try {
-            RestTemplate restTemplate = new RestTemplate();
-            String url = BASE_URL + "/usuarios/contraseña/olvidado";
+            String json = String.format("{\"email\":\"%s\"}", email);
 
-            org.springframework.http.HttpHeaders headers = new org.springframework.http.HttpHeaders();
-            headers.setContentType(MediaType.APPLICATION_JSON);
+            HttpRequest request = HttpRequest.newBuilder()
+                    .uri(URI.create(BASE_URL + "/usuarios/contraseña/olvidado"))
+                    .header("Content-Type", "application/json")
+                    .POST(HttpRequest.BodyPublishers.ofString(json))
+                    .build();
 
-            String json = String.format("{\"email\": \"%s\"}", email);
-            HttpEntity<String> request = new HttpEntity<>(json, headers);
+            HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+            return response.statusCode() == 200;
 
-            ResponseEntity<String> response = restTemplate.postForEntity(url, request, String.class);
-
-            return response.getStatusCode().is2xxSuccessful();
         } catch (Exception e) {
             e.printStackTrace();
             return false;
-        }}
+        }
+    }
 
+    public boolean resetPassword(String email, String password, String code) {
+        try {
+            String json = String.format(
+                    "{\"email\":\"%s\",\"password\":\"%s\", \"code\":\"%s\"}",
+                    email, password, code
+            );
+
+            HttpRequest request = HttpRequest.newBuilder()
+                    .uri(URI.create(BASE_URL + "/usuarios/contrasena"))
+                    .header("Content-Type", "application/json")
+                    .PUT(HttpRequest.BodyPublishers.ofString(json))
+                    .build();
+
+            HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+
+            if (response.statusCode() == 200) {
+                return true;
+            } else {
+                System.err.println("Error del servidor: " + response.body());
+                return false;
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+    // ---------------------- UTILIDADES ------------------------
+
+
+
+    private void manejarErrores(HttpResponse<String> response) {
+        if (response.statusCode() >= 400) {
+            throw new RuntimeException("Error del servidor (" + response.statusCode() + "): " + response.body());
+        }
+    }
+
+    private void mostrarAlertaInfo(String titulo, String mensaje) {
+        Platform.runLater(() -> {
+            Alert alert = new Alert(Alert.AlertType.INFORMATION);
+            alert.setTitle(titulo);
+            alert.setHeaderText(null);
+            alert.setContentText(mensaje);
+            alert.showAndWait();
+        });
+    }
+
+    private void mostrarAlertaError(String mensaje) {
+        Platform.runLater(() -> {
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setTitle("Error");
+            alert.setHeaderText(null);
+            alert.setContentText(mensaje);
+            alert.showAndWait();
+        });
+    }
 }

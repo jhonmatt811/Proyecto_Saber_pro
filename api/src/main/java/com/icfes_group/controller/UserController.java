@@ -11,6 +11,8 @@ import com.icfes_group.dto.UserDTO;
 import com.icfes_group.model.User;
 import com.icfes_group.security.componets.JwtUtil;
 import jakarta.validation.Valid;
+import lombok.AllArgsConstructor;
+
 
 @RestController
 @RequestMapping("/usuarios")
