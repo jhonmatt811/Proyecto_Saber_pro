@@ -7,7 +7,6 @@ package com.icfes_group.service.admin;
 import com.icfes_group.dto.PersonaDTO;
 import com.icfes_group.model.Persona;
 import com.icfes_group.repository.PersonaRepository;
-import com.icfes_group.service.RolService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -18,12 +17,10 @@ import org.springframework.stereotype.Service;
 @Service
 public class AdminPersonService {
     private final PersonaRepository personaRepository;
-    private final RolService rolService;
 
     @Autowired
-    public AdminPersonService(PersonaRepository personaRepository, RolService rolService) {
+    public AdminPersonService(PersonaRepository personaRepository) {
         this.personaRepository = personaRepository;
-        this.rolService = rolService;
     }
 
     public Persona guardarPersona(PersonaDTO dto) {

@@ -13,7 +13,6 @@ import java.util.List;
 import java.util.UUID;
 
 import lombok.AllArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -67,7 +66,7 @@ public class AdminUserController{
     @PutMapping("/{id}/active")
     public ResponseEntity<?> changeActive(@RequestParam Boolean activate, @PathVariable UUID id){
         try {
-           User user = adminService.changeActivate(activate, id);
+           adminService.changeActivate(activate, id);
            String message = activate? "Activado":"Desactivado";
            return new ResponseEntity<>(new StatusResponse("OK","Usuario " + message),HttpStatus.OK);
         } catch (Exception e) {

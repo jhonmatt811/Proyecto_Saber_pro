@@ -7,12 +7,9 @@ package com.icfes_group.controller.Admin;
 import com.icfes_group.controller.responses.StatusResponse;
 import com.icfes_group.dto.PersonaDTO;
 import com.icfes_group.model.Persona;
-import com.icfes_group.service.PersonService;
-import com.icfes_group.service.UserService;
 import com.icfes_group.service.admin.AdminPersonService;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -29,7 +26,6 @@ import org.springframework.web.bind.annotation.RestController;
 @AllArgsConstructor
 public class AdminPersonController {
     private AdminPersonService personaService;
-    private UserService userService;
 
     @PostMapping 
     public ResponseEntity<?> createPerson(@Valid @RequestBody PersonaDTO personaDTO) {
