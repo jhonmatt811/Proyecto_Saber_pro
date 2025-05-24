@@ -5,6 +5,7 @@
 
 <BorderPane xmlns="http://javafx.com/javafx/17.0.12"
             xmlns:fx="http://javafx.com/fxml/1"
+            stylesheets="@estilos.css"
             fx:controller="com.java.fx.controller.LineaController"
             style="-fx-padding: 20;">
 
@@ -16,10 +17,10 @@
                        title="Tendencias por Año y Ciclo"
                        legendVisible="false">
                 <xAxis>
-                    <NumberAxis fx:id="xAxis" label="Año" />
+                    <NumberAxis fx:id="xAxis" label="Año y Ciclo" />
                 </xAxis>
                 <yAxis>
-                    <NumberAxis fx:id="yAxis" label="Puntaje Promedio" />
+                    <NumberAxis fx:id="yAxis" label="Puntaje Global Promedio" />
                 </yAxis>
             </LineChart>
         </ScrollPane>

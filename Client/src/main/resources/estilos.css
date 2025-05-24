@@ -23,7 +23,6 @@
     -fx-text-fill: white;
     -fx-max-width: Infinity;
     -fx-background-radius: 10px;
-
 }
 
 .boton-invisible:hover {
@@ -38,25 +37,19 @@
 }
 
 
-/* Asegurar que las barras sean visibles */
-.chart-bar {
-    -fx-bar-fill: #2196F3;
-    -fx-background-insets: 0, 2, 5;
-    -fx-background-radius: 0;
+.button {
+    -fx-cursor: hand;
+}
+/*zoom ligero al pasar el mouse*/
+.button:hover {
+    -fx-scale-x: 1.05;
+    -fx-scale-y: 1.05;
+}
+.button {
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.2), 6, 0.3, 0, 2);
 }
 
-/* Color de fondo del gráfico */
-.chart-plot-background {
-    -fx-background-color: transparent;
-}
 
-/* Etiquetas del eje X rotadas */
-.axis-label {
-    -fx-rotate: -90;
-}
-/* Estilo para las etiquetas del eje X */
-.axis-tick-mark {
-    -fx-font-size: 10px;
-    -fx-wrap-text: true;
-    -fx-text-alignment: center;
-}
+
+
+
