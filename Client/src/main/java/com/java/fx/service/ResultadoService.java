@@ -68,8 +68,8 @@ public class ResultadoService {
             sb.append("?").append(String.join("&", params));
         }
         //
-        String url = sb.toString();
-        System.out.println("→ Llamando al GET " + url);
+        //String url = sb.toString();
+        //System.out.println("→ Llamando al GET " + url);
         //
         HttpRequest req = HttpRequest.newBuilder()
                 .uri(URI.create(sb.toString()))
@@ -223,8 +223,8 @@ public class ResultadoService {
                 .withDefaultPrettyPrinter();
         String json = ow.writeValueAsString(resultados);
 
-        //imprimir los json
-        System.out.println(json);
+        //imprimir los json generados
+        //System.out.println(json);
 
         // Enviar cuerpo
         try (OutputStream os = con.getOutputStream()) {

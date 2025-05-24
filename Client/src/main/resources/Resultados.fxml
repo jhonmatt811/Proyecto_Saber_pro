@@ -78,8 +78,7 @@
     <!-- Botones de exportación -->
     <HBox spacing="10" alignment="CENTER">
         <Button onAction="#handleMostrarGrafica" style="-fx-background-color: #2196F3; -fx-text-fill: white;" text="Gráfica de Barras"/>
-        <Button text="Gráfica de Líneas" onAction="#handleMostrarTendencias" style="-fx-background-color: #9C27B0; -fx-text-fill: white;"/>
-        <Button onAction="#handleExportarPDF" style="-fx-background-color: #f44336; -fx-text-fill: white;" text="Exportar a PDF" />
+        <Button text="Gráfica de Líneas" onAction="#handleMostrarTendencias" style="-fx-background-color: #273043; -fx-text-fill: white;"/>
         <Button onAction="#handleExportarExcel" style="-fx-background-color: #4CAF50; -fx-text-fill: white;" text="Exportar a Excel" />
     </HBox>
 
