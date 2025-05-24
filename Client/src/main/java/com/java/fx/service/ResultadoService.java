@@ -91,51 +91,6 @@ public class ResultadoService {
                 new TypeReference<List<Resultado>>() {}
         );
     }
-    /**
-     * Carga resultados desde un archivo CSV o similar.
-     * @param archivo File con los datos.
-     * @param ciclo  ciclo (int).
-     * @param year   año (int).
-     * @return lista de Resultados.
-     * @throws IOException en caso de fallo de lectura.
-     */
-
-    /*
-    public List<Resultado> cargarDatosDesdeArchivo(File archivo, int ciclo, int year) throws IOException {
-        List<Resultado> resultados = new ArrayList<>();
-        try (BufferedReader reader = new BufferedReader(new FileReader(archivo))) {
-            String linea;
-            boolean primeraLinea = true;
-            while ((linea = reader.readLine()) != null) {
-                if (primeraLinea) { primeraLinea = false; continue; }
-                String[] campos = linea.split(",");
-                if (campos.length >= 18 && campos[1].matches("\\d+")) {
-                    String puntajeGlobal           = campos[9];
-                    String percentilNacGlobal      = campos[10];
-                    String percentilNacNbc         = normalizePercentil(campos[11]);
-                    String modulo                  = campos[12];
-                    String puntajeModulo           = campos[13];
-                    String nivelDesempeno          = campos[14];
-                    String percentilNacModulo      = campos[15];
-                    String percentilGrupoNbcModulo = normalizePercentil(campos[16]);
-                    String novedades               = campos[17];
-
-                    Resultado r = new Resultado(
-                            ciclo, year,
-                            campos[0], Long.parseLong(campos[1]),
-                            campos[2], campos[3], campos[4], campos[5],
-                            campos[6], campos[7], campos[8],
-                            puntajeGlobal, percentilNacGlobal, percentilNacNbc,
-                            modulo, puntajeModulo, nivelDesempeno,
-                            percentilNacModulo, percentilGrupoNbcModulo, novedades
-                    );
-                    resultados.add(r);
-                }
-            }
-        }
-        return resultados;
-    }
-    */
 
     public List<Resultado> cargarDatosDesdeArchivo(File archivo, int ciclo, int year) throws IOException {
         String nombre = archivo.getName().toLowerCase();

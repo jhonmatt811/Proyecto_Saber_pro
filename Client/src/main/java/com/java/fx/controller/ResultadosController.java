@@ -1,7 +1,6 @@
 package com.java.fx.controller;
 
 import com.java.fx.model.Resultado;
-import com.java.fx.service.AutenticacionService;
 import com.java.fx.service.ResultadoService;
 import com.java.fx.service.ResultadoUploader;
 import javafx.application.Platform;
@@ -12,10 +11,6 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.chart.BarChart;
-import javafx.scene.chart.CategoryAxis;
-import javafx.scene.chart.NumberAxis;
-import javafx.scene.chart.XYChart;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.stage.FileChooser;
@@ -28,8 +23,6 @@ import org.springframework.stereotype.Component;
 import java.io.File;
 import java.io.IOException;
 import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
 
 @Component
 @Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)
@@ -201,7 +194,7 @@ public class ResultadosController {
         FileChooser fc = new FileChooser();
         fc.setTitle("Seleccionar archivo de resultados");
         fc.getExtensionFilters().addAll(
-                new FileChooser.ExtensionFilter("Archivos de datos", "*.xlsx", "*.csv", "*.json"),
+                new FileChooser.ExtensionFilter("Archivos de datos", ".xlsx", ".csv", "*.json"),
                 new FileChooser.ExtensionFilter("Todos los archivos", "*")
         );
         File archivo = fc.showOpenDialog(null);
@@ -277,6 +270,25 @@ public class ResultadosController {
             stage.show();
         } catch (IOException e) {
             mostrarAlerta("Error", "No se pudo cargar la gráfica.", Alert.AlertType.ERROR);
+        }
+    }
+
+    // Método para abrir gráfica de líneas
+    @FXML
+    private void handleMostrarTendencias() {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/LineChartView.fxml"));
+            Parent root = loader.load();
+
+            LineaController controller = loader.getController();
+            controller.inicializarDatos(datosFiltrados);
+
+            Stage stage = new Stage();
+            stage.setScene(new Scene(root));
+            stage.setTitle("Tendencias por Ciclo");
+            stage.show();
+        } catch (IOException e) {
+            mostrarAlerta("Error", "No se pudo cargar la gráfica de tendencias.", Alert.AlertType.ERROR);
         }
     }
 }

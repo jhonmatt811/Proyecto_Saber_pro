@@ -2,6 +2,7 @@ package com.java.fx.controller;
 import com.java.fx.model.Resultado;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.collections.transformation.FilteredList;
 import javafx.fxml.FXML;
 import javafx.scene.chart.BarChart;
 import javafx.scene.chart.CategoryAxis;
@@ -61,5 +62,8 @@ public class GraficaModulosController
     private void handleCerrar() {
         Stage stage = (Stage) graficaPuntajes.getScene().getWindow();
         stage.close();
+    }
+
+    public void inicializarDatos(FilteredList<Resultado> datosFiltrados, String trim, String value, String value1) {
     }
 }
