@@ -3,28 +3,32 @@ package com.java.fx.model;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 public class Resultado {
-    private final int ciclo;
-    private final int year;
-    private final long documento;
-    private final String tipoDocumento;
-    private final String nombre;
-    private final String numeroRegistro;
-    private final String tipoEvaluado;
-    private final String sniesProgramaAcademico;
-    private final String programa;
-    private final String ciudad;
-    private final String nucleoBasicoConocimiento;
-    private final String puntajeGlobal;
-    private final String percentilNacionalGlobal;
-    private final String percentilNacionalNbc;
-    private final String modulo;
-    private final String puntajeModulo;
+    private int ciclo;
+    private int year;
+    private long documento;
+    private String tipoDocumento;
+    private String nombre;
+    private String numeroRegistro;
+    private String tipoEvaluado;
+    private String sniesProgramaAcademico;
+    private String programa;
+    private String ciudad;
+    private String nucleoBasicoConocimiento;
+    private String puntajeGlobal;
+    private String percentilNacionalGlobal;
+    private String percentilNacionalNbc;
+    private String modulo;
+    private String puntajeModulo;
     @JsonProperty("nivelDesempeño")                               // mapea nombre con tilde
-    private final String nivelDesempeno;
-    private final String percentilNacionalModulo;
-    private final String percentilGrupoNbcModulo;
-    private final String novedades;
+    private String nivelDesempeno;
+    private String percentilNacionalModulo;
+    private String percentilGrupoNbcModulo;
+    private String novedades;
 
+    // 1) Constructor vacío para Jackson
+    public Resultado() { }
+
+    // 2) Constructor “lleno” para el CSV
     public Resultado(int ciclo,
                      int year, String tipoDocumento, long documento,
                      String nombre, String numeroRegistro,
@@ -77,4 +81,85 @@ public class Resultado {
     public String getPercentilNacionalModulo() { return percentilNacionalModulo; }
     public String getPercentilGrupoNbcModulo() { return percentilGrupoNbcModulo; }
     public String getNovedades() { return novedades; }
+
+    //setters
+    public void setCiclo(int ciclo) {
+        this.ciclo = ciclo;
+    }
+
+    public void setYear(int year) {
+        this.year = year;
+    }
+
+    public void setDocumento(long documento) {
+        this.documento = documento;
+    }
+
+    public void setTipoDocumento(String tipoDocumento) {
+        this.tipoDocumento = tipoDocumento;
+    }
+
+    public void setNombre(String nombre) {
+        this.nombre = nombre;
+    }
+
+    public void setNumeroRegistro(String numeroRegistro) {
+        this.numeroRegistro = numeroRegistro;
+    }
+
+    public void setTipoEvaluado(String tipoEvaluado) {
+        this.tipoEvaluado = tipoEvaluado;
+    }
+
+    public void setSniesProgramaAcademico(String sniesProgramaAcademico) {
+        this.sniesProgramaAcademico = sniesProgramaAcademico;
+    }
+
+    public void setPrograma(String programa) {
+        this.programa = programa;
+    }
+
+    public void setCiudad(String ciudad) {
+        this.ciudad = ciudad;
+    }
+
+    public void setNucleoBasicoConocimiento(String nucleoBasicoConocimiento) {
+        this.nucleoBasicoConocimiento = nucleoBasicoConocimiento;
+    }
+
+    public void setPuntajeGlobal(String puntajeGlobal) {
+        this.puntajeGlobal = puntajeGlobal;
+    }
+
+    public void setPercentilNacionalGlobal(String percentilNacionalGlobal) {
+        this.percentilNacionalGlobal = percentilNacionalGlobal;
+    }
+
+    public void setPercentilNacionalNbc(String percentilNacionalNbc) {
+        this.percentilNacionalNbc = percentilNacionalNbc;
+    }
+
+    public void setModulo(String modulo) {
+        this.modulo = modulo;
+    }
+
+    public void setPuntajeModulo(String puntajeModulo) {
+        this.puntajeModulo = puntajeModulo;
+    }
+
+    public void setNivelDesempeno(String nivelDesempeno) {
+        this.nivelDesempeno = nivelDesempeno;
+    }
+
+    public void setPercentilNacionalModulo(String percentilNacionalModulo) {
+        this.percentilNacionalModulo = percentilNacionalModulo;
+    }
+
+    public void setPercentilGrupoNbcModulo(String percentilGrupoNbcModulo) {
+        this.percentilGrupoNbcModulo = percentilGrupoNbcModulo;
+    }
+
+    public void setNovedades(String novedades) {
+        this.novedades = novedades;
+    }
 }

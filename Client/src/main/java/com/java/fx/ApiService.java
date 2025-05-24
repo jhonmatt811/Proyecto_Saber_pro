@@ -12,7 +12,6 @@ import org.springframework.http.HttpEntity;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.RestTemplate;
-import org.springframework.http.HttpHeaders;
 import java.io.*;
 import java.net.HttpURLConnection;
 import java.net.URI;
@@ -26,7 +25,6 @@ public class ApiService {
     private static final String BASE_URL = "http://localhost:8080";
     private final HttpClient client = HttpClient.newHttpClient();
     private final ObjectMapper mapper = new ObjectMapper();
-    public HttpResponse<Object> response;
 
     public List<Usuario> obtenerUsuarios() throws IOException, InterruptedException {
         HttpRequest request = HttpRequest.newBuilder()
@@ -89,7 +87,7 @@ public class ApiService {
                     return null;
                 });
     }
-    public List<Rol> obtenerRoles() throws Exception {
+    public static List<Rol> obtenerRoles() throws Exception {
         String url = BASE_URL + "/roles";
         System.out.println("Llamando a URL: " + url);
 
@@ -120,7 +118,6 @@ public class ApiService {
         alert.setContentText(mensaje); // Mensaje principal
         alert.showAndWait(); // Muestra la alerta y espera
     }
-
     public boolean resetPassword(String email, String password, String code) throws IOException {
         URL url = new URL(BASE_URL + "/usuarios/contrasena");
         HttpURLConnection conn = (HttpURLConnection) url.openConnection();
@@ -157,7 +154,7 @@ public class ApiService {
             RestTemplate restTemplate = new RestTemplate();
             String url = BASE_URL + "/usuarios/contraseña/olvidado";
 
-            HttpHeaders headers = new HttpHeaders();
+            org.springframework.http.HttpHeaders headers = new org.springframework.http.HttpHeaders();
             headers.setContentType(MediaType.APPLICATION_JSON);
 
             String json = String.format("{\"email\": \"%s\"}", email);
@@ -170,4 +167,5 @@ public class ApiService {
             e.printStackTrace();
             return false;
         }}
+
 }

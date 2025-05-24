@@ -30,6 +30,8 @@
     <Button fx:id="btnCambiarRol"  layoutX="220" layoutY="330" style="-fx-background-color: #F02D3A; -fx-text-fill: white; -fx-font-weight: bold;" text="Cambiar Rol" />
 
     <Button fx:id="btnCrearUsuarios" layoutX="330" layoutY="330" onAction="#goCrearUsuarios" style="-fx-background-color: #F02D3A; -fx-text-fill: white; -fx-font-weight: bold;" text="Crear usuarios"/>
+    <Button fx:id="btnCargarUsuarios" layoutX="450" layoutY="330" onAction="#goCargarUsuarios" style="-fx-background-color: #F02D3A; -fx-text-fill: white; -fx-font-weight: bold;" text="Cargar usuarios"/>
+
 
 
 </AnchorPane>

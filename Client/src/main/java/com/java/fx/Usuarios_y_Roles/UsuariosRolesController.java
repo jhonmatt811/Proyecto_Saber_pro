@@ -27,6 +27,7 @@ public class UsuariosRolesController {
     @FXML private TableColumn<Usuario, String> colCorreo;
     @FXML private TableColumn<Usuario, String> colNombreRol;
     @FXML private Button btnCrearUsuarios;
+    @FXML private Button btnCargarUsuarios;
     @FXML private BorderPane mainPane;
 
     private final ApiService apiService = new ApiService();
@@ -214,6 +215,31 @@ public class UsuariosRolesController {
     public void setBtnCrearUsuarios(Button btnCrearUsuarios) {
         this.btnCrearUsuarios = btnCrearUsuarios;
     }
-}
+
+    @FXML
+    public void goCargarUsuarios() {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/CrearUsuarios.fxml"));
+            Node view = loader.load();
+
+            // Obtener el controlador de la vista cargada
+            CrearUsuariosController controller = loader.getController();
+            controller.setUsuariosRolesController(this); // para actualizar la tabla luego
+
+            // Cargar la vista en el panel central
+            mainPane.setCenter(view);
+
+            // Ocultar controles innecesarios
+            tablaUsuarios.setVisible(false);
+            comboNuevoRol.setVisible(false);
+            btnCrearUsuarios.setVisible(false);
+            btnCambiarRol.setVisible(false);
+            btnCargarUsuarios.setVisible(false);
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }}
+
 
 
