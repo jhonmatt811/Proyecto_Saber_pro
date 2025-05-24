@@ -29,7 +29,11 @@ public class SecurityConfig {
             .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)) // Establece la sesión como stateless
             .authorizeHttpRequests(auth -> auth
                     .requestMatchers("/error").permitAll() 
-                .requestMatchers("/usuarios", "/usuarios/inicio-sesion","/usuarios/contraseña","/usuarios/contraseña/*").permitAll() // Rutas públicas
+                .requestMatchers("/usuarios",
+                        "/usuarios/inicio-sesion",
+                        "/usuarios/contrasena",
+                        "/usuarios/contraseña",
+                        "/usuarios/contraseña/*").permitAll() // Rutas públicas
                 .requestMatchers("/admin","/admin/*").hasRole("Decano")
                 .requestMatchers("/personas","/personas/*").permitAll()
                 .requestMatchers("/resultados","/resultados/*").hasAnyRole("Decano","Director de Programa","Coordinador de Saber Pro")

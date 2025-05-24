@@ -87,23 +87,23 @@ public class olvidoContraseñaController {
     @FXML
     private void handleConfirmNewPassword() {
         String code = codeField.getText().trim();
-        String newPassword = newPasswordField.getText().trim();
+        String password = newPasswordField.getText().trim();
 
-        if (code.isEmpty() || newPassword.isEmpty()) {
+        if (code.isEmpty() || password.isEmpty()) {
             statusLabel.setText("Llena todos los campos.");
             return;
         }
 
         try {
-            URL url = new URL("http://localhost:8080/usuarios/contraseña");
+            URL url = new URL("http://localhost:8080/usuarios/contrasena");
             HttpURLConnection conn = (HttpURLConnection) url.openConnection();
             conn.setRequestMethod("PUT");
             conn.setRequestProperty("Content-Type", "application/json");
             conn.setDoOutput(true);
 
             String jsonInputString = String.format(
-                    "{\"correo\":\"%s\",\"nuevaContraseña\":\"%s\", \"codigo\":\"%s\"}",
-                    storedEmail, newPassword ,code
+                    "{\"email\":\"%s\",\"password\":\"%s\", \"code\":\"%s\"}",
+                    storedEmail, password ,code
             );
 
             try (OutputStream os = conn.getOutputStream()) {
@@ -118,6 +118,9 @@ public class olvidoContraseñaController {
                     confirmButton.setDisable(true);
                     newPasswordField.setDisable(true);
                     codeField.setDisable(true);
+
+                    Stage currentStage = (Stage) confirmButton.getScene().getWindow();
+                    currentStage.close();
                 });
             } else {
                 statusLabel.setText("Error al actualizar la contraseña.");
