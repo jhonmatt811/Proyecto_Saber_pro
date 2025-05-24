@@ -36,3 +36,27 @@
     -fx-text-fill: white;
     -fx-max-width: Infinity;
 }
+
+
+/* Asegurar que las barras sean visibles */
+.chart-bar {
+    -fx-bar-fill: #2196F3;
+    -fx-background-insets: 0, 2, 5;
+    -fx-background-radius: 0;
+}
+
+/* Color de fondo del gráfico */
+.chart-plot-background {
+    -fx-background-color: transparent;
+}
+
+/* Etiquetas del eje X rotadas */
+.axis-label {
+    -fx-rotate: -90;
+}
+/* Estilo para las etiquetas del eje X */
+.axis-tick-mark {
+    -fx-font-size: 10px;
+    -fx-wrap-text: true;
+    -fx-text-alignment: center;
+}

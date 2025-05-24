@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.scene.chart.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<BorderPane xmlns="http://javafx.com/javafx/17.0.12"
+            xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="com.java.fx.controller.GraficaModulosController"
+            style="-fx-padding: 20;">
+
+    <center>
+        <ScrollPane fitToWidth="true" fitToHeight="true">
+            <BarChart fx:id="graficaPuntajes"
+                      prefWidth="1200"
+                      prefHeight="600"
+                      title="Distribución de Puntajes por Módulo"
+                      legendVisible="false">
+                <xAxis>
+                    <CategoryAxis fx:id="xAxis" label="Módulos" />
+                </xAxis>
+                <yAxis>
+                    <NumberAxis fx:id="yAxis" label="Puntaje" />
+                </yAxis>
+            </BarChart>
+        </ScrollPane>
+    </center>
+
+    <bottom>
+        <Button text="Cerrar"
+                onAction="#handleCerrar"
+                style="-fx-background-color: #f44336; -fx-text-fill: white;"
+                BorderPane.alignment="CENTER"/>
+    </bottom>
+
+</BorderPane>

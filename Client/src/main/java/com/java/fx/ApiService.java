@@ -107,9 +107,6 @@ public class ApiService {
         }
     }
 
-
-
-
     private void mostrarAlerta(String titulo, String mensaje) {
         Alert alert = new Alert(Alert.AlertType.INFORMATION); // Tipo de alerta
         alert.setTitle(titulo); // Título de la ventana
@@ -117,6 +114,5 @@ public class ApiService {
         alert.setContentText(mensaje); // Mensaje principal
         alert.showAndWait(); // Muestra la alerta y espera
     }
-
 
 }

@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.scene.chart.*?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
@@ -29,10 +28,15 @@
         <ComboBox fx:id="filtroPrograma" promptText="Programa" prefWidth="180"/>
         <ComboBox fx:id="filtroModulo" promptText="Área" prefWidth="150"/>
         <Button onAction="#handleRestablecerFiltros" text="Restablecer" />
+        <!-- boton para hacer el get de resultados -->
+        <Button fx:id="btnObtenerResultados"
+                onAction="#handleObtenerResultados"
+                text="Obtener Resultados"
+                style="-fx-background-color: #009688; -fx-text-fill: white;" />
     </HBox>
 
     <!-- Tabla de resultados actualizada -->
-    <TableView fx:id="tablaResultados" prefHeight="400">
+    <TableView fx:id="tablaResultados" prefHeight="600">
         <columns>
             <!-- Información personal -->
             <TableColumn fx:id="colTipoDocumento" prefWidth="100" text="Tipo Doc"/>
@@ -66,25 +70,12 @@
 
     <!-- Separador visual -->
     <Separator />
-
-    <!-- Sección de puntajes por módulo -->
-    <VBox spacing="10">
-        <Label style="-fx-font-size: 18px; -fx-font-weight: bold;" text="Puntaje por Módulo" />
-        <BarChart fx:id="graficaPuntajes" title="Distribución de Puntajes por Módulo" legendVisible="false" prefHeight="250" prefWidth="600">
-            <xAxis>
-                <CategoryAxis label="Módulos" />
-            </xAxis>
-            <yAxis>
-                <NumberAxis label="Puntaje" lowerBound="0" upperBound="100" tickUnit="10" />
-            </yAxis>
-        </BarChart>
-    </VBox>
-
     <!-- Separador visual -->
     <Separator />
 
     <!-- Botones de exportación -->
     <HBox spacing="10" alignment="CENTER">
+        <Button onAction="#handleMostrarGrafica" style="-fx-background-color: #2196F3; -fx-text-fill: white;" text="Mostrar Gráfica de Barras"/>
         <Button onAction="#handleExportarPDF" style="-fx-background-color: #f44336; -fx-text-fill: white;" text="Exportar a PDF" />
         <Button onAction="#handleExportarExcel" style="-fx-background-color: #4CAF50; -fx-text-fill: white;" text="Exportar a Excel" />
     </HBox>

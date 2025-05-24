@@ -2,7 +2,6 @@ package com.icfes_group.controller;
 
 import com.icfes_group.controller.responses.LoginResponse;
 import com.icfes_group.controller.responses.StatusResponse;
-import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -11,6 +10,7 @@ import com.icfes_group.dto.UserDTO;
 import com.icfes_group.model.User;
 import com.icfes_group.security.componets.JwtUtil;
 import jakarta.validation.Valid;
+import lombok.AllArgsConstructor;
 
 @RestController
 @RequestMapping("/usuarios")

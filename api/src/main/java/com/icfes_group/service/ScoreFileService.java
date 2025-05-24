@@ -1,36 +1,27 @@
 package com.icfes_group.service;
 
+import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import java.util.*;
 import java.util.stream.Collectors;
 import com.icfes_group.dto.ScoreFileDTO;
 import com.icfes_group.repository.IcfesTestRepository.*;
 import com.icfes_group.model.IcfesTest.*;
-import org.springframework.beans.factory.annotation.Autowired;
 import java.text.Normalizer;
 
 @Service
+@AllArgsConstructor
 public class ScoreFileService {
     
-    @Autowired
     TypeIdentityCardRepository typeCardRepository;
-    @Autowired
     EvaluatedRepository evalRepository;
-    @Autowired
     EvaluatedTypeRepository evalTypeRepository;
-    @Autowired
     CityRepository cityRepository;
-    @Autowired
     AcademicProgramRepository academicRepository;
-    @Autowired
     ModuleCatalogRepository moduleCatalogRepository;
-    @Autowired
     ReferenceGroupRepository referenceGroupRepository;
-    @Autowired
     TestRegistrationRepository testRegistrationRepository;
-    @Autowired
     ModuleResultRepository moduleResultRepository;
-    @Autowired
     GlobalResultRepository globalRespository;
     // Método para agrupar los datos por documento
 
@@ -47,7 +38,7 @@ public class ScoreFileService {
                 .collect(Collectors.groupingBy(ScoreFileDTO::getDocumento));
     }
 
-    private Evaluated saveEvaluated(ScoreFileDTO dto, List<TypeIdentityCard> bankTypeIdCard) {
+    private void saveEvaluated(ScoreFileDTO dto, List<TypeIdentityCard> bankTypeIdCard) {
         // Buscar si ya existe en los precargados
         Optional<TypeIdentityCard> optionalTipo = bankTypeIdCard.stream()
             .filter(t -> t.getNombre().equalsIgnoreCase(dto.getTipoDocumento()))
@@ -68,7 +59,7 @@ public class ScoreFileService {
         }
 
         Evaluated eval = new Evaluated(dto, typeIdCard);
-        return evalRepository.save(eval);
+        evalRepository.save(eval);
     }
 
     
@@ -177,7 +168,6 @@ public class ScoreFileService {
                 .map(group -> new ReferenceGroup(
                         normalizar(group.getNombre()) // Normalizamos el nombre
                 ))
-                .distinct()
                 .collect(Collectors.toSet());
 
         // Obtener todos los grupos existentes en el banco de datos
@@ -251,18 +241,18 @@ public class ScoreFileService {
         return globalRespository.save(result);
     }
 
-    public ModuleResult saveModuleResult (ScoreFileDTO dto,GlobalResult globalResult){
+    public void saveModuleResult (ScoreFileDTO dto, GlobalResult globalResult){
         Optional<ModuleCatalog> moduleCatalog = moduleCatalogRepository.findByNombre(dto.getModulo());
         Optional<ModuleResult> optionalModuleResult = moduleResultRepository.findByGlobalRsltAndCatId(moduleCatalog.get().getId(),globalResult.getId());
         if(optionalModuleResult.isPresent()){
-            return optionalModuleResult.get();
+            return;
         }
         ModuleResult result = new ModuleResult(dto,globalResult,moduleCatalog.get());
-        return moduleResultRepository.save(result);
+        moduleResultRepository.save(result);
     }
 
     // Método para guardar los datos del archivo
-    public ScoreFileDTO[] saveDataFile(ScoreFileDTO[] dto) {
+    public void saveDataFile(ScoreFileDTO[] dto) {
         Map<Long, List<ScoreFileDTO>> agrupados = groupByDocument(dto);
 
         // Recolección de valores únicos
@@ -298,15 +288,14 @@ public class ScoreFileService {
         List<TypeIdentityCard> bankTypeIdCard = typeCardRepository.findAll();       
         List<City> citiesBank = cityRepository.findAll();
         List<AcademicProgram> programsBank = academicRepository.findAll();
-        List<ModuleCatalog> modulesBank = moduleCatalogRepository.findAll();            
         List<EvaluatedType> evalTypesBank = evalTypeRepository.findAll();
         List<ReferenceGroup> groupReferencesBank = referenceGroupRepository.findAll();
 
         agrupados.forEach((documento, lista) -> {
-            ScoreFileDTO dtoIter = lista.get(0);
+            ScoreFileDTO dtoIter = lista.getFirst();
 
             // Guardar evaluado
-            Evaluated evaluado = saveEvaluated(dtoIter, bankTypeIdCard);
+            saveEvaluated(dtoIter, bankTypeIdCard);
 
             // Registrar evaluación
             TestRegistration test = saveTestRegistrarion(dtoIter, programsBank, citiesBank, evalTypesBank);
@@ -315,10 +304,11 @@ public class ScoreFileService {
             GlobalResult globalResult = saveGlobalResult(dtoIter, test,groupReferencesBank);
 
             // Resultado de módulo
-            lista.forEach(dtoI ->saveModuleResult(dtoI, globalResult));
-        });
+            saveModuleResult(dtoIter, globalResult);
 
-        return dto;
+            // Recorremos todos los DTOs para guardar cada módulo
+            lista.forEach(d -> saveModuleResult(d, globalResult));
+        });
         }
 
 }

@@ -11,13 +11,9 @@ import com.icfes_group.model.Rol;
 import com.icfes_group.model.User;
 import com.icfes_group.repository.UserRepository;
 import com.icfes_group.service.RolService;
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
 import java.util.*;
 
 import lombok.AllArgsConstructor;
-import org.springframework.scheduling.annotation.Async;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -53,34 +49,30 @@ public class AdminUserService  {
         emailUtil.sendEmail(person.getEmail(),"Registro Exitoso - ICFES");
     }
 
-     public User changeActivate(Boolean activate, UUID id) {
+     public void changeActivate(Boolean activate, UUID id) {
         User user = userRepository.findById(id)
             .orElseThrow(() -> new NoSuchElementException("No se encontró el usuario"));
 
         user.setIs_active(activate);
+         userRepository.save(user);
+     }
+    
+    public User changeRol(UUID id,Integer rolId) throws Exception{
+        Optional <User> userOp = userRepository.findById(id);
+        Rol rol = rolService.findById(rolId);
+        if(userOp.isEmpty()){
+            throw new Exception("Uusario no existe");
+        }
+        User user = userOp.get();
+        user.setRol(rol);
         return userRepository.save(user);
     }
     
-    public User changeRol(UUID id,Integer rolId) throws Exception{
-        try {
-            Optional <User> userOp = userRepository.findById(id);
-            Rol rol = rolService.findById(rolId);
-            if(!userOp.isPresent()){
-                throw new Exception("Uusario no existe");
-            }
-            User user = userOp.get();       
-            user.setRol(rol);
-            return userRepository.save(user);
-        } catch (Exception e) {       
-            throw e;
-       }
-    }
-    
-    public User register(UserDTO dto, String passwd)throws Exception {
+    public void register(UserDTO dto, String passwd)throws Exception {
         Rol rol = rolService.findById(dto.getRol_id());
         PersonaDTO personDTO = dto.getPerson();
         User newUser = new User(personDTO, passwd,rol);
-        return userRepository.save(newUser);
+        userRepository.save(newUser);
     }
     public String generateDefPasswd() {
         String letras = "abcdefghijklmnopqrstuvwxyz";

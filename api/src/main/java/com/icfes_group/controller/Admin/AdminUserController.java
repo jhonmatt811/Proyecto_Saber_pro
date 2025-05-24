@@ -11,7 +11,8 @@ import jakarta.validation.Valid;
 
 import java.util.List;
 import java.util.UUID;
-import org.springframework.beans.factory.annotation.Autowired;
+
+import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -21,9 +22,9 @@ import org.springframework.web.bind.annotation.*;
  */
 @RestController
 @RequestMapping("/admin/usuarios")
+@AllArgsConstructor
 public class AdminUserController{
-    @Autowired
-    private AdminUserService adminService;  
+    private AdminUserService adminService;
 
     @GetMapping
     public ResponseEntity<?> loadUserPeople(){
@@ -40,18 +41,32 @@ public class AdminUserController{
         try {
             String passwd = adminService.generateDefPasswd();
             String hashPasswd = adminService.hashPasswd(passwd);
-            User user = adminService.register(dto, hashPasswd);
+            adminService.register(dto, hashPasswd);
             adminService.sendEmail(dto.getPerson(), passwd);
             return new ResponseEntity<>(new StatusResponse("OK","Usuario Creado"), HttpStatus.CREATED);
         } catch (Exception e) {
             return new ResponseEntity<>(new StatusResponse("Bad", e.toString()), HttpStatus.BAD_REQUEST);
         }
     }
-    
+    @PostMapping("/lote")
+    public ResponseEntity<?> createUserLote(@Valid @RequestBody UserDTO[] dto) {
+        try {
+            for(UserDTO user : dto){
+                String passwd = adminService.generateDefPasswd();
+                String hashPasswd = adminService.hashPasswd(passwd);
+                adminService.register(user, hashPasswd);
+                adminService.sendEmail(user.getPerson(), passwd);
+            }
+            return new ResponseEntity<>(new StatusResponse("OK","Usuarios Creados"), HttpStatus.CREATED);
+        } catch (Exception e) {
+            return new ResponseEntity<>(new StatusResponse("Bad", e.toString()), HttpStatus.BAD_REQUEST);
+        }
+    }
+
     @PutMapping("/{id}/active")
     public ResponseEntity<?> changeActive(@RequestParam Boolean activate, @PathVariable UUID id){
         try {
-           User user = adminService.changeActivate(activate, id);
+           adminService.changeActivate(activate, id);
            String message = activate? "Activado":"Desactivado";
            return new ResponseEntity<>(new StatusResponse("OK","Usuario " + message),HttpStatus.OK);
         } catch (Exception e) {
