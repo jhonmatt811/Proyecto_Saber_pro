@@ -262,7 +262,6 @@ public class ScoreFileService {
     }
 
     // Método para guardar los datos del archivo
-    @Async
     public void saveDataFile(ScoreFileDTO[] dto) {
         Map<Long, List<ScoreFileDTO>> agrupados = groupByDocument(dto);
 
