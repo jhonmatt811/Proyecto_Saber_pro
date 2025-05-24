@@ -3,36 +3,38 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<VBox alignment="TOP_CENTER" spacing="20" style="-fx-padding: 30;" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.java.fx.controller.ResultadosController">
+<VBox alignment="TOP_CENTER" spacing="20" style="-fx-padding: 30;" stylesheets="@estilos.css" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.java.fx.controller.ResultadosController">
 
     <!-- Título principal -->
     <Label style="-fx-font-size: 24px; -fx-font-weight: bold;" text="Resultados Saber Pro" />
-
+    <Separator />
     <!-- Sección de carga de archivos -->
     <VBox spacing="10">
-        <Label style="-fx-font-size: 18px; -fx-font-weight: bold;" text="Cargar archivo" />
         <HBox spacing="10" alignment="CENTER_LEFT">
-            <Label text="Año:"/>
-            <TextField fx:id="inputYear" promptText="2023" prefWidth="80"/>
-            <Label text="Ciclo:"/>
-            <TextField fx:id="inputCiclo" promptText="1" prefWidth="50"/>
-            <Button onAction="#handleCargarArchivo" style="-fx-background-color: #2196F3; -fx-text-fill: white;" text="Cargar Archivo" />
+            <Label style="-fx-font-size: 16px; -fx-font-weight: bold;" text="Gestión" />
+            <TextField fx:id="inputYear" promptText="Año " prefWidth="70"/>
+            <TextField fx:id="inputCiclo" promptText="Ciclo " prefWidth="70"/>
+            <Button onAction="#handleCargarArchivo"
+                    style="-fx-background-color: #2196F3;
+                    -fx-text-fill: white;" text="Cargar Archivo" />
+            <!-- boton para hacer el get de resultados -->
+            <Button fx:id="btnObtenerResultados"
+                    onAction="#handleObtenerResultados"
+                    text="Obtener Resultados"
+                    style="-fx-background-color: #009688; -fx-text-fill: white;" />
             <Button onAction="#handleConectarCFES" style="-fx-background-color: #4CAF50; -fx-text-fill: white;" text="Conectar al ICFES" />
+
             <Label fx:id="archivoCargadoLabel" />
         </HBox>
     </VBox>
 
     <!-- Filtros personalizados -->
     <HBox spacing="10" alignment="CENTER_LEFT">
+        <Label style="-fx-font-size: 16px; -fx-font-weight: bold;" text="Filtros" />
         <TextField fx:id="inputDocumento" promptText="Documento Estudiante" prefWidth="160"/>
         <ComboBox fx:id="filtroPrograma" promptText="Programa" prefWidth="180"/>
         <ComboBox fx:id="filtroModulo" promptText="Área" prefWidth="150"/>
         <Button onAction="#handleRestablecerFiltros" text="Restablecer" />
-        <!-- boton para hacer el get de resultados -->
-        <Button fx:id="btnObtenerResultados"
-                onAction="#handleObtenerResultados"
-                text="Obtener Resultados"
-                style="-fx-background-color: #009688; -fx-text-fill: white;" />
     </HBox>
 
     <!-- Tabla de resultados actualizada -->
@@ -75,8 +77,8 @@
 
     <!-- Botones de exportación -->
     <HBox spacing="10" alignment="CENTER">
-        <Button onAction="#handleMostrarGrafica" style="-fx-background-color: #2196F3; -fx-text-fill: white;" text="Mostrar Gráfica de Barras"/>
-        <Button onAction="#handleExportarPDF" style="-fx-background-color: #f44336; -fx-text-fill: white;" text="Exportar a PDF" />
+        <Button onAction="#handleMostrarGrafica" style="-fx-background-color: #2196F3; -fx-text-fill: white;" text="Gráfica de Barras"/>
+        <Button text="Gráfica de Líneas" onAction="#handleMostrarTendencias" style="-fx-background-color: #273043; -fx-text-fill: white;"/>
         <Button onAction="#handleExportarExcel" style="-fx-background-color: #4CAF50; -fx-text-fill: white;" text="Exportar a Excel" />
     </HBox>
 

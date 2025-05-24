@@ -12,7 +12,7 @@ import java.text.Normalizer;
 @Service
 @AllArgsConstructor
 public class ScoreFileService {
-    
+
     TypeIdentityCardRepository typeCardRepository;
     EvaluatedRepository evalRepository;
     EvaluatedTypeRepository evalTypeRepository;

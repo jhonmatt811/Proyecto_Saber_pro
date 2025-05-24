@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.scene.chart.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<BorderPane xmlns="http://javafx.com/javafx/17.0.12"
+            xmlns:fx="http://javafx.com/fxml/1"
+            stylesheets="@estilos.css"
+            fx:controller="com.java.fx.controller.LineaController"
+            style="-fx-padding: 20;">
+
+    <center>
+        <ScrollPane fitToWidth="true" fitToHeight="true">
+            <LineChart fx:id="graficaTendencias"
+                       prefWidth="1200"
+                       prefHeight="600"
+                       title="Tendencias por Año y Ciclo"
+                       legendVisible="false">
+                <xAxis>
+                    <NumberAxis fx:id="xAxis" label="Año y Ciclo" />
+                </xAxis>
+                <yAxis>
+                    <NumberAxis fx:id="yAxis" label="Puntaje Global Promedio" />
+                </yAxis>
+            </LineChart>
+        </ScrollPane>
+    </center>
+
+    <bottom>
+        <Button text="Cerrar" onAction="#handleCerrar"
+                style="-fx-background-color: #f44336; -fx-text-fill: white;"/>
+    </bottom>
+
+</BorderPane>

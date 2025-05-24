@@ -8,7 +8,7 @@
 <?import javafx.scene.shape.*?>
 <?import javafx.scene.text.*?>
 
-<StackPane xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.java.fx.ControllerLogin">
+<StackPane xmlns="http://javafx.com/javafx/17.0.12" stylesheets="@estilos.css" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.java.fx.ControllerLogin">
     <children>
         <!-- Imagen de fondo -->
         <ImageView fitHeight="840" fitWidth="1550" preserveRatio="false">
