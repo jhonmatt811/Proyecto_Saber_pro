@@ -265,6 +265,7 @@ public class ScoreFileService {
     public ScoreFileDTO[] saveDataFile(ScoreFileDTO[] dto) {
         // Depuracion 1) Imprimir cuántas filas llegaron desde el cliente
         System.out.println(">> ScoreFileService.saveDataFile: filas recibidas = " + dto.length);
+        System.out.println("POST /resultados/file → recibí " + dto.length + " filas. Primer ciclo=" + dto[0].getCiclo());
 
         Map<Long, List<ScoreFileDTO>> agrupados = groupByDocument(dto);
 

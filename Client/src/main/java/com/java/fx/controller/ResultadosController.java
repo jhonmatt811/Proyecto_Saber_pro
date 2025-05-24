@@ -79,7 +79,7 @@ public class ResultadosController {
             Integer year    = inputYear.getText().isBlank()    ? null : Integer.parseInt(inputYear.getText());
             Integer ciclo   = inputCiclo.getText().isBlank()   ? null : Integer.parseInt(inputCiclo.getText());
             Long documento  = inputDocumento.getText().isBlank()? null : Long.parseLong(inputDocumento.getText());
-            Integer progId  = null; // si tu ComboBox de programa guardara un ID, haz algo similar
+            Integer progId  = null;
 
             // Llamada al API
             List<Resultado> lista = apiService.obtenerResultados(year, ciclo, documento, progId);
@@ -206,7 +206,7 @@ public class ResultadosController {
         );
         File archivo = fc.showOpenDialog(null);
         if (archivo != null) {
-            archivoCargadoLabel.setText("Archivo: "+archivo.getName()+" | Año: "+year+" | Ciclo: "+cycle);
+            archivoCargadoLabel.setText("Archivo: "+archivo.getName()+" | Año: "+year+" | Ciclo: "+cycle+" | Cargado Correctamente ");
             try {
                 // Cargar datos y actualizar UI
                 List<Resultado> nuevos = resultadoService.cargarDatosDesdeArchivo(archivo, cycle, year);
