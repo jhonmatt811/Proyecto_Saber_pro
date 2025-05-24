@@ -262,7 +262,8 @@ public class ScoreFileService {
     }
 
     // Método para guardar los datos del archivo
-    public ScoreFileDTO[] saveDataFile(ScoreFileDTO[] dto) {
+    @Async
+    public void saveDataFile(ScoreFileDTO[] dto) {
         Map<Long, List<ScoreFileDTO>> agrupados = groupByDocument(dto);
 
         // Recolección de valores únicos
@@ -317,8 +318,6 @@ public class ScoreFileService {
             // Resultado de módulo
             lista.forEach(dtoI ->saveModuleResult(dtoI, globalResult));
         });
-
-        return dto;
         }
 
 }

@@ -34,12 +34,12 @@ public class GeminiIntegrationSettings {
             - **Periodo evaluado:** %d a %d \s
             - **Porcentaje de mejora observado:** %.2f%%
             
-            Utiliza un tono técnico, claro y profesional. Evita lenguaje coloquial. Presenta tu respuesta de forma estructurada, se muy conciso.
+            Utiliza un tono técnico, claro y profesional. Evita lenguaje coloquial. Presenta tu respuesta de forma estructurada.
             """,
-                dto.getAccionMejora().getAcademicProgram().getNombre(),
-                dto.getAccionMejora().getAcademicProgram().getSnies(),
-                dto.getAccionMejora().getModuleCatalog().getNombre(),
-                dto.getAccionMejora().getImprovementProporsal(),
+                dto.getAccionMejora().getPrograma().getNombre(),
+                dto.getAccionMejora().getPrograma().getSnies(),
+                dto.getAccionMejora().getModulo().getNombre(),
+                dto.getAccionMejora().getSugerenciaMejora(),
                 dto.getAccionMejora().getYearInicio(),
                 dto.getAccionMejora().getYearFin(),
                 dto.getPorcentajeMejora()

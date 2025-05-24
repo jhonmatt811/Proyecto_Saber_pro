@@ -35,7 +35,26 @@ public class ImprovementActionsController {
         }
     }
 
-    //Endpoint para consultar gemmini AI por sugerencias
+    @PutMapping("/{id}")
+    public ResponseEntity<?> getSuggestActions(@PathVariable UUID id, @RequestBody ImprovementActionsDTO dto){
+        try {
+            ImprovementActions improvementActions = improvementActionsService.updateActionsImprovements(id, dto);
+            return new ResponseEntity<>(improvementActions,HttpStatus.OK);
+        } catch (Exception e) {
+            return new ResponseEntity<>(new StatusResponse("BAD",e.getMessage()),HttpStatus.BAD_REQUEST);
+        }
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<?> deleteImprovementAction(@PathVariable UUID id){
+        try {
+            improvementActionsService.deleteActionsImprovements(id);
+            return new ResponseEntity<>(new StatusResponse("OK","Se ha eliminado la mejora"),HttpStatus.OK);
+        } catch (Exception e) {
+            return new ResponseEntity<>(new StatusResponse("BAD",e.getMessage()),HttpStatus.BAD_REQUEST);
+        }
+    }
+
     @GetMapping("/sugerencias")
     public ResponseEntity<?> getSuggest(@RequestBody ImprovementActionsAnalyzeDTO dto){
         try {

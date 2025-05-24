@@ -32,4 +32,11 @@ public class AdminPersonService {
         );        
         return personaRepository.save(persona);
     }
+    public Persona[] guardarPersonaLote(PersonaDTO[] personaDTO) {
+        Persona[] personas = new Persona[personaDTO.length];
+        for (int i = 0; i < personaDTO.length; i++) {
+            personas[i] = guardarPersona(personaDTO[i]);
+        }
+        return personas;
+    }
 }
