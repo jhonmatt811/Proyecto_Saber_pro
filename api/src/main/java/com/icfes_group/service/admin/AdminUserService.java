@@ -76,11 +76,11 @@ public class AdminUserService  {
        }
     }
     
-    public User register(UserDTO dto, String passwd)throws Exception {
+    public void register(UserDTO dto, String passwd)throws Exception {
         Rol rol = rolService.findById(dto.getRol_id());
         PersonaDTO personDTO = dto.getPerson();
         User newUser = new User(personDTO, passwd,rol);
-        return userRepository.save(newUser);
+        userRepository.save(newUser);
     }
     public String generateDefPasswd() {
         String letras = "abcdefghijklmnopqrstuvwxyz";
