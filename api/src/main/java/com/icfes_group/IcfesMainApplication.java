@@ -28,6 +28,13 @@ public class IcfesMainApplication {
         System.setProperty("DB_PASSWD", dotenv.get("DB_PASSWD"));
         System.setProperty("JWT_SECRET", dotenv.get("JWT_SECRET"));
 
+        System.setProperty("ICFES_TOKEN", dotenv.get("ICFES_TOKEN"));
+        System.setProperty("ICFES_EMAIL", dotenv.get("ICFES_EMAIL"));
+        System.setProperty("ICFES_PASSWORD", dotenv.get("ICFES_PASSWORD"));
+
+        System.setProperty("GEMINI_API_KEY", dotenv.get("GEMINI_API_KEY"));
+        System.setProperty("GEMINI_URL", dotenv.get("GEMINI_URL"));
+
         SpringApplication.run(IcfesMainApplication.class, args);
     }
 }
