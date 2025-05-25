@@ -1,7 +1,4 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
+
 package com.icfes_group.security.filters;
 
 import com.icfes_group.security.componets.JwtUtil;
@@ -12,6 +9,7 @@ import org.springframework.web.filter.OncePerRequestFilter;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.http.HttpMethod;
 
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.http.HttpServletRequest;
@@ -25,6 +23,31 @@ public class JwtFilter extends OncePerRequestFilter {
 
     @Autowired
     private JwtUtil jwtUtil;
+
+    private static final List<String> PUBLIC_PATHS = List.of(
+            "/error",
+            "/usuarios",
+            "/personas"
+    );
+
+    @Override
+    protected boolean shouldNotFilter(HttpServletRequest request) {
+        String path = request.getRequestURI();
+
+        // Permitir solicitudes OPTIONS para CORS
+        if (request.getMethod().equals(HttpMethod.OPTIONS.name())) {
+            return true;
+        }
+
+        // Verificar rutas públicas
+        for (String publicPath : PUBLIC_PATHS) {
+            if (path.startsWith(publicPath)) {
+                return true;
+            }
+        }
+
+        return false;
+    }
 
     @Override
     protected void doFilterInternal(HttpServletRequest request,
@@ -40,15 +63,17 @@ public class JwtFilter extends OncePerRequestFilter {
                 Claims claims = jwtUtil.getClaims(token);
                 String email = claims.getSubject();
                 String role = claims.get("role", String.class);
+
                 var authToken = new UsernamePasswordAuthenticationToken(
-                    email,
-                    null,
-                    List.of(new SimpleGrantedAuthority("ROLE_" + role))
+                        email,
+                        null,
+                        List.of(new SimpleGrantedAuthority("ROLE_" + role))
                 );
 
                 SecurityContextHolder.getContext().setAuthentication(authToken);
             }
         }
+
         filterChain.doFilter(request, response);
     }
 }
