@@ -1,4 +1,6 @@
 package com.java.fx.service;
+import com.java.fx.model.AccionesDeMejora.Modulo;
+import com.java.fx.model.AccionesDeMejora.Programa;
 import com.java.fx.model.AccionesDeMejora.SugerenciaMejora;
 import com.java.fx.model.Resultado;
 
@@ -241,9 +243,33 @@ public class ResultadoService {
         con.disconnect();
     }
 
+
+    // Obtener todos los programas
+    public List<Programa> obtenerProgramas() throws IOException, InterruptedException {
+        HttpRequest request = HttpRequest.newBuilder()
+                .uri(URI.create(BASE_URL + "/programas"))
+                .header("Authorization", "Bearer " + Sesion.getJwtToken())
+                .GET()
+                .build();
+
+        HttpResponse<String> resp = client.send(request, HttpResponse.BodyHandlers.ofString());
+        return mapper.readValue(resp.body(), new TypeReference<List<Programa>>() {});
+    }
+
+    // Obtener todos los módulos
+    public List<Modulo> obtenerModulos() throws IOException, InterruptedException {
+        HttpRequest request = HttpRequest.newBuilder()
+                .uri(URI.create(BASE_URL + "/modulos"))
+                .header("Authorization", "Bearer " + Sesion.getJwtToken())
+                .GET()
+                .build();
+
+        HttpResponse<String> resp = client.send(request, HttpResponse.BodyHandlers.ofString());
+        return mapper.readValue(resp.body(), new TypeReference<List<Modulo>>() {});
+    }
     public void enviarSugerencia(String jsonSugerencia) throws IOException, InterruptedException {
         HttpRequest request = HttpRequest.newBuilder()
-                .uri(URI.create(BASE_URL + "/sugerencias-mejora")) // Ajusta la URL
+                .uri(URI.create(BASE_URL + "/mejoras"))
                 .header("Content-Type", "application/json")
                 .header("Authorization", "Bearer " + Sesion.getJwtToken())
                 .POST(HttpRequest.BodyPublishers.ofString(jsonSugerencia))
