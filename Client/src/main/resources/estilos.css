@@ -49,6 +49,17 @@
     -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.2), 6, 0.3, 0, 2);
 }
 
+/* Cambiar color de la línea principal linechat */
+.chart-series-line {
+    -fx-stroke: #FF6F00;
+    -fx-stroke-width: 2px;
+}
+
+/* Efecto hover en puntos */
+.default-color0.chart-line-symbol:hover {
+    -fx-background-color: #FF5722, white; /* Naranja al pasar el mouse */
+}
+
 
 
 
