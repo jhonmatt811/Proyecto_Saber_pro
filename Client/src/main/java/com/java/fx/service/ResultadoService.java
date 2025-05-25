@@ -281,5 +281,20 @@ public class ResultadoService {
             throw new IOException("Error al enviar sugerencia: " + response.body());
         }
     }
+    public List<SugerenciaMejora> obtenerMejoras() throws IOException, InterruptedException {
+        HttpRequest request = HttpRequest.newBuilder()
+                .uri(URI.create(BASE_URL + "/mejoras"))
+                .header("Authorization", "Bearer " + Sesion.getJwtToken())
+                .GET()
+                .build();
+
+        HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+
+        if (response.statusCode() != 200) {
+            throw new IOException("Error al obtener mejoras: " + response.body());
+        }
+
+        return mapper.readValue(response.body(), new TypeReference<List<SugerenciaMejora>>() {});
+    }
 }
 

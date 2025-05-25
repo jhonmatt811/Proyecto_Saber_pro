@@ -7,29 +7,26 @@ import com.java.fx.model.AccionesDeMejora.Modulo;
 import com.java.fx.model.AccionesDeMejora.Programa;
 import com.java.fx.model.AccionesDeMejora.SugerenciaMejora;
 import com.java.fx.service.ResultadoService;
-import com.java.fx.model.Resultado;
+import javafx.beans.property.SimpleIntegerProperty;
+import javafx.beans.property.SimpleStringProperty;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.*;
+import javafx.stage.Stage;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.config.ConfigurableBeanFactory;
-import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
 import javafx.scene.control.ComboBox;
 
-import java.io.File;
 import java.io.IOException;
 import java.util.*;
-import java.util.stream.Collectors;
 
 
 @Component
-@Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)
 public class AccionesMejoraController {
-    //no implementadas
-
-
-    //implementadas
+    //formulario
     @Autowired private ResultadoService resultadoService; // Inyectar el servicio
     @FXML private ComboBox<Programa> comboProgramas;
     @FXML private ComboBox<Modulo> comboModulos;
@@ -37,9 +34,44 @@ public class AccionesMejoraController {
     @FXML private DatePicker dpFechaInicio;
     @FXML private DatePicker dpFechaFin;
 
+    // Campos de la tabla
+    @FXML private TableView<SugerenciaMejora> tablaMejoras;
+    @FXML private TableColumn<SugerenciaMejora, String> columnaId;
+    @FXML private TableColumn<SugerenciaMejora, String> columnaPrograma;
+    @FXML private TableColumn<SugerenciaMejora, String> columnaModulo;
+    @FXML private TableColumn<SugerenciaMejora, String> columnaSugerencia;
+    @FXML private TableColumn<SugerenciaMejora, Integer> columnaYearInicio;
+    @FXML private TableColumn<SugerenciaMejora, Integer> columnaYearFin;
+
     @FXML
     public void initialize() {
+        configurarColumnasTabla();
+        cargarDatosIniciales();
         cargarDatosDesdeAPI();
+    }
+
+
+    private void configurarColumnasTabla() {
+        columnaId.setCellValueFactory(cell -> new SimpleStringProperty(cell.getValue().getId()));
+        columnaPrograma.setCellValueFactory(cell -> new SimpleStringProperty(cell.getValue().getPrograma().getNombre()));
+        columnaModulo.setCellValueFactory(cell -> new SimpleStringProperty(cell.getValue().getModulo().getNombre()));
+        columnaSugerencia.setCellValueFactory(cell -> new SimpleStringProperty(cell.getValue().getSugerenciaMejora()));
+        columnaYearInicio.setCellValueFactory(cell -> new SimpleIntegerProperty(cell.getValue().getYearInicio()).asObject());
+        columnaYearFin.setCellValueFactory(cell -> new SimpleIntegerProperty(cell.getValue().getYearFin()).asObject());
+    }
+
+    private void cargarDatosIniciales() {
+        try {
+            // Cargar ComboBox
+            comboProgramas.getItems().setAll(resultadoService.obtenerProgramas());
+            comboModulos.getItems().setAll(resultadoService.obtenerModulos());
+
+            // Cargar Tabla
+            tablaMejoras.getItems().setAll(resultadoService.obtenerMejoras());
+
+        } catch (IOException | InterruptedException e) {
+            mostrarAlerta("Error", "Error al cargar datos: " + e.getMessage(), Alert.AlertType.ERROR);
+        }
     }
 
     private void cargarDatosDesdeAPI() {
@@ -114,6 +146,4 @@ public class AccionesMejoraController {
         dpFechaInicio.setValue(null);
         dpFechaFin.setValue(null);
     }
-
-
 }
