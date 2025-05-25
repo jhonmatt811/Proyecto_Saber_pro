@@ -3,23 +3,24 @@ package com.java.fx;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.java.fx.Usuarios_y_Roles.Persona;
 import com.java.fx.model.Rol;
-import com.java.fx.model.UsuarioDTO;
 import com.java.fx.Usuarios_y_Roles.Sesion;
 import com.java.fx.Usuarios_y_Roles.Usuario;
 import javafx.application.Platform;
 import javafx.scene.control.Alert;
+import java.lang.reflect.Type;
+import com.google.gson.reflect.TypeToken;
+import com.google.gson.Gson;
+import org.springframework.http.*;
+import org.springframework.web.client.RestTemplate;
 
-import java.io.BufferedReader;
-import java.io.InputStream;
-import java.io.InputStreamReader;
+import java.util.*;
+import java.io.IOException;
 import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
-import java.nio.charset.StandardCharsets;
-import java.util.List;
-import java.util.UUID;
 import java.util.stream.Collectors;
 
 public class ApiService {
@@ -27,6 +28,7 @@ public class ApiService {
     private static final String BASE_URL = "http://localhost:8080";
     private final HttpClient client = HttpClient.newHttpClient();
     private final ObjectMapper mapper = new ObjectMapper();
+    private final Gson gson = new Gson();
 
     private HttpRequest.Builder builderConAutorizacion(String url) {
         return HttpRequest.newBuilder()
@@ -55,25 +57,85 @@ public class ApiService {
         throw new RuntimeException("No se encontró el arreglo de usuarios en la respuesta");
     }
 
-    public void enviarUsuariosEnLote(List<UsuarioDTO> usuarios) {
-        try {
-            String json = mapper.writeValueAsString(usuarios);
-            HttpRequest request = builderConAutorizacion(BASE_URL + "/admin/personas/lote")
-                    .header("Content-Type", "application/json")
-                    .POST(HttpRequest.BodyPublishers.ofString(json))
-                    .build();
+    public List<Persona> crearPersonasEnLote(List<Persona> personas) throws IOException, InterruptedException {
+        String json = gson.toJson(personas);
 
-            HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
-            manejarErrores(response);
-            System.out.println("Respuesta del servidor: " + response.body());
+        HttpRequest request = builderConAutorizacion(BASE_URL + "/admin/personas/lote")
+                .header("Content-Type", "application/json")
+                .header("Authorization", "Bearer " + Sesion.getJwtToken())
+                .POST(HttpRequest.BodyPublishers.ofString(json))
+                .build();
 
-            Platform.runLater(() -> mostrarAlertaInfo("Éxito", "Usuarios importados correctamente."));
-        } catch (Exception e) {
-            e.printStackTrace();
-            Platform.runLater(() -> mostrarAlertaError("Error al enviar los usuarios en lote."));
+        HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+
+        // ✅ Verificar si la respuesta fue exitosa (2xx)
+        if (response.statusCode() >= 200 && response.statusCode() < 300) {
+            Type personaListType = new TypeToken<List<Persona>>() {}.getType();
+            return gson.fromJson(response.body(), personaListType);
+        } else {
+            // 👀 Imprimir el error detallado del backend
+            System.err.println("Error al crear personas en lote: " + response.statusCode());
+            System.err.println("Respuesta del servidor: " + response.body());
+            throw new RuntimeException("Error al crear personas: " + response.body());
         }
     }
+    public List<Usuario> crearUsuariosEnLote(List<Usuario> usuarios) {
+        try {
+            ObjectMapper mapper = new ObjectMapper();
 
+            // Filtrar usuarios válidos
+            List<Map<String, Object>> usuariosMapeados = usuarios.stream()
+                    .filter(u -> {
+                        if (u.getPersona() == null) {
+                            System.err.println("Usuario sin persona asociada: " + u.getCorreo());
+                            return false;
+                        }
+                        return true;
+                    })
+                    .map(u -> {
+                        Map<String, Object> mapUser = new HashMap<>();
+                        mapUser.put("person", u.getPersona());
+                        mapUser.put("rol_id", u.getRol_id());
+                        return mapUser;
+                    })
+                    .collect(Collectors.toList());
+
+            if (usuariosMapeados.isEmpty()) {
+                System.err.println("No hay usuarios válidos para enviar.");
+                return Collections.emptyList();
+            }
+
+            // Serializar toda la lista a JSON
+            String requestBody = mapper.writeValueAsString(usuariosMapeados);
+
+            HttpRequest request = HttpRequest.newBuilder()
+                    .uri(URI.create(BASE_URL + "/admin/usuarios/lote"))
+                    .header("Content-Type", "application/json")
+                    .header("Authorization", "Bearer " + Sesion.getJwtToken())
+                    .POST(HttpRequest.BodyPublishers.ofString(requestBody))
+                    .build();
+
+            HttpClient client = HttpClient.newHttpClient();
+            HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+
+            int status = response.statusCode();
+            String responseBody = response.body();
+
+            if (status == 200 || status == 201) {
+                System.out.println("Usuarios creados correctamente.");
+                return usuarios.stream()
+                        .filter(u -> u.getPersona() != null)
+                        .collect(Collectors.toList());
+            } else {
+                System.err.println("Error al crear usuarios. Código: " + status + ", respuesta: " + responseBody);
+                throw new RuntimeException("Error al crear usuarios: " + responseBody);
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new RuntimeException("Excepción al crear usuarios: " + e.getMessage(), e);
+        }
+    }
 
 
     // ---------------------- ROLES ------------------------

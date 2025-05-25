@@ -1,35 +1,38 @@
 package com.java.fx.Usuarios_y_Roles;
 
 import com.java.fx.ApiService;
+import com.java.fx.ImportarUsuariosService;
 import com.java.fx.model.Rol;
-import com.java.fx.model.UsuarioDTO;
 import javafx.application.Platform;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
+import javafx.collections.transformation.FilteredList;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
 import javafx.scene.control.*;
 import javafx.scene.layout.BorderPane;
 import javafx.stage.FileChooser;
-import org.apache.poi.ss.usermodel.Row;
-import org.apache.poi.ss.usermodel.Sheet;
-import org.apache.poi.ss.usermodel.Workbook;
-import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+import lombok.Getter;
+import lombok.Setter;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
 
 @Component
 public class UsuariosRolesController {
+    @Getter
+    @Setter
     @FXML private TableView<Usuario> tablaUsuarios;
+    @Setter
+    @Getter
     @FXML private ComboBox<Rol> comboNuevoRol;
+    @Setter
+    @Getter
+
     @FXML private Button btnCambiarRol;
     @FXML private TableColumn<Usuario, String> colNombre;
     @FXML private TableColumn<Usuario, String> colSecNombre;
@@ -39,17 +42,45 @@ public class UsuariosRolesController {
     @FXML private TableColumn<Usuario, String> colNombreRol;
     @FXML private Button btnCrearUsuarios;
     @FXML private Button btnCargarUsuarios;
+    @Setter
+    @Getter
     @FXML private BorderPane mainPane;
+    @FXML private ApiService rolService;
+    @FXML private TextField txtFiltroNom;
+    @FXML private TextField txtFiltroRol;
+    @FXML private Label label_rol;
+    @FXML private Label label_nombre;
+
+    public Label getLabel_rol() {
+        return label_rol;
+    }
+
+    public Label getLabel_nombre() {
+        return label_nombre;
+    }
+
+    public TextField getTxtFiltroNom() {
+        return txtFiltroNom;
+    }
+
+    public TextField getTxtFiltroRol() {
+        return txtFiltroRol;
+    }
 
     private final ApiService apiService = new ApiService();
+    private ObservableList<Usuario> listaUsuarios = FXCollections.observableArrayList();
+    private FilteredList<Usuario> filteredUsuarios = new FilteredList<>(listaUsuarios);
 
     @FXML
     public void initialize() {
 
+        tablaUsuarios.setItems(filteredUsuarios);
         cargarUsuarios();
         configurarBoton();
         cargarRoles();
 
+        txtFiltroNom.textProperty().addListener((obs, oldVal, newVal) -> actualizarFiltro());
+        txtFiltroRol.textProperty().addListener((obs, oldVal, newVal) -> actualizarFiltro());
 
         comboNuevoRol.setCellFactory(lv -> new ListCell<>() {
             @Override
@@ -87,6 +118,7 @@ public class UsuariosRolesController {
                 new SimpleStringProperty(
                         cellData.getValue().getRol() != null ? cellData.getValue().getRol().getNombre() : "Sin Rol"
                 ));
+
     }
 
     private void configurarBoton() {
@@ -164,39 +196,6 @@ public class UsuariosRolesController {
         }
     }
 
-    public TableView<Usuario> getTablaUsuarios() {
-        return tablaUsuarios;
-
-    }
-
-    public void setTablaUsuarios(TableView<Usuario> tablaUsuarios) {
-        this.tablaUsuarios = tablaUsuarios;
-    }
-
-    public ComboBox<Rol> getComboNuevoRol() {
-        return comboNuevoRol;
-    }
-
-    public void setComboNuevoRol(ComboBox<Rol> comboNuevoRol) {
-        this.comboNuevoRol = comboNuevoRol;
-    }
-
-    public BorderPane getMainPane() {
-        return mainPane;
-    }
-
-    public void setMainPane(BorderPane mainPane) {
-        this.mainPane = mainPane;
-    }
-
-    public Button getBtnCambiarRol() {
-        return btnCambiarRol;
-    }
-
-    public void setBtnCambiarRol(Button btnCambiarRol) {
-        this.btnCambiarRol = btnCambiarRol;
-    }
-
     public Button getbtnCargarUsuarios() {return btnCargarUsuarios;}
 
     @FXML
@@ -216,67 +215,87 @@ public class UsuariosRolesController {
             btnCrearUsuarios.setVisible(false);
             btnCambiarRol.setVisible(false);
             btnCargarUsuarios.setVisible(false);
+            txtFiltroNom.setVisible(false);
+            txtFiltroRol.setVisible(false);
+            label_nombre.setVisible(false);
+            label_rol.setVisible(false);
         } catch (IOException e) {
             e.printStackTrace();
         }}
     }
-
-
     public Button getBtnCrearUsuarios() {
         return btnCrearUsuarios;
     }
+
+
 
     public void setBtnCrearUsuarios(Button btnCrearUsuarios) {
         this.btnCrearUsuarios = btnCrearUsuarios;
     }
 
+
     @FXML
     private void onCargarUsuariosClick() {
+        ApiService apiService = new ApiService();
+
         FileChooser fileChooser = new FileChooser();
-        fileChooser.setTitle("Seleccionar archivo Excel");
-        fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("Excel Files", "*.xlsx"));
-        File selectedFile = fileChooser.showOpenDialog(null);
+        fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("Archivos Excel", "*.xlsx"));
+        File archivoSeleccionado = fileChooser.showOpenDialog(null);
 
-        if (selectedFile != null) {
-            try (FileInputStream fis = new FileInputStream(selectedFile);
-                 Workbook workbook = new XSSFWorkbook(fis)) {
+        if (archivoSeleccionado != null) {
+            try {
+                ImportarUsuariosService importarService = new ImportarUsuariosService(apiService);
+                List<Usuario> usuarios = importarService.importarUsuariosDesdeExcel(archivoSeleccionado);
 
-                Sheet sheet = workbook.getSheetAt(0);
-                List<UsuarioDTO> usuarios = new ArrayList<>();
+                // ✅ Enviar usuarios al backend
+                List<Usuario> usuariosCreados = apiService.crearUsuariosEnLote(usuarios);
 
-                for (Row row : sheet) {
-                    if (row.getRowNum() == 0) continue;
 
-                    Long cc = (long) row.getCell(0).getNumericCellValue();
-                    String nombre = row.getCell(1).getStringCellValue();
-                    String segundoNombre = row.getCell(2).getStringCellValue();
-                    String apellido = row.getCell(3).getStringCellValue();
-                    String segundoApellido = row.getCell(4).getStringCellValue();
-                    String correo = row.getCell(5).getStringCellValue();
-                    String nombreRol = row.getCell(6).getStringCellValue();
+                // ✅ Mostrar en la tabla los usuarios creados
+                tablaUsuarios.getItems().addAll(usuariosCreados);
+                tablaUsuarios.refresh();       // Refresca visualmente
 
-                    usuarios.add(new UsuarioDTO(cc,nombre, segundoNombre, apellido, segundoApellido, correo, nombreRol));
-                }
-
-                ApiService api = new ApiService();
-                List<Rol> roles = api.obtenerRoles();
-                Map<String, Integer> rolMap = roles.stream()
-                        .collect(Collectors.toMap(Rol::getNombre, Rol::getId));
-
-                for (UsuarioDTO u : usuarios) {
-                    u.setIdRol(rolMap.get(u.getNombreRol()));
-                }
-
-                api.enviarUsuariosEnLote(usuarios);
 
             } catch (Exception e) {
                 e.printStackTrace();
-                // Muestra alerta en UI si deseas
+                mostrarError("Error al importar usuarios: " + e.getMessage());
             }
         }
     }
+    private void mostrarError(String mensaje) {
+        Alert alert = new Alert(Alert.AlertType.ERROR);
+        alert.setTitle("Error");
+        alert.setHeaderText(null);
+        alert.setContentText(mensaje);
+        alert.showAndWait();
+    }
+    private void actualizarFiltro() {
+        String filtroNombre = txtFiltroNom.getText().trim().toLowerCase();
+        String filtroRol = txtFiltroRol.getText().trim().toLowerCase();
+
+        filteredUsuarios.setPredicate(usuario -> {
+            // Manejo seguro de nulos para Persona
+            if (usuario.getPersona() == null) return false;
+
+            // Obtener componentes del nombre
+            String primerNombre = usuario.getPersona().getPrimer_nombre() != null ?
+                    usuario.getPersona().getPrimer_nombre().toLowerCase() : "";
+            String segundoNombre = usuario.getPersona().getSegundo_nombre() != null ?
+                    usuario.getPersona().getSegundo_nombre().toLowerCase() : "";
+
+            // Combinar nombres para búsqueda
+            String nombreCompleto = (primerNombre + " " + segundoNombre).trim();
+
+            // Manejo seguro de nulos para Rol
+            String rolNombre = usuario.getRol() != null && usuario.getRol().getNombre() != null ?
+                    usuario.getRol().getNombre().toLowerCase() : "";
+
+            // Aplicar filtros combinados
+            return nombreCompleto.contains(filtroNombre) && rolNombre.contains(filtroRol);
+        });
+
+        // Forzar actualización de la tabla
+        tablaUsuarios.refresh();
+    }
 
 }
-
-
-

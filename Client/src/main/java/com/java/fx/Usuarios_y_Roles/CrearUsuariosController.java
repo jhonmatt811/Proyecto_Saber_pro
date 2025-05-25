@@ -287,6 +287,12 @@ public class CrearUsuariosController {
             usuariosRolesController.getBtnCrearUsuarios().setVisible(true);
             usuariosRolesController.getBtnCambiarRol().setVisible(true);
             usuariosRolesController.getbtnCargarUsuarios().setVisible(true);
+            usuariosRolesController.getTxtFiltroNom().setVisible(true);
+            usuariosRolesController.getTxtFiltroRol().setManaged(true);
+            usuariosRolesController.getTxtFiltroRol().setVisible(true);
+            usuariosRolesController.getTxtFiltroRol().setEditable(false);
+            usuariosRolesController.getLabel_nombre().setVisible(true);
+            usuariosRolesController.getLabel_rol().setVisible(true);
         }
     }
 

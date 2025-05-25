@@ -77,6 +77,7 @@ public class Usuario {
     public void setRol_id(int rol_id) {
         this.rol_id = rol_id;
     }
+    public Persona getCc(Persona cc){return cc; }
 
     public Persona getPersona() {
         return persona;

@@ -10,30 +10,38 @@
 <BorderPane fx:id="mainPane" xmlns:fx="http://javafx.com/fxml" stylesheets="@estilos.css" fx:controller="com.java.fx.Usuarios_y_Roles.UsuariosRolesController">
     <!-- Aquí van los elementos interiores -->
 
+    <AnchorPane xmlns="http://javafx.com/javafx"
+                    xmlns:fx="http://javafx.com/fxml"
+                    prefHeight="400.0" prefWidth="600.0">
 
-<AnchorPane xmlns="http://javafx.com/javafx"
-            xmlns:fx="http://javafx.com/fxml"
-            prefHeight="400.0" prefWidth="600.0">
+            <TableView fx:id="tablaUsuarios" layoutX="20" layoutY="90" prefHeight="450">
+                <columns>
+                    <TableColumn fx:id="colNombre" text="Nombre" prefWidth="150"/>
+                    <TableColumn fx:id="colSecNombre" text="Segundo Nombre" prefWidth="100"/>
+                    <TableColumn fx:id="colApellido" text="Apellido" prefWidth="100"/>
+                    <TableColumn fx:id="colSecApellido" text="Segundo Apellido" prefWidth="100"/>
+                    <TableColumn fx:id="colCorreo" text="Correo" prefWidth="150"/>
+                    <TableColumn fx:id="colNombreRol" text="ROL" prefWidth="160" />
+                </columns>
+            </TableView>
 
-    <TableView fx:id="tablaUsuarios" layoutX="20" layoutY="20" prefHeight="300" prefWidth="750">
-        <columns>
-            <TableColumn fx:id="colNombre" text="Nombre" prefWidth="150"/>
-            <TableColumn fx:id="colSecNombre" text="Segundo Nombre" prefWidth="100"/>
-            <TableColumn fx:id="colApellido" text="Apellido" prefWidth="100"/>
-            <TableColumn fx:id="colSecApellido" text="Segundo Apellido" prefWidth="100"/>
-            <TableColumn fx:id="colCorreo" text="Correo" prefWidth="150"/>
-            <TableColumn fx:id="colNombreRol" text="ROL" prefWidth="160"/>
-        </columns>
-    </TableView>
+            <ComboBox fx:id="comboNuevoRol" layoutX="20" layoutY="550" prefWidth="150"/>
+            <Button fx:id="btnCambiarRol"  layoutX="220" layoutY="550" style="-fx-background-color: #F02D3A; -fx-text-fill: white; -fx-font-weight: bold;" text="Cambiar Rol" />
 
-    <ComboBox fx:id="comboNuevoRol" layoutX="20" layoutY="330" prefWidth="150"/>
-    <Button fx:id="btnCambiarRol"  layoutX="220" layoutY="330" style="-fx-background-color: #F02D3A; -fx-text-fill: white; -fx-font-weight: bold;" text="Cambiar Rol" />
+            <Button fx:id="btnCrearUsuarios" layoutX="330" layoutY="550" onAction="#goCrearUsuarios" style="-fx-background-color: #F02D3A; -fx-text-fill: white; -fx-font-weight: bold;" text="Crear usuarios"/>
+            <Button fx:id="btnCargarUsuarios" layoutX="450" layoutY="550" onAction="#onCargarUsuariosClick" style="-fx-background-color: #F02D3A; -fx-text-fill: white; -fx-font-weight: bold;" text="Cargar usuarios"/>
 
-    <Button fx:id="btnCrearUsuarios" layoutX="330" layoutY="330" onAction="#goCrearUsuarios" style="-fx-background-color: #F02D3A; -fx-text-fill: white; -fx-font-weight: bold;" text="Crear usuarios"/>
-    <Button fx:id="btnCargarUsuarios" layoutX="450" layoutY="330" onAction="#onCargarUsuariosClick" style="-fx-background-color: #F02D3A; -fx-text-fill: white; -fx-font-weight: bold;" text="Cargar usuarios"/>
+            <HBox layoutX="20" layoutY="20" spacing="10">
+            <VBox spacing="5">
+                <Label fx:id="label_nombre" text="Filtrar por Nombre:" style="-fx-font-weight: bold;"/>
+                <TextField fx:id="txtFiltroNom" prefWidth="200"/>
+            </VBox>
+            <VBox spacing="5">
+                <Label fx:id="laber_rol" text="Filtrar por Rol:" style="-fx-font-weight: bold;"/>
+                <TextField fx:id="txtFiltroRol" prefWidth="200"/>
+            </VBox>
+             </HBox>
 
-
-
-</AnchorPane>
+        </AnchorPane>
 
 </BorderPane>
