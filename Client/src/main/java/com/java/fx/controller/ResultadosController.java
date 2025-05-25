@@ -103,6 +103,7 @@ public class ResultadosController {
                 aplicarFiltros();
             });
 
+
         } catch (NumberFormatException nfe) {
             mostrarAlerta("Filtro inválido", "Año, ciclo o documento no tienen un formato numérico correcto.", Alert.AlertType.ERROR);
         } catch (IOException | InterruptedException ex) {

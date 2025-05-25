@@ -1,4 +1,5 @@
 package com.java.fx.service;
+import com.java.fx.model.AccionesDeMejora.SugerenciaMejora;
 import com.java.fx.model.Resultado;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -42,7 +43,6 @@ public class ResultadoService {
     private static final String BASE_URL = "http://localhost:8080";
     private final HttpClient client = HttpClient.newHttpClient();
     private final ObjectMapper mapper = new ObjectMapper();
-
     /*
       Llama al endpoint GET /resultados con los filtros opcionales.
       Crea la URL con query params si no son nulos.
@@ -241,4 +241,19 @@ public class ResultadoService {
         con.disconnect();
     }
 
+    public void enviarSugerencia(String jsonSugerencia) throws IOException, InterruptedException {
+        HttpRequest request = HttpRequest.newBuilder()
+                .uri(URI.create(BASE_URL + "/sugerencias-mejora")) // Ajusta la URL
+                .header("Content-Type", "application/json")
+                .header("Authorization", "Bearer " + Sesion.getJwtToken())
+                .POST(HttpRequest.BodyPublishers.ofString(jsonSugerencia))
+                .build();
+
+        HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+
+        if (response.statusCode() != 201) { // 201 Created
+            throw new IOException("Error al enviar sugerencia: " + response.body());
+        }
+    }
 }
+
