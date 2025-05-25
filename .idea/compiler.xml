@@ -11,12 +11,14 @@
           <entry name="$MAVEN_REPOSITORY$/org/projectlombok/lombok/1.18.38/lombok-1.18.38.jar" />
         </processorPath>
         <module name="fx" />
+        <module name="fx-spring" />
       </profile>
     </annotationProcessing>
   </component>
   <component name="JavacSettings">
     <option name="ADDITIONAL_OPTIONS_OVERRIDE">
       <module name="fx" options="-parameters" />
+      <module name="fx-spring" options="-parameters" />
     </option>
   </component>
 </project>
