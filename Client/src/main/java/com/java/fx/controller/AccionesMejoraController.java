@@ -3,23 +3,16 @@ package com.java.fx.controller;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import com.java.fx.model.AccionesDeMejora.Modulo;
-import com.java.fx.model.AccionesDeMejora.Programa;
-import com.java.fx.model.AccionesDeMejora.SugerenciaMejora;
+import com.java.fx.model.AccionesDeMejora.*;
 import com.java.fx.service.ResultadoService;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
-import javafx.scene.Parent;
-import javafx.scene.Scene;
 import javafx.scene.control.*;
-import javafx.stage.Stage;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import javafx.scene.control.ComboBox;
-
 import java.io.IOException;
 import java.util.*;
 
@@ -43,16 +36,20 @@ public class AccionesMejoraController {
     @FXML private TableColumn<SugerenciaMejora, Integer> columnaYearInicio;
     @FXML private TableColumn<SugerenciaMejora, Integer> columnaYearFin;
 
+    @FXML private TextArea txtAnalisis; // mostrar el análisis
+
+    private SugerenciaMejora sugerenciaSeleccionada;
+
     @FXML
     public void initialize() {
         configurarColumnasTabla();
         cargarDatosIniciales();
         cargarDatosDesdeAPI();
+        configurarSeleccionTabla();
     }
 
 
     private void configurarColumnasTabla() {
-        columnaId.setCellValueFactory(cell -> new SimpleStringProperty(cell.getValue().getId()));
         columnaPrograma.setCellValueFactory(cell -> new SimpleStringProperty(cell.getValue().getPrograma().getNombre()));
         columnaModulo.setCellValueFactory(cell -> new SimpleStringProperty(cell.getValue().getModulo().getNombre()));
         columnaSugerencia.setCellValueFactory(cell -> new SimpleStringProperty(cell.getValue().getSugerenciaMejora()));
@@ -125,6 +122,7 @@ public class AccionesMejoraController {
             // Serializar
             ObjectMapper mapper = new ObjectMapper();
             String json = mapper.writeValueAsString(sugerencia);
+            System.out.println("JSON enviado: " + json);
 
             // Enviar al API
             resultadoService.enviarSugerencia(json);
@@ -133,10 +131,53 @@ public class AccionesMejoraController {
             mostrarAlerta("Éxito", "Sugerencia guardada.", Alert.AlertType.INFORMATION);
             handleLimpiarFormulario();
 
+            // Obtener el análisis después de guardar
+            AnalisisMejora analisis = resultadoService.obtenerAnalisisMejora(sugerencia);
+
+            // Mostrar el análisis en el TextArea
+            String textoAnalisis = String.format(
+                    "Porcentaje de Mejora: %.2f%%\n\n%s",
+                    analisis.getPorcentajeMejora(),
+                    analisis.getMessage()
+            );
+            txtAnalisis.setText(textoAnalisis);
+
         } catch (JsonProcessingException e) {
             mostrarAlerta("Error", "Error en el JSON: " + e.getOriginalMessage(), Alert.AlertType.ERROR);
         } catch (IOException | InterruptedException e) {
             mostrarAlerta("Error", "Error de conexión: " + e.getMessage(), Alert.AlertType.ERROR);
+        }
+    }
+
+    private void configurarSeleccionTabla() {
+        tablaMejoras.getSelectionModel().selectedItemProperty().addListener(
+                (obs, oldSelection, newSelection) -> {
+                    sugerenciaSeleccionada = newSelection; // Guarda la selección
+                }
+        );
+    }
+
+    @FXML
+    private void handleEliminarMejora() {
+        if (sugerenciaSeleccionada == null) {
+            mostrarAlerta("Error", "Selecciona una mejora de la tabla", Alert.AlertType.ERROR);
+            return;
+        }
+
+        Alert confirmacion = new Alert(Alert.AlertType.CONFIRMATION);
+        confirmacion.setTitle("Confirmar eliminación");
+        confirmacion.setHeaderText("¿Eliminar esta acción de mejora?");
+        confirmacion.setContentText("Esta acción no se puede deshacer");
+
+        Optional<ButtonType> resultado = confirmacion.showAndWait();
+        if (resultado.isPresent() && resultado.get() == ButtonType.OK) {
+            try {
+                resultadoService.eliminarMejora(sugerenciaSeleccionada.getId());
+                cargarDatosIniciales(); // Recarga la tabla
+                mostrarAlerta("Éxito", "Mejora eliminada correctamente", Alert.AlertType.INFORMATION);
+            } catch (IOException | InterruptedException e) {
+                mostrarAlerta("Error", "Error al eliminar: " + e.getMessage(), Alert.AlertType.ERROR);
+            }
         }
     }
 

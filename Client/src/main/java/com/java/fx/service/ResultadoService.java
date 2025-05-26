@@ -1,21 +1,18 @@
 package com.java.fx.service;
-import com.java.fx.model.AccionesDeMejora.Modulo;
-import com.java.fx.model.AccionesDeMejora.Programa;
-import com.java.fx.model.AccionesDeMejora.SugerenciaMejora;
+import com.java.fx.model.AccionesDeMejora.*;
 import com.java.fx.model.Resultado;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectWriter;
 import com.fasterxml.jackson.core.type.TypeReference;
+import com.java.fx.model.ResultadoIcfes;
 import org.springframework.stereotype.Service;
 
 import java.io.*;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import com.java.fx.Usuarios_y_Roles.Sesion;
@@ -27,7 +24,6 @@ import java.net.http.*;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
-import java.util.Iterator;
 
 import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 import org.apache.poi.ss.usermodel.CellType;
@@ -296,5 +292,86 @@ public class ResultadoService {
 
         return mapper.readValue(response.body(), new TypeReference<List<SugerenciaMejora>>() {});
     }
+
+    public void eliminarMejora(String id) throws IOException, InterruptedException {
+        HttpRequest request = HttpRequest.newBuilder()
+                .uri(URI.create(BASE_URL + "/mejoras/" + id))
+                .header("Authorization", "Bearer " + Sesion.getJwtToken())
+                .DELETE() // Método HTTP DELETE
+                .build();
+
+        HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+
+        if (response.statusCode() != 200) { // Verifica código de estado exitoso
+            throw new IOException("Error al eliminar mejora: " + response.body());
+        }
+    }
+
+    public AnalisisMejora obtenerAnalisisMejora(SugerenciaMejora sugerencia) throws IOException, InterruptedException {
+        // Crear estructura del cuerpo esperado por el servidor
+        ObjectMapper mapper = new ObjectMapper();
+        Map<String, Object> requestBody = new HashMap<>();
+        requestBody.put("accionMejora", sugerencia);
+
+        String jsonBody = mapper.writeValueAsString(requestBody);
+
+        HttpRequest request = HttpRequest.newBuilder()
+                .uri(URI.create(BASE_URL + "/mejoras/sugerencias"))
+                .header("Authorization", "Bearer " + Sesion.getJwtToken())
+                .header("Content-Type", "application/json")
+                .method("GET", HttpRequest.BodyPublishers.ofString(jsonBody)) // Enviar cuerpo en GET
+                .build();
+
+        HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+
+        if (response.statusCode() != 200) {
+            throw new IOException("Error al obtener análisis: " + response.body());
+        }
+
+        return mapper.readValue(response.body(), AnalisisMejora.class);
+    }
+
+    public AnalisisMejora obtenerAnalisisMejoral(GetAnalisisMejora getDTO) throws IOException, InterruptedException {
+        ObjectMapper mapper = new ObjectMapper();
+        String jsonBody = mapper.writeValueAsString(getDTO); // Serializa el DTO del GET
+
+        HttpRequest request = HttpRequest.newBuilder()
+                .uri(URI.create(BASE_URL + "/mejoras/sugerencias"))
+                .header("Authorization", "Bearer " + Sesion.getJwtToken())
+                .header("Content-Type", "application/json")
+                .method("GET", HttpRequest.BodyPublishers.ofString(jsonBody)) // GET con cuerpo
+                .build();
+
+        HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+        return mapper.readValue(response.body(), AnalisisMejora.class);
+    }
+
+
+    public List<ResultadoIcfes> obtenerResultadosIcfes(Integer limit, Integer periodo, Integer offset)
+            throws IOException, InterruptedException {
+
+        // Construir URL base
+        String url = BASE_URL + "/resultados/icfes";
+
+        // Construir query parameters
+        List<String> params = new ArrayList<>();
+        if (limit != null) params.add("limit=" + limit);
+        params.add("periodo=" + periodo);
+        if (offset != null) params.add("offset=" + offset);
+
+        // Crear URL completa
+        String fullUrl = url + "?" + String.join("&", params);
+
+        HttpRequest request = HttpRequest.newBuilder()
+                .uri(URI.create(fullUrl))
+                .header("Authorization", "Bearer " + Sesion.getJwtToken())
+                .GET()
+                .build();
+
+        HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+
+        return mapper.readValue(response.body(), new TypeReference<List<ResultadoIcfes>>() {});
+    }
+
 }
 

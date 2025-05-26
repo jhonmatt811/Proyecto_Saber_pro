@@ -41,6 +41,9 @@ public class ControllerMain {
     @FXML
     private Button btnResultados;
 
+    @FXML
+    private Button btnResultadosIcfes;
+
     //@FXML
     //private Button btnCrearUsuarios;
 
@@ -55,6 +58,7 @@ public class ControllerMain {
 
     @FXML
     private Button btnSalir;
+
 
     @FXML
     public void initialize() {
@@ -82,6 +86,13 @@ public class ControllerMain {
         resetButtonStyles();
         btnResultados.getStyleClass().add("boton-rojo");
         loadCenterView("/Resultados.fxml");
+    }
+
+    @FXML
+    public void goResultadosIcfes() {
+        resetButtonStyles();
+        btnResultadosIcfes.getStyleClass().add("boton-rojo");
+        loadCenterView("/resultados-icfes.fxml");
     }
 
     @FXML
@@ -122,6 +133,7 @@ public class ControllerMain {
     }
     private void resetButtonStyles() {
         btnResultados.getStyleClass().remove("boton-rojo");
+        btnResultadosIcfes.getStyleClass().remove("boton-rojo");
         //btnCrearUsuarios.getStyleClass().remove("boton-rojo");
         btnAccMejora.getStyleClass().remove("boton-rojo");
         btnUsuariosRoles.getStyleClass().remove("boton-rojo");

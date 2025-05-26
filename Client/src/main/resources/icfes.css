@@ -1,0 +1,95 @@
+/* Estilos Generales */
+.title-label {
+    -fx-font-size: 28px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #2c3e50;
+    -fx-padding: 0 0 15px 0;
+}
+
+.section-title {
+    -fx-font-size: 16px;
+    -fx-font-weight: 600;
+    -fx-text-fill: #34495e;
+    -fx-padding: 0 0 10px 0;
+}
+
+/* Componentes de Formulario */
+.input-label {
+    -fx-text-fill: #7f8c8d;
+    -fx-font-size: 14px;
+}
+
+.form-input {
+    -fx-pref-height: 35px;
+    -fx-font-size: 14px;
+    -fx-background-radius: 4px;
+    -fx-border-color: #bdc3c7;
+    -fx-border-radius: 4px;
+}
+
+.form-input:focused {
+    -fx-border-color: #3498db;
+}
+
+/* Botones */
+.primary-button {
+    -fx-background-color: #3498db;
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+    -fx-padding: 8 20;
+    -fx-background-radius: 4px;
+}
+
+.primary-button:hover {
+    -fx-background-color: #2980b9;
+}
+
+.secondary-button {
+    -fx-background-color: #95a5a6;
+    -fx-text-fill: white;
+    -fx-padding: 8 20;
+    -fx-background-radius: 4px;
+}
+
+.secondary-button:hover {
+    -fx-background-color: #7f8c8d;
+}
+
+/* Tabla de Datos */
+.data-table {
+    -fx-font-size: 13px;
+    -fx-background-radius: 8px;
+    -fx-border-radius: 8px;
+    -fx-border-color: #ecf0f1;
+}
+
+.data-table .column-header {
+    -fx-background-color: #3498db;
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+    -fx-border-color: #2980b9;
+}
+
+.data-table .table-row-cell:even {
+    -fx-background-color: #f8f9fa;
+}
+
+.data-table .table-row-cell:odd {
+    -fx-background-color: white;
+}
+
+.data-table .table-row-cell:hover {
+    -fx-background-color: #f1f2f6;
+}
+
+/* Columnas Numéricas */
+.numeric-column {
+    -fx-alignment: CENTER-RIGHT;
+}
+
+/* Texto Informativo */
+.hint-text {
+    -fx-text-fill: #7f8c8d;
+    -fx-font-size: 12px;
+    -fx-padding: 5px 0 0 0;
+}
