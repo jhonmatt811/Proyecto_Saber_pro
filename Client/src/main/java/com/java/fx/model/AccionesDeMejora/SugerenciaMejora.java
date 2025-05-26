@@ -1,5 +1,8 @@
 package com.java.fx.model.AccionesDeMejora;
 
+import com.fasterxml.jackson.annotation.JsonAlias;
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 public class SugerenciaMejora {
     private String id;
     private Programa programa;

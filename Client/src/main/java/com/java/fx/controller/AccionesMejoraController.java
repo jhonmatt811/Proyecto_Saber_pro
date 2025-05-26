@@ -3,23 +3,16 @@ package com.java.fx.controller;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import com.java.fx.model.AccionesDeMejora.Modulo;
-import com.java.fx.model.AccionesDeMejora.Programa;
-import com.java.fx.model.AccionesDeMejora.SugerenciaMejora;
+import com.java.fx.model.AccionesDeMejora.*;
 import com.java.fx.service.ResultadoService;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
-import javafx.scene.Parent;
-import javafx.scene.Scene;
 import javafx.scene.control.*;
-import javafx.stage.Stage;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import javafx.scene.control.ComboBox;
-
 import java.io.IOException;
 import java.util.*;
 
@@ -42,6 +35,8 @@ public class AccionesMejoraController {
     @FXML private TableColumn<SugerenciaMejora, String> columnaSugerencia;
     @FXML private TableColumn<SugerenciaMejora, Integer> columnaYearInicio;
     @FXML private TableColumn<SugerenciaMejora, Integer> columnaYearFin;
+
+    @FXML private TextArea txtAnalisis; // mostrar el análisis
 
     @FXML
     public void initialize() {
@@ -125,6 +120,7 @@ public class AccionesMejoraController {
             // Serializar
             ObjectMapper mapper = new ObjectMapper();
             String json = mapper.writeValueAsString(sugerencia);
+            System.out.println("JSON enviado: " + json);
 
             // Enviar al API
             resultadoService.enviarSugerencia(json);
@@ -132,6 +128,28 @@ public class AccionesMejoraController {
             // Éxito
             mostrarAlerta("Éxito", "Sugerencia guardada.", Alert.AlertType.INFORMATION);
             handleLimpiarFormulario();
+
+            // Obtener el análisis después de guardar
+            //AnalisisMejora analisis = resultadoService.obtenerAnalisisMejora(sugerencia);
+
+            // 1. Crear DTO para GET
+            GetAnalisisMejora getDTO = new GetAnalisisMejora();
+            getDTO.setPrograma(comboProgramas.getValue());
+            getDTO.setModulo(comboModulos.getValue());
+            getDTO.setImprovementProporsal(txtSugerencia.getText());
+            getDTO.setYearInicio(dpFechaInicio.getValue().getYear());
+            getDTO.setYearFin(dpFechaFin.getValue().getYear());
+
+            // 2. Obtener análisis
+            AnalisisMejora analisisl = resultadoService.obtenerAnalisisMejoral(getDTO);
+
+            // Mostrar el análisis en el TextArea
+            String textoAnalisis = String.format(
+                    "Porcentaje de Mejora: %.2f%%\n\n%s",
+                    analisisl.getPorcentajeMejora(),
+                    analisisl.getMessage()
+            );
+            txtAnalisis.setText(textoAnalisis);
 
         } catch (JsonProcessingException e) {
             mostrarAlerta("Error", "Error en el JSON: " + e.getOriginalMessage(), Alert.AlertType.ERROR);
