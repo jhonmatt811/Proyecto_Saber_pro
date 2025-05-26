@@ -6,6 +6,7 @@ import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.application.Platform;
 import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.VBox;
 import lombok.Setter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
@@ -19,6 +20,7 @@ import java.io.*;
 
 @Component
 @Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)
+
 public class olvidoContraseñaController {
 
     @FXML private TextField emailField;
@@ -28,10 +30,12 @@ public class olvidoContraseñaController {
     @FXML private Button confirmButton;
     @FXML private Label statusLabel;
     @FXML private BorderPane mainPane;
-    @Autowired private ApplicationContext context;
-
+    @FXML private PasswordField confirmPasswordField;
     @FXML private TextField visiblenewPasswordField;
+    @FXML private TextField visibleConfirmPasswordField;
     @FXML private CheckBox showPasswordCheckForgot;
+
+    @Autowired private ApplicationContext context;
 
     @Setter private Stage loginStage;
     @Setter private Stage recoveryStage;
@@ -40,62 +44,95 @@ public class olvidoContraseñaController {
     private String storedEmail; // Guarda el correo para el segundo paso
 
     @FXML
+    private VBox codeSection;
+
+    @FXML
+    public void initialize() {
+        visiblenewPasswordField.textProperty().bindBidirectional(newPasswordField.textProperty());
+        visibleConfirmPasswordField.textProperty().bindBidirectional(confirmPasswordField.textProperty());
+    }
+
+    @FXML
     private void handleSendEmail() {
         storedEmail = emailField.getText().trim();
 
-        if (storedEmail == null || storedEmail.isEmpty()) {
-            statusLabel.setText("El correo es obligatorio");
+        // Validación básica
+        if (storedEmail.isEmpty()) {
+            updateStatus("El correo es obligatorio", "red");
             return;
         }
 
-        // Validar formato de correo antes de enviar
         if (!storedEmail.matches("^[\\w-.]+@[\\w-]+\\.[a-zA-Z]{2,}$")) {
-            statusLabel.setText("Correo con formato inválido");
-            statusLabel.setTextFill(javafx.scene.paint.Color.RED);
+            updateStatus("Correo con formato inválido", "red");
             return;
         }
 
-        boolean success = apiService.sendPasswordRecoveryEmail(storedEmail);
+        try {
+            boolean success = apiService.sendPasswordRecoveryEmail(storedEmail);
 
-        if (success) {
-            statusLabel.setText("Correo enviado exitosamente");
-            statusLabel.setTextFill(javafx.scene.paint.Color.GREEN);
-
-            // Mostrar los campos para ingresar código y nueva contraseña
-            codeField.setVisible(true);
-            codeField.setManaged(true);
-            newPasswordField.setVisible(true);
-            newPasswordField.setManaged(true);
-            confirmButton.setVisible(true);
-            confirmButton.setManaged(true);
-            showPasswordCheckForgot.setVisible(true);
-            showPasswordCheckForgot.setManaged(true);
-
-
-            // Deshabilita el envío de más correos SOLO si fue exitoso
-            sendEmailButton.setDisable(true);
-            emailField.setDisable(true);
-        } else {
-            statusLabel.setText("Error al enviar el correo");
-            statusLabel.setTextFill(javafx.scene.paint.Color.RED);
-
-            // Mantén el campo editable si falla
-            sendEmailButton.setDisable(false);
-            emailField.setDisable(false);
-            showPasswordCheckForgot.setVisible(false);
-            showPasswordCheckForgot.setManaged(false);
-
+            if (success) {
+                updateStatus("Correo enviado exitosamente", "green");
+                showCodeSection(); // Método modificado
+                disableEmailSection();
+            } else {
+                // Si el servicio retorna false a pesar del envío
+                updateStatus("Error: El servidor no pudo procesar la solicitud", "red");
+                enableEmailSection();
+            }
+        } catch (Exception e) {
+            // Captura errores de conexión o excepciones no controladas
+            updateStatus("Error de conexión: " + e.getMessage(), "red");
+            enableEmailSection();
         }
+    }
+
+    // Métodos auxiliares
+    private void updateStatus(String message, String color) {
+        statusLabel.setText(message);
+        statusLabel.setTextFill(color.equals("green")
+                ? javafx.scene.paint.Color.GREEN
+                : javafx.scene.paint.Color.RED);
+    }
+
+    private void showCodeSection() {
+        codeSection.setVisible(true);
+        codeSection.setManaged(true);
+    }
+
+    private void disableEmailSection() {
+        sendEmailButton.setDisable(true);
+        emailField.setDisable(true);
+    }
+
+    private void enableEmailSection() {
+        sendEmailButton.setDisable(false);
+        emailField.setDisable(false);
+        codeSection.setVisible(false);
+        codeSection.setManaged(false);
     }
 
 
     @FXML
     private void handleConfirmNewPassword() {
         String code = codeField.getText().trim();
-        String newPassword = newPasswordField.getText().trim();
+        String newPassword = newPasswordField.isVisible() ? newPasswordField.getText().trim() : visiblenewPasswordField.getText().trim();
+        String confirmarPass = confirmPasswordField.isVisible() ? confirmPasswordField.getText().trim() : visibleConfirmPasswordField.getText().trim();
 
-        if (code.isEmpty() || newPassword.isEmpty()) {
+        // Validar campos vacíos
+        if (code.isEmpty() || newPassword.isEmpty() || confirmarPass.isEmpty()) {
             statusLabel.setText("Llena todos los campos.");
+            return;
+        }
+
+        // Validar contraseña segura
+        if (!esContrasenaSegura(newPassword)) {
+            statusLabel.setText("La contraseña debe tener al menos 8 caracteres, incluir números y símbolos.");
+            return;
+        }
+
+        // Validar que las contraseñas coincidan
+        if (!newPassword.equals(confirmarPass)) {
+            statusLabel.setText("Las contraseñas no coinciden.");
             return;
         }
 
@@ -104,28 +141,41 @@ public class olvidoContraseñaController {
             boolean success = apiService.resetPassword(storedEmail, newPassword, code);
 
             if (success) {
+                statusLabel.setStyle("-fx-text-fill: green;");
                 statusLabel.setText("Contraseña actualizada correctamente.");
 
                 // Cerrar esta ventana y volver al login
                 Platform.runLater(() -> {
                     confirmButton.setDisable(true);
                     newPasswordField.setDisable(true);
+                    visiblenewPasswordField.setDisable(true);
+                    confirmPasswordField.setDisable(true);
+                    visibleConfirmPasswordField.setDisable(true);
                     codeField.setDisable(true);
 
-                    recoveryStage.close(); // <-- asegurarte que tienes esta variable seteada
-                    loginStage.show();     // <-- mostrar login otra vez
+                    recoveryStage.close();
+                    loginStage.show();
                 });
             } else {
-                statusLabel.setText("Error al actualizar la contraseña." );
+                statusLabel.setStyle("-fx-text-fill: red;");
+                statusLabel.setText("Error al actualizar la contraseña.");
             }
         } catch (RuntimeException e) {
+            statusLabel.setStyle("-fx-text-fill: red;");
             statusLabel.setText("Error de conexión.");
             e.printStackTrace();
         }
     }
+    private boolean esContrasenaSegura(String password) {
+        return password.matches("^(?=.*[0-9])(?=.*[!@#$%^&*._-])[A-Za-z0-9!@#$%^&*._-]{8,}$");
+    }
+
     @FXML
-    private void  onTogglePasswordVisibility(){
-        if (showPasswordCheckForgot.isSelected()) {
+    private void onTogglePasswordVisibility() {
+        boolean show = showPasswordCheckForgot.isSelected();
+
+        // Nueva contraseña
+        if (show) {
             visiblenewPasswordField.setText(newPasswordField.getText());
             visiblenewPasswordField.setVisible(true);
             visiblenewPasswordField.setManaged(true);
@@ -140,6 +190,24 @@ public class olvidoContraseñaController {
             visiblenewPasswordField.setVisible(false);
             visiblenewPasswordField.setManaged(false);
         }
+
+        // Confirmar contraseña
+        if (show) {
+            visibleConfirmPasswordField.setText(confirmPasswordField.getText());
+            visibleConfirmPasswordField.setVisible(true);
+            visibleConfirmPasswordField.setManaged(true);
+
+            confirmPasswordField.setVisible(false);
+            confirmPasswordField.setManaged(false);
+        } else {
+            confirmPasswordField.setText(visibleConfirmPasswordField.getText());
+            confirmPasswordField.setVisible(true);
+            confirmPasswordField.setManaged(true);
+
+            visibleConfirmPasswordField.setVisible(false);
+            visibleConfirmPasswordField.setManaged(false);
+        }
     }
+
 }
 

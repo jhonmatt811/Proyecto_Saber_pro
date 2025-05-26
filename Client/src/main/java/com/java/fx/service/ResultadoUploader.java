@@ -1,7 +1,5 @@
 package com.java.fx.service;
 
-import com.java.fx.controller.ResultadosController;
-
 import com.java.fx.model.Resultado;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;

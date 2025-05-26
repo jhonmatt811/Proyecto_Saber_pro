@@ -6,7 +6,6 @@ import javafx.scene.control.*;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.BorderPane;
-import com.java.fx.ApiService;
 
 
 import java.net.URI;
@@ -39,6 +38,7 @@ public class CrearUsuariosController {
     @FXML private TextField correoField;
     @FXML private BorderPane mainPane;
     @FXML private Button btnVolver;
+
 
 
 
@@ -280,21 +280,22 @@ public class CrearUsuariosController {
     @FXML
     public void volverATabla() {
         if (usuariosRolesController != null) {
-            usuariosRolesController.getMainPane().setCenter(null); // Oculta el formulario
-            usuariosRolesController.cargarUsuarios();              // ✅ Actualiza la tabla con el nuevo usuario
+            usuariosRolesController.getMainPane().setCenter(usuariosRolesController.getVistaPrincipalOriginal());
+            usuariosRolesController.cargarUsuarios(); // Actualiza datos
+
+            // Asegúrate de volver visibles los componentes si es necesario
             usuariosRolesController.getTablaUsuarios().setVisible(true);
             usuariosRolesController.getComboNuevoRol().setVisible(true);
             usuariosRolesController.getBtnCrearUsuarios().setVisible(true);
             usuariosRolesController.getBtnCambiarRol().setVisible(true);
             usuariosRolesController.getbtnCargarUsuarios().setVisible(true);
             usuariosRolesController.getTxtFiltroNom().setVisible(true);
-            usuariosRolesController.getTxtFiltroRol().setManaged(true);
-            usuariosRolesController.getTxtFiltroRol().setVisible(true);
-            usuariosRolesController.getTxtFiltroRol().setEditable(false);
             usuariosRolesController.getLabel_nombre().setVisible(true);
             usuariosRolesController.getLabel_rol().setVisible(true);
+            usuariosRolesController.getComboFiltroRol().setVisible(true);
         }
     }
+
 
 
 }

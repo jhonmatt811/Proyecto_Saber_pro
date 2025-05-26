@@ -109,7 +109,15 @@ public class ControllerLogin implements Initializable {
         // Decodificar payload del JWT
         String[] chunks = token.split("\\.");
         JSONObject payload = new JSONObject(new String(Base64.getDecoder().decode(chunks[1])));
+
         Sesion.rol_id = payload.getString("role");
+        Sesion.emailUsuario = emailField.getText();
+
+        // Guardar la contraseña usada en el login
+        String passwordIngresada = showPasswordCheck.isSelected()
+                ? visiblePasswordField.getText()
+                : passwordField.getText();
+        Sesion.passwordUsuario = passwordIngresada;
 
         loadMainWindow();
         clearFields();
@@ -201,8 +209,6 @@ public class ControllerLogin implements Initializable {
         Image icon = new Image(getClass().getResourceAsStream("/img/images.png"));
         recoveryStage.getIcons().add(icon);
         recoveryStage.setScene(new Scene(root));
-        recoveryStage.setWidth(600);   // Ancho personalizado
-        recoveryStage.setHeight(400);
         recoveryStage.initModality(Modality.WINDOW_MODAL);
         recoveryStage.initOwner(loginStage); // hace que el login quede bloqueado mientras tanto
         recoveryStage.show();

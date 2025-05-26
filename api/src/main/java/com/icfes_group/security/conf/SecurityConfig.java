@@ -32,8 +32,8 @@ public class SecurityConfig {
                     .requestMatchers(
                             "/usuarios",
                             "/usuarios/inicio-sesion",
-                            "/usuarios/contrasena",
-                            "/usuarios/contrasena/olvidado", // ← ESTA ES CLAVE
+                            "/usuarios/contrasena/*",
+                            "/usuarios/contrasena/olvidado",
                             "/usuarios/contraseña",
                             "/usuarios/contraseña/*"
                     ).permitAll()

@@ -7,12 +7,14 @@ import com.java.fx.Usuarios_y_Roles.Persona;
 import com.java.fx.model.Rol;
 import com.java.fx.Usuarios_y_Roles.Sesion;
 import com.java.fx.Usuarios_y_Roles.Usuario;
+import com.java.fx.model.AccionesDeMejora.SugerenciaMejora;
 import javafx.application.Platform;
 import javafx.scene.control.Alert;
 import java.lang.reflect.Type;
 import com.google.gson.reflect.TypeToken;
 import com.google.gson.Gson;
 import org.springframework.http.*;
+import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
 import java.util.*;
@@ -23,6 +25,7 @@ import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.util.stream.Collectors;
 
+@Service
 public class ApiService {
 
     private static final String BASE_URL = "http://localhost:8080";
@@ -45,10 +48,15 @@ public class ApiService {
 
         JsonNode rootNode = mapper.readTree(response.body());
 
+        // Verifica las claves del objeto JSON
+        rootNode.fieldNames().forEachRemaining(System.out::println);
+
+        // Si rootNode es directamente una lista
         if (rootNode.isArray()) {
             return mapper.readValue(response.body(), new TypeReference<List<Usuario>>() {});
         }
 
+        // Si hay alguna clave como "usuarios"
         JsonNode usuariosNode = rootNode.get("usuarios");
         if (usuariosNode != null && usuariosNode.isArray()) {
             return mapper.readValue(usuariosNode.toString(), new TypeReference<List<Usuario>>() {});
@@ -123,9 +131,10 @@ public class ApiService {
 
             if (status == 200 || status == 201) {
                 System.out.println("Usuarios creados correctamente.");
-                return usuarios.stream()
+                // ✅ Devolver lista nueva y modificable
+                return new ArrayList<>(usuarios.stream()
                         .filter(u -> u.getPersona() != null)
-                        .collect(Collectors.toList());
+                        .collect(Collectors.toList()));
             } else {
                 System.err.println("Error al crear usuarios. Código: " + status + ", respuesta: " + responseBody);
                 throw new RuntimeException("Error al crear usuarios: " + responseBody);
@@ -136,6 +145,7 @@ public class ApiService {
             throw new RuntimeException("Excepción al crear usuarios: " + e.getMessage(), e);
         }
     }
+
 
 
     // ---------------------- ROLES ------------------------
@@ -182,15 +192,18 @@ public class ApiService {
             String json = String.format("{\"email\":\"%s\"}", email);
 
             HttpRequest request = HttpRequest.newBuilder()
-                    .uri(URI.create(BASE_URL + "/usuarios/contraseña/olvidado"))
+                    .uri(URI.create(BASE_URL + "/usuarios/contrasena/olvidado"))
                     .header("Content-Type", "application/json")
                     .POST(HttpRequest.BodyPublishers.ofString(json))
                     .build();
 
             HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
-            return response.statusCode() == 200;
+
+            // Debug: Imprimir respuesta del servidor
+            return response.statusCode() >= 200 && response.statusCode() < 300;
 
         } catch (Exception e) {
+            System.err.println("Error en la solicitud HTTP:");
             e.printStackTrace();
             return false;
         }
@@ -204,7 +217,7 @@ public class ApiService {
             );
 
             HttpRequest request = HttpRequest.newBuilder()
-                    .uri(URI.create(BASE_URL + "/usuarios/contrasena"))
+                    .uri(URI.create(BASE_URL + "/usuarios/contraseña"))
                     .header("Content-Type", "application/json")
                     .PUT(HttpRequest.BodyPublishers.ofString(json))
                     .build();
@@ -252,4 +265,6 @@ public class ApiService {
             alert.showAndWait();
         });
     }
+
+
 }
