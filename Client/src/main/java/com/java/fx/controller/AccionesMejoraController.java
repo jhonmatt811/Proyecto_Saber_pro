@@ -130,24 +130,13 @@ public class AccionesMejoraController {
             handleLimpiarFormulario();
 
             // Obtener el análisis después de guardar
-            //AnalisisMejora analisis = resultadoService.obtenerAnalisisMejora(sugerencia);
-
-            // 1. Crear DTO para GET
-            GetAnalisisMejora getDTO = new GetAnalisisMejora();
-            getDTO.setPrograma(comboProgramas.getValue());
-            getDTO.setModulo(comboModulos.getValue());
-            getDTO.setImprovementProporsal(txtSugerencia.getText());
-            getDTO.setYearInicio(dpFechaInicio.getValue().getYear());
-            getDTO.setYearFin(dpFechaFin.getValue().getYear());
-
-            // 2. Obtener análisis
-            AnalisisMejora analisisl = resultadoService.obtenerAnalisisMejoral(getDTO);
+            AnalisisMejora analisis = resultadoService.obtenerAnalisisMejora(sugerencia);
 
             // Mostrar el análisis en el TextArea
             String textoAnalisis = String.format(
                     "Porcentaje de Mejora: %.2f%%\n\n%s",
-                    analisisl.getPorcentajeMejora(),
-                    analisisl.getMessage()
+                    analisis.getPorcentajeMejora(),
+                    analisis.getMessage()
             );
             txtAnalisis.setText(textoAnalisis);
 

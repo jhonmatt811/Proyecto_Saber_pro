@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<VBox spacing="20" xmlns="http://javafx.com/javafx/8"
+      xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="com.java.fx.controller.ResultadosIcfesController">
+
+    <Label style="-fx-font-size: 24px; -fx-font-weight: bold;" text="Resultados ICFES" />
+
+    <!-- Formulario de búsqueda -->
+    <GridPane hgap="10" vgap="10">
+        <Label text="Límite:" GridPane.columnIndex="0" GridPane.rowIndex="0"/>
+        <TextField fx:id="txtLimit" GridPane.columnIndex="1" GridPane.rowIndex="0"/>
+
+        <Label text="Periodo:" GridPane.columnIndex="0" GridPane.rowIndex="1"/>
+        <TextField fx:id="txtPeriodo" GridPane.columnIndex="1" GridPane.rowIndex="1"/>
+
+        <Button text="Buscar" onAction="#handleBuscar"
+                GridPane.columnIndex="2" GridPane.rowIndex="1"
+                style="-fx-background-color: #2196F3; -fx-text-fill: white;"/>
+    </GridPane>
+
+    <Label style="-fx-text-fill: #666; -fx-font-style: italic;"
+           text="Ejemplos de periodo válidos: 20183, 20194, 20204"/>
+
+    <!-- Tabla de resultados -->
+    <TableView fx:id="tablaResultados">
+        <columns>
+            <TableColumn fx:id="colPeriodo" text="Periodo"/>
+            <TableColumn fx:id="colTipoDocumento" text="Tipo Doc"/>
+            <TableColumn fx:id="colNumRegistro" text="Núm. Registro"/>
+            <TableColumn fx:id="colPrograma" text="Programa" prefWidth="200"/>
+            <TableColumn fx:id="colCiudad" text="Ciudad"/>
+            <TableColumn fx:id="colRCuantitativo" text="Razonamiento Cuantitativo"/>
+            <TableColumn fx:id="colLecturaCritica" text="Lectura Crítica"/>
+        </columns>
+    </TableView>
+</VBox>

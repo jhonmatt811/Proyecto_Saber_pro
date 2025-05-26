@@ -5,6 +5,7 @@ import com.java.fx.model.Resultado;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectWriter;
 import com.fasterxml.jackson.core.type.TypeReference;
+import com.java.fx.model.ResultadoIcfes;
 import org.springframework.stereotype.Service;
 
 import java.io.*;
@@ -329,6 +330,33 @@ public class ResultadoService {
 
         HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
         return mapper.readValue(response.body(), AnalisisMejora.class);
+    }
+
+
+    public List<ResultadoIcfes> obtenerResultadosIcfes(Integer limit, Integer periodo, Integer offset)
+            throws IOException, InterruptedException {
+
+        // Construir URL base
+        String url = BASE_URL + "/resultados/icfes";
+
+        // Construir query parameters
+        List<String> params = new ArrayList<>();
+        if (limit != null) params.add("limit=" + limit);
+        params.add("periodo=" + periodo);
+        if (offset != null) params.add("offset=" + offset);
+
+        // Crear URL completa
+        String fullUrl = url + "?" + String.join("&", params);
+
+        HttpRequest request = HttpRequest.newBuilder()
+                .uri(URI.create(fullUrl))
+                .header("Authorization", "Bearer " + Sesion.getJwtToken())
+                .GET()
+                .build();
+
+        HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+
+        return mapper.readValue(response.body(), new TypeReference<List<ResultadoIcfes>>() {});
     }
 }
 
