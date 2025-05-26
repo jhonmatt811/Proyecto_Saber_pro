@@ -3,45 +3,60 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<VBox spacing="20" xmlns="http://javafx.com/javafx/8"
+<VBox spacing="15" xmlns="http://javafx.com/javafx/8"
       xmlns:fx="http://javafx.com/fxml/1"
-      fx:controller="com.java.fx.controller.ResultadosIcfesController">
+      fx:controller="com.java.fx.controller.ResultadosIcfesController"
+      stylesheets="@estilos.css"
+      style="-fx-background-color: #f5f6fa; -fx-padding: 20;">
 
-    <Label style="-fx-font-size: 24px; -fx-font-weight: bold;" text="Resultados ICFES" />
+    <!-- Encabezado -->
+    <Label text="Resultados ICFES" styleClass="title-label" />
 
-    <!-- Formulario de búsqueda -->
-    <GridPane hgap="10" vgap="10">
-        <Label text="Límite:" GridPane.columnIndex="0" GridPane.rowIndex="0"/>
-        <TextField fx:id="txtLimit" GridPane.columnIndex="1" GridPane.rowIndex="0"/>
+    <!-- Panel de Búsqueda -->
+    <VBox spacing="10" style="-fx-background-color: white; -fx-background-radius: 8; -fx-padding: 15;">
+        <Label text="Parámetros de Búsqueda" styleClass="section-title" />
 
-        <Label text="Periodo:" GridPane.columnIndex="0" GridPane.rowIndex="1"/>
-        <TextField fx:id="txtPeriodo" GridPane.columnIndex="1" GridPane.rowIndex="1"/>
+        <GridPane hgap="15" vgap="10">
+            <columnConstraints>
+                <ColumnConstraints percentWidth="25" halignment="RIGHT"/>
+                <ColumnConstraints percentWidth="35"/>
+                <ColumnConstraints percentWidth="40"/>
+            </columnConstraints>
 
-        <Button text="Buscar" onAction="#handleBuscar"
-                GridPane.columnIndex="2" GridPane.rowIndex="1"
-                style="-fx-background-color: #2196F3; -fx-text-fill: white;"/>
-    </GridPane>
+            <Label text="Límite:" GridPane.columnIndex="0" GridPane.rowIndex="0" styleClass="input-label"/>
+            <TextField fx:id="txtLimit" GridPane.columnIndex="1" GridPane.rowIndex="0"
+                       promptText="Ej: 10" styleClass="form-input"/>
 
-    <Label style="-fx-text-fill: #666; -fx-font-style: italic;"
-           text="Ejemplos de periodo válidos: 20183, 20194, 20204"/>
+            <Label text="Periodo:" GridPane.columnIndex="0" GridPane.rowIndex="1" styleClass="input-label"/>
+            <TextField fx:id="txtPeriodo" GridPane.columnIndex="1" GridPane.rowIndex="1"
+                       promptText="Ej: 20204,20183, 20194, 20204" styleClass="form-input"/>
 
-    <!-- Tabla de resultados -->
-    <TableView fx:id="tablaResultados">
-        <columns>
-            <TableColumn fx:id="colPeriodo" text="Periodo"/>
-            <TableColumn fx:id="colTipoDocumento" text="Tipo Doc"/>
-            <TableColumn fx:id="colNumRegistro" text="Núm. Registro"/>
-            <TableColumn fx:id="colSniesPA" text="SNIES Programa"/>
-            <TableColumn fx:id="coltipoEvaluado" text="Tipo Evaluado"/>
-            <TableColumn fx:id="colPrograma" text="Programa" prefWidth="200"/>
-            <TableColumn fx:id="colCiudad" text="Ciudad"/>
-            <TableColumn fx:id="colRCuantitativo" text="Razonamiento Cuantitativo"/>
-            <TableColumn fx:id="colLecturaCritica" text="Lectura Crítica"/>
-            <TableColumn fx:id="colComEscrita" text="Com. Escrita"/>
-            <TableColumn fx:id="colComEscritaDes" text="Des. Com. Escrita"/>
-            <TableColumn fx:id="colIngles" text="Inglés"/>
-            <TableColumn fx:id="colInglesDes" text="Des. Inglés"/>
-            <TableColumn fx:id="colCompCiudadana" text="Comp. Ciudadanas"/>
-        </columns>
-    </TableView>
+            <HBox GridPane.columnIndex="2" GridPane.rowIndex="1" spacing="10" alignment="CENTER_LEFT">
+                <Button text="Buscar" onAction="#handleBuscar" styleClass="primary-button"/>
+            </HBox>
+        </GridPane>
+    </VBox>
+
+    <!-- Tabla de Resultados -->
+    <VBox spacing="10">
+        <Label text="Resultados Obtenidos" styleClass="section-title" />
+        <TableView fx:id="tablaResultados" styleClass="data-table">
+            <columns>
+                <TableColumn fx:id="colPeriodo" text="Periodo" styleClass="numeric-column" prefWidth="70"/>
+                <TableColumn fx:id="colTipoDocumento" text="Tipo Doc" prefWidth="80"/>
+                <TableColumn fx:id="colNumRegistro" text="Registro" prefWidth="120"/>
+                <TableColumn fx:id="colSniesPA" text="SNIES" prefWidth="80"/>
+                <TableColumn fx:id="coltipoEvaluado" text="Tipo Evaluado" prefWidth="110"/>
+                <TableColumn fx:id="colPrograma" text="Programa" prefWidth="200"/>
+                <TableColumn fx:id="colCiudad" text="Ciudad" prefWidth="120"/>
+                <TableColumn fx:id="colRCuantitativo" text="Razonamiento" styleClass="numeric-column" prefWidth="100"/>
+                <TableColumn fx:id="colLecturaCritica" text="Lectura Crítica" styleClass="numeric-column" prefWidth="100"/>
+                <TableColumn fx:id="colComEscrita" text="Escritura" styleClass="numeric-column" prefWidth="80"/>
+                <TableColumn fx:id="colComEscritaDes" text="Des. Escritura" styleClass="numeric-column" prefWidth="100"/>
+                <TableColumn fx:id="colIngles" text="Inglés" styleClass="numeric-column" prefWidth="70"/>
+                <TableColumn fx:id="colInglesDes" text="Nivel Inglés" prefWidth="90"/>
+                <TableColumn fx:id="colCompCiudadana" text="Ciudadanas" styleClass="numeric-column" prefWidth="90"/>
+            </columns>
+        </TableView>
+    </VBox>
 </VBox>

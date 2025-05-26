@@ -48,7 +48,7 @@
                 <graphic>
                     <ImageView fitHeight="14" fitWidth="14">
                         <image>
-                            <Image url="@/img/icons8-bar-graph-50.png" />
+                            <Image url="@/img/logoIcfes2.png" />
                         </image>
                     </ImageView>
                 </graphic>
