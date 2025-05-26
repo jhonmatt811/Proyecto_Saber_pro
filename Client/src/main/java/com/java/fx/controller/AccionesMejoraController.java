@@ -47,7 +47,6 @@ public class AccionesMejoraController {
 
 
     private void configurarColumnasTabla() {
-        columnaId.setCellValueFactory(cell -> new SimpleStringProperty(cell.getValue().getId()));
         columnaPrograma.setCellValueFactory(cell -> new SimpleStringProperty(cell.getValue().getPrograma().getNombre()));
         columnaModulo.setCellValueFactory(cell -> new SimpleStringProperty(cell.getValue().getModulo().getNombre()));
         columnaSugerencia.setCellValueFactory(cell -> new SimpleStringProperty(cell.getValue().getSugerenciaMejora()));

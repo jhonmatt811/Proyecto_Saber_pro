@@ -24,8 +24,8 @@ public class ResultadosIcfesController {
     @FXML private TableColumn<ResultadoIcfes, Integer> colPeriodo;
     @FXML private TableColumn<ResultadoIcfes, String> colTipoDocumento;
     @FXML private TableColumn<ResultadoIcfes, String> colNumRegistro;
-    @FXML private TableColumn<ResultadoIcfes, Integer> colSniesProgramaAcademico;
-    @FXML private TableColumn<ResultadoIcfes, Integer> coltipoEvaluado;
+    @FXML private TableColumn<ResultadoIcfes, String> colSniesPA;
+    @FXML private TableColumn<ResultadoIcfes, String> coltipoEvaluado;
     @FXML private TableColumn<ResultadoIcfes, String> colPrograma;
     @FXML private TableColumn<ResultadoIcfes, String> colCiudad;
     @FXML private TableColumn<ResultadoIcfes, Integer> colRCuantitativo;
@@ -33,7 +33,7 @@ public class ResultadosIcfesController {
     @FXML private TableColumn<ResultadoIcfes, Integer> colComEscrita;
     @FXML private TableColumn<ResultadoIcfes, Integer> colComEscritaDes;
     @FXML private TableColumn<ResultadoIcfes, Integer> colIngles;
-    @FXML private TableColumn<ResultadoIcfes, Integer> colInglesDes;
+    @FXML private TableColumn<ResultadoIcfes, String> colInglesDes;
     @FXML private TableColumn<ResultadoIcfes, Integer> colCompCiudadana;
 
     @FXML
@@ -45,7 +45,34 @@ public class ResultadosIcfesController {
         colPeriodo.setCellValueFactory(cell -> new SimpleIntegerProperty(cell.getValue().getPeriodo()).asObject());
         colTipoDocumento.setCellValueFactory(cell -> new SimpleStringProperty(cell.getValue().getTipoDocumento()));
         colNumRegistro.setCellValueFactory(cell -> new SimpleStringProperty(cell.getValue().getNumeroRegistro()));
+        colSniesPA.setCellValueFactory(cell -> new SimpleStringProperty(cell.getValue().getSniesProgramaAcademico()));
+        coltipoEvaluado.setCellValueFactory(cell -> new SimpleStringProperty(cell.getValue().getTipoEvaluado()));
+        colComEscrita.setCellValueFactory(cell ->
+                new SimpleIntegerProperty(
+                        cell.getValue().getComunicacionEscrita() != null ?
+                                cell.getValue().getComunicacionEscrita() : 0
+                ).asObject()
+        );
+        colComEscritaDes.setCellValueFactory(cell ->
+                new SimpleIntegerProperty(
+                        cell.getValue().getComunicacionEscritaDesempeno() != null ?
+                                cell.getValue().getComunicacionEscritaDesempeno() : 0
+                ).asObject()
+        );
 
+        colIngles.setCellValueFactory(cell ->
+                new SimpleIntegerProperty(
+                        cell.getValue().getIngles() != null ?
+                                cell.getValue().getIngles() : 0
+                ).asObject()
+        );
+        colInglesDes.setCellValueFactory(cell -> new SimpleStringProperty(cell.getValue().getInglesDesempeno()));
+        colCompCiudadana.setCellValueFactory(cell ->
+                new SimpleIntegerProperty(
+                        cell.getValue().getCompetenciasCiudadanas() != null ?
+                                cell.getValue().getCompetenciasCiudadanas() : 0
+                ).asObject()
+        );
         colPrograma.setCellValueFactory(cell -> new SimpleStringProperty(cell.getValue().getPrograma()));
         colCiudad.setCellValueFactory(cell -> new SimpleStringProperty(cell.getValue().getCiudad()));
         colRCuantitativo.setCellValueFactory(cell -> new SimpleIntegerProperty(cell.getValue().getRazonamientoCuantitativo()).asObject());

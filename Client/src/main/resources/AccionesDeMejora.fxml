@@ -32,13 +32,11 @@
 
     <HBox spacing="10" alignment="CENTER">
         <Button fx:id="btnGuardar" text="Guardar Acción" style="-fx-background-color: #4CAF50; -fx-text-fill: white;" onAction="#handleGuardarAccion"/>
-        <Button fx:id="btnLimpiar" text="Limpiar Formulario" onAction="#handleLimpiarFormulario"/>
     </HBox>
     <!-- Tabla de Mejoras Registradas -->
     <Label style="-fx-font-size: 18px; -fx-font-weight: bold;" text="Mejoras Registradas" />
     <TableView fx:id="tablaMejoras">
         <columns>
-            <TableColumn fx:id="columnaId" text="ID" />
             <TableColumn fx:id="columnaPrograma" text="Programa" />
             <TableColumn fx:id="columnaModulo" text="Módulo" />
             <TableColumn fx:id="columnaSugerencia" text="Sugerencia" />

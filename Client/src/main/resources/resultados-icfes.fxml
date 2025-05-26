@@ -31,10 +31,17 @@
             <TableColumn fx:id="colPeriodo" text="Periodo"/>
             <TableColumn fx:id="colTipoDocumento" text="Tipo Doc"/>
             <TableColumn fx:id="colNumRegistro" text="Núm. Registro"/>
+            <TableColumn fx:id="colSniesPA" text="SNIES Programa"/>
+            <TableColumn fx:id="coltipoEvaluado" text="Tipo Evaluado"/>
             <TableColumn fx:id="colPrograma" text="Programa" prefWidth="200"/>
             <TableColumn fx:id="colCiudad" text="Ciudad"/>
             <TableColumn fx:id="colRCuantitativo" text="Razonamiento Cuantitativo"/>
             <TableColumn fx:id="colLecturaCritica" text="Lectura Crítica"/>
+            <TableColumn fx:id="colComEscrita" text="Com. Escrita"/>
+            <TableColumn fx:id="colComEscritaDes" text="Des. Com. Escrita"/>
+            <TableColumn fx:id="colIngles" text="Inglés"/>
+            <TableColumn fx:id="colInglesDes" text="Des. Inglés"/>
+            <TableColumn fx:id="colCompCiudadana" text="Comp. Ciudadanas"/>
         </columns>
     </TableView>
 </VBox>
