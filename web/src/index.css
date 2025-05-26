@@ -1,0 +1,27 @@
+@import "tailwindcss";
+
+@theme {
+    --color-primary-50: #ffefef;
+    --color-primary-100: #ffdcdc;
+    --color-primary-200: #ffbfbf;
+    --color-primary-300: #ff9292;
+    --color-primary-400: #ff5454;
+    --color-primary-500: #ff1f1f;
+    --color-primary-600: #ff0000;
+    --color-primary-700: #db0000;
+    --color-primary-800: #bd0000;
+    --color-primary-900: #940808;
+    --color-primary-950: #520000;
+}
+
+.title {
+  @apply text-5xl text-primary-700/90 font-bold;
+}
+
+.title-welcome{
+  @apply text-9xl text-white font-semibold;
+}
+
+.container {
+  @apply max-w-7xl mx-auto px-4 sm:px-6 lg:px-8;
+}
