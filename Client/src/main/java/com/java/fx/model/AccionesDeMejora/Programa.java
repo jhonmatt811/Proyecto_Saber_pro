@@ -1,7 +1,12 @@
 package com.java.fx.model.AccionesDeMejora;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonInclude;
+
 import java.util.Objects;
 
+@JsonInclude(JsonInclude.Include.NON_NULL) // Ignora campos null
+@JsonIgnoreProperties(ignoreUnknown = true) // Ignora campos no esperados
 public class Programa {
     private Long id;
     private String snies;
@@ -20,6 +25,10 @@ public class Programa {
         return Objects.hash(snies);
     }
 
+    @Override
+    public String toString() {
+        return this.nombre != null ? this.nombre : "Programa no disponible";
+    }
     public Long getId() {return id;}
     public String getSnies() {return snies;}
     public String getNombre() {return nombre;}

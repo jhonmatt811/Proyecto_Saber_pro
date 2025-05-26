@@ -7,31 +7,26 @@ import com.java.fx.model.AccionesDeMejora.Modulo;
 import com.java.fx.model.AccionesDeMejora.Programa;
 import com.java.fx.model.AccionesDeMejora.SugerenciaMejora;
 import com.java.fx.service.ResultadoService;
-import com.java.fx.model.Resultado;
+import javafx.beans.property.SimpleIntegerProperty;
+import javafx.beans.property.SimpleStringProperty;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.*;
+import javafx.stage.Stage;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.config.ConfigurableBeanFactory;
-import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
 import javafx.scene.control.ComboBox;
 
-import java.io.File;
 import java.io.IOException;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-import java.util.stream.Collectors;
+import java.util.*;
 
 
 @Component
-@Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)
 public class AccionesMejoraController {
-    //no implementadas
-
-
-    //implementadas
+    //formulario
     @Autowired private ResultadoService resultadoService; // Inyectar el servicio
     @FXML private ComboBox<Programa> comboProgramas;
     @FXML private ComboBox<Modulo> comboModulos;
@@ -39,101 +34,59 @@ public class AccionesMejoraController {
     @FXML private DatePicker dpFechaInicio;
     @FXML private DatePicker dpFechaFin;
 
+    // Campos de la tabla
+    @FXML private TableView<SugerenciaMejora> tablaMejoras;
+    @FXML private TableColumn<SugerenciaMejora, String> columnaId;
+    @FXML private TableColumn<SugerenciaMejora, String> columnaPrograma;
+    @FXML private TableColumn<SugerenciaMejora, String> columnaModulo;
+    @FXML private TableColumn<SugerenciaMejora, String> columnaSugerencia;
+    @FXML private TableColumn<SugerenciaMejora, Integer> columnaYearInicio;
+    @FXML private TableColumn<SugerenciaMejora, Integer> columnaYearFin;
+
     @FXML
     public void initialize() {
-        configurarComboBox();
+        configurarColumnasTabla();
+        cargarDatosIniciales();
         cargarDatosDesdeAPI();
+    }
+
+
+    private void configurarColumnasTabla() {
+        columnaId.setCellValueFactory(cell -> new SimpleStringProperty(cell.getValue().getId()));
+        columnaPrograma.setCellValueFactory(cell -> new SimpleStringProperty(cell.getValue().getPrograma().getNombre()));
+        columnaModulo.setCellValueFactory(cell -> new SimpleStringProperty(cell.getValue().getModulo().getNombre()));
+        columnaSugerencia.setCellValueFactory(cell -> new SimpleStringProperty(cell.getValue().getSugerenciaMejora()));
+        columnaYearInicio.setCellValueFactory(cell -> new SimpleIntegerProperty(cell.getValue().getYearInicio()).asObject());
+        columnaYearFin.setCellValueFactory(cell -> new SimpleIntegerProperty(cell.getValue().getYearFin()).asObject());
+    }
+
+    private void cargarDatosIniciales() {
+        try {
+            // Cargar ComboBox
+            comboProgramas.getItems().setAll(resultadoService.obtenerProgramas());
+            comboModulos.getItems().setAll(resultadoService.obtenerModulos());
+
+            // Cargar Tabla
+            tablaMejoras.getItems().setAll(resultadoService.obtenerMejoras());
+
+        } catch (IOException | InterruptedException e) {
+            mostrarAlerta("Error", "Error al cargar datos: " + e.getMessage(), Alert.AlertType.ERROR);
+        }
     }
 
     private void cargarDatosDesdeAPI() {
         try {
-            // Llamar al servicio con parámetros null (sin filtros)
-            List<Resultado> resultados = resultadoService.obtenerResultados(null, null, null, null);
+            // Obtener todos los programas
+            List<Programa> programas = resultadoService.obtenerProgramas();
+            comboProgramas.getItems().setAll(programas);
 
-            // Usa Set para eliminar duplicados automáticamente
-            Set<Programa> programasUnicos = new HashSet<>();
-            Set<Modulo> modulosUnicos = new HashSet<>();
-
-            for (Resultado resultado : resultados) {
-                // Crear y agregar Programa si no existe
-                if (resultado.getProgramaAM() != null) {
-                    Programa programa = new Programa();
-                    programa.setId(resultado.getProgramaAM().getId());
-                    programa.setSnies(resultado.getProgramaAM().getSnies());
-                    programa.setNombre(resultado.getProgramaAM().getNombre());
-                    programasUnicos.add(programa); // El Set ignora duplicados gracias a equals/hashCode
-                }
-                // Crear y agregar Módulo si no existe
-                if (resultado.getModuloAM() != null) {
-                    Modulo modulo = new Modulo();
-                    modulo.setId(resultado.getModuloAM().getId());
-                    modulo.setNombre(resultado.getModuloAM().getNombre());
-                    modulosUnicos.add(modulo); // El Set ignora duplicados
-                }
-            }
-            // Llenar ComboBox de Programas
-            comboProgramas.getItems().setAll(
-                    resultados.stream()
-                            .map(r -> {
-                                Programa p = new Programa();
-                                p.setSnies(r.getSniesProgramaAcademico());
-                                p.setNombre(r.getPrograma());
-                                return p;
-                            })
-                            .distinct() // Eliminar duplicados
-                            .collect(Collectors.toList())
-            );
-
-            // Llenar ComboBox de Módulos
-            comboModulos.getItems().setAll(
-                    resultados.stream()
-                            .map(r -> {
-                                Modulo m = new Modulo();
-                                m.setNombre(r.getModulo());
-                                return m;
-                            })
-                            .distinct() // Eliminar duplicados
-                            .collect(Collectors.toList())
-            );
+            // Obtener resultados para listar módulos
+            List<Modulo> Modulos = resultadoService.obtenerModulos();
+            comboModulos.getItems().setAll(Modulos);
 
         } catch (IOException | InterruptedException e) {
-            mostrarAlerta("Error", "No se pudieron cargar los datos.", Alert.AlertType.ERROR);
-            e.printStackTrace();
+            mostrarAlerta("Error", "Error al cargar datos.", Alert.AlertType.ERROR);
         }
-    }
-
-    private void configurarComboBox() {
-        // Para ComboBox de Programas
-        comboProgramas.setCellFactory(lv -> new ListCell<Programa>() {
-            @Override
-            protected void updateItem(Programa programa, boolean empty) {
-                super.updateItem(programa, empty);
-                setText(empty ? null : programa.getNombre());
-            }
-        });
-        comboProgramas.setButtonCell(new ListCell<Programa>() {
-            @Override
-            protected void updateItem(Programa programa, boolean empty) {
-                super.updateItem(programa, empty);
-                setText(empty ? null : programa.getNombre());
-            }
-        });
-
-        // Para ComboBox de Módulos
-        comboModulos.setCellFactory(lv -> new ListCell<Modulo>() {
-            @Override
-            protected void updateItem(Modulo modulo, boolean empty) {
-                super.updateItem(modulo, empty);
-                setText(empty ? null : modulo.getNombre());
-            }
-        });
-        comboModulos.setButtonCell(new ListCell<Modulo>() {
-            @Override
-            protected void updateItem(Modulo modulo, boolean empty) {
-                super.updateItem(modulo, empty);
-                setText(empty ? null : modulo.getNombre());
-            }
-        });
     }
 
     private void mostrarAlerta(String titulo, String mensaje, Alert.AlertType tipo) {
@@ -142,10 +95,6 @@ public class AccionesMejoraController {
         alert.setHeaderText(null);
         alert.setContentText(mensaje);
         alert.showAndWait();
-    }
-
-    @FXML
-    private void handleAdjuntarEvidencia() {
     }
 
     @FXML
@@ -197,13 +146,4 @@ public class AccionesMejoraController {
         dpFechaInicio.setValue(null);
         dpFechaFin.setValue(null);
     }
-
-    private void mostrarAlerta(String titulo, String mensaje) {
-        Alert alert = new Alert(Alert.AlertType.INFORMATION);
-        alert.setTitle(titulo);
-        alert.setHeaderText(null);
-        alert.setContentText(mensaje);
-        alert.showAndWait();
-    }
-
 }

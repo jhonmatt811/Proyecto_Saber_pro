@@ -27,17 +27,6 @@ public class Resultado {
     private String percentilGrupoNbcModulo;
     private String novedades;
 
-    //para acciones de mejora
-    @JsonProperty("programaAM")
-    private Programa programaAM; // Contiene id, snies, nombre
-    @JsonProperty("moduloAM")
-    private Modulo moduloAM;     // Contiene id, nombre
-
-    public Programa getProgramaAM() {return programaAM;}
-    public Modulo getModuloAM() {return moduloAM;}
-
-    public void setProgramaAM(Programa programaAM) {this.programaAM = programaAM;}
-    public void setModuloAM(Modulo moduloAM) {this.moduloAM = moduloAM;}
 
     // 1) Constructor vacío para Jackson
     public Resultado() { }

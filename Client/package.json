@@ -1,0 +1,28 @@
+{
+  "bin": {"fx-0-0-1-SNAPSHOT": "jdeploy-bundle/jdeploy.js"},
+  "author": "Grupo Saber ¨Pro Lab 2",
+  "description": "Este es un proyecto de la materia de Software 1. Se desea crear un lugar que permita importar y exportar reportes de Saber Pro, además de tener un manejo de usuarios por rol.\n",
+  "main": "index.js",
+  "preferGlobal": "true",
+  "repository": "",
+  "version": "0.8.2",
+  "jdeploy": {
+    "jdk": "true",
+    "javaVersion": "21",
+    "jar": "fx-0.0.1-SNAPSHOT.jar",
+    "javafx": "true",
+    "title": "Icfes"
+  },
+  "dependencies": {
+    "command-exists-promise": "^2.0.2",
+    "node-fetch": "2.6.7",
+    "tar": "^4.4.8",
+    "yauzl": "^2.10.0",
+    "shelljs": "^0.8.4"
+  },
+  "license": "ISC",
+  "name": "proyecto-saber-pro",
+  "files": ["jdeploy-bundle"],
+  "scripts": {"test": "echo \"Error: no test specified\" && exit 1"},
+  "homepage": "https://github.com/jhonmatt811/Proyecto_Saber_pro "
+}
