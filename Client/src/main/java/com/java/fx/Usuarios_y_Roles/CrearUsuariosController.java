@@ -7,6 +7,7 @@ import javafx.scene.control.Alert.AlertType;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.BorderPane;
 
+
 import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
@@ -20,6 +21,7 @@ public class CrearUsuariosController {
 
     private static final String API_URL = "http://localhost:8080/admin/personas";
     public AnchorPane formularioUsuario;
+
 
 
     @FXML private RadioButton opcion1 ;
@@ -36,6 +38,7 @@ public class CrearUsuariosController {
     @FXML private TextField correoField;
     @FXML private BorderPane mainPane;
     @FXML private Button btnVolver;
+
 
 
 
@@ -277,14 +280,22 @@ public class CrearUsuariosController {
     @FXML
     public void volverATabla() {
         if (usuariosRolesController != null) {
-            usuariosRolesController.getMainPane().setCenter(null); // Oculta el formulario
-            usuariosRolesController.cargarUsuarios();              // ✅ Actualiza la tabla con el nuevo usuario
+            usuariosRolesController.getMainPane().setCenter(usuariosRolesController.getVistaPrincipalOriginal());
+            usuariosRolesController.cargarUsuarios(); // Actualiza datos
+
+            // Asegúrate de volver visibles los componentes si es necesario
             usuariosRolesController.getTablaUsuarios().setVisible(true);
             usuariosRolesController.getComboNuevoRol().setVisible(true);
             usuariosRolesController.getBtnCrearUsuarios().setVisible(true);
             usuariosRolesController.getBtnCambiarRol().setVisible(true);
+            usuariosRolesController.getbtnCargarUsuarios().setVisible(true);
+            usuariosRolesController.getTxtFiltroNom().setVisible(true);
+            usuariosRolesController.getLabel_nombre().setVisible(true);
+            usuariosRolesController.getLabel_rol().setVisible(true);
+            usuariosRolesController.getComboFiltroRol().setVisible(true);
         }
     }
+
 
 
 }

@@ -11,7 +11,9 @@ public class PermisosRoles {
     public PermisosRoles(String rol) {
         // Definir jerarquía
         jerarquiaRoles.put("coordinador de saber pro", 1);
-        jerarquiaRoles.put("director de programa", 3);
+        jerarquiaRoles.put("director de programa", 2);
+        jerarquiaRoles.put("Profesor y Estudiante",1 );
+        jerarquiaRoles.put("Comitedelprograma",2);
         jerarquiaRoles.put("decano", 4);
         jerarquiaRoles.put("comité de programa",2);
 
@@ -21,11 +23,12 @@ public class PermisosRoles {
         nivelMinimoPorAccion.put("resultados", 1);
         nivelMinimoPorAccion.put("crearUsuarios", 4);
         nivelMinimoPorAccion.put("accMejora", 1);
-        nivelMinimoPorAccion.put("usuariosRoles", 4);
+        nivelMinimoPorAccion.put("usuariosRoles",4);
         nivelMinimoPorAccion.put("configuracion", 2);
         nivelMinimoPorAccion.put("salir", 1);
         nivelMinimoPorAccion.put("cargarArchivo", 3);
         nivelMinimoPorAccion.put("exportar", 3);
+
 
         this.nivelActual = jerarquiaRoles.getOrDefault(rol.toLowerCase(), 0);
     }

@@ -1,5 +1,6 @@
 package com.java.fx;
 //controlador de la interfaz general de usuarios
+import com.java.fx.Usuarios_y_Roles.CambiarContrasenaController;
 import com.java.fx.Usuarios_y_Roles.PermisosRoles;
 import com.java.fx.Usuarios_y_Roles.Sesion;
 import javafx.fxml.FXML;
@@ -10,6 +11,7 @@ import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;
+import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.BorderPane;
 import javafx.stage.Stage;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -89,15 +91,12 @@ public class ControllerMain {
         loadCenterView("/Resultados.fxml");
     }
 
-
-
     @FXML
     public void goAccMejora() {
         resetButtonStyles();
         btnAccMejora.getStyleClass().add("boton-rojo");
         loadCenterView("/AccionesDeMejora.fxml");
     }
-
 
     @FXML
     public void goUsuariosRoles() {
@@ -108,16 +107,26 @@ public class ControllerMain {
 
     @FXML
     public void goConfiguracion() {
-        resetButtonStyles();
-        btnConfiguracion.getStyleClass().add("boton-rojo");
+        try {
+            resetButtonStyles();
+            btnConfiguracion.getStyleClass().add("boton-rojo");
 
-        Label newLabel = new Label("Accediendo a configuracion");
-        newLabel.getStyleClass().add("content-label");
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/Configuracion_contrasena.fxml"));
+            Parent root = loader.load();
 
-        mainPane.setCenter(null);
-        mainPane.setCenter(newLabel);
+            // Obtener el controlador del FXML cargado
+            CambiarContrasenaController controller = loader.getController();
+
+            // Pasar el callback que redirige al login
+            controller.setOnPasswordChangedCallback(() -> volverLogin());
+
+            // Mostrar la vista en el centro de la aplicación
+            mainPane.setCenter(root);
+            // Asegúrate de que usas el BorderPane correcto
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
-
     private void resetButtonStyles() {
         btnInicio.getStyleClass().remove("boton-rojo");
         btnResultados.getStyleClass().remove("boton-rojo");
@@ -162,8 +171,6 @@ public class ControllerMain {
             loginStage.setTitle("Login");
             loginStage.show();
 
-
-
             // Cierro el principal
             ((Stage) mainPane.getScene().getWindow()).close();
 
@@ -171,6 +178,5 @@ public class ControllerMain {
             e.printStackTrace();
         }
     }
-
 
 }
