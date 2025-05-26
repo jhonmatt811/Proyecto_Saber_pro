@@ -97,6 +97,36 @@ public class AccionesMejoraController {
         alert.showAndWait();
     }
 
+    private String getSueggest(){
+        try {
+            String id = tablaMejoras.getSelectionModel().getSelectedItem().getId();
+            Integer yearInicio = tablaMejoras.getSelectionModel().getSelectedItem().getYearInicio();
+            Integer yearFin = tablaMejoras.getSelectionModel().getSelectedItem().getYearFin();
+            String response = resultadoService.getSuggest(id,yearInicio,yearFin);
+            ObjectMapper objectMapper = new ObjectMapper();
+
+            // Parseamos el JSON a un Map
+            Map<String, Object> map = objectMapper.readValue(response, Map.class);
+
+            // Obtener el objeto "accionMejora"
+            Map<String, Object> accionMejora = (Map<String, Object>) map.get("accionMejora");
+
+            // Acceder a "sugerenciaMejora"
+            String sugerencia = (String) accionMejora.get("sugerenciaMejora");
+
+            // Imprimir la sugerencia
+            System.out.println("Sugerencia: " + sugerencia);
+
+            // También puedes acceder a los anidados, por ejemplo "programa" > "nombre":
+            Map<String, Object> programa = (Map<String, Object>) accionMejora.get("programa");
+            String nombrePrograma = (String) programa.get("nombre");
+            System.out.println("Programa: " + nombrePrograma);
+        }catch (IOException | InterruptedException e){
+            this.mostrarAlerta("Error", "Error al obtener sueggestión: " + e.getMessage(), Alert.AlertType.ERROR);
+        }
+        return "";
+    }
+
     @FXML
     private void handleGuardarAccion() {
         try {

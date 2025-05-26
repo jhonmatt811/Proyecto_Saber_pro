@@ -56,12 +56,14 @@ public class ImprovementActionsService {
         return improvementActionsRepository.save(improvementActions);
     }
 
-    public ImprovementActionsAnalyzeDTO analyze(ImprovementActionsAnalyzeDTO dto) throws Exception{
-        ImprovementActions improvementActions = dto.getAccionMejora();
+    public ImprovementActionsAnalyzeDTO analyze(UUID id,Integer yearInicio,Integer yearFin) throws Exception{
+        ImprovementActions improvementActions = improvementActionsRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Accion de Mejora no encontrada"));
+
         Optional<ImprovementActionProjection> analyzeAction = improvementActionsRepository.analyzer(
-                improvementActions.getId(),
-                improvementActions.getYearInicio(),
-                improvementActions.getYearFin()
+                id,
+                yearInicio,
+                yearFin
         );
         if(analyzeAction.isEmpty()){
             throw new Exception("No hay aportes registrados");
@@ -70,7 +72,7 @@ public class ImprovementActionsService {
         Double percentageImprovement = (difference / analyzeAction.get().getPromedioInicio()) * 100;
         ImprovementActionsAnalyzeDTO analyzeAI = new ImprovementActionsAnalyzeDTO();
         analyzeAI.setPorcentajeMejora(percentageImprovement);
-        analyzeAI.setAccionMejora(dto.getAccionMejora());
+        analyzeAI.setAccionMejora(improvementActions);
         String responseAi = geminiIntegrationService.getGeminiData(analyzeAI);
         analyzeAI.setMessage(responseAi);
         return analyzeAI;

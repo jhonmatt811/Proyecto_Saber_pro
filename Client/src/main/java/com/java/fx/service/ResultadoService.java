@@ -7,15 +7,14 @@ import com.java.fx.model.Resultado;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectWriter;
 import com.fasterxml.jackson.core.type.TypeReference;
+import org.apache.http.client.methods.HttpUriRequest;
 import org.springframework.stereotype.Service;
 
 import java.io.*;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import com.java.fx.Usuarios_y_Roles.Sesion;
@@ -27,7 +26,6 @@ import java.net.http.*;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
-import java.util.Iterator;
 
 import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 import org.apache.poi.ss.usermodel.CellType;
@@ -295,6 +293,15 @@ public class ResultadoService {
         }
 
         return mapper.readValue(response.body(), new TypeReference<List<SugerenciaMejora>>() {});
+    }
+
+    public String getSuggest(String id, Integer yearInicio, Integer yearFin) throws IOException, InterruptedException {
+        HttpRequest request = HttpRequest.newBuilder()
+                .uri(URI.create(BASE_URL + "/sugerencias/" + id + "?yearInicio=" + yearInicio + "&yearFin=" + yearFin))
+                .GET()
+                .build();
+        HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+        return response.body();
     }
 }
 

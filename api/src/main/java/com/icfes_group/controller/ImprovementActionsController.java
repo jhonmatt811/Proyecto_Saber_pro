@@ -55,10 +55,15 @@ public class ImprovementActionsController {
         }
     }
 
-    @GetMapping("/sugerencias")
-    public ResponseEntity<?> getSuggest(@RequestBody ImprovementActionsAnalyzeDTO dto){
+    @GetMapping("/sugerencias/{id}")
+    public ResponseEntity<?> getSuggest(
+            @PathVariable UUID id,
+            @RequestParam(required = true) Integer yearInicio,
+            @RequestParam(required = true) Integer yearFin
+
+    ){
         try {
-            return new ResponseEntity<>(improvementActionsService.analyze(dto),HttpStatus.OK);
+            return new ResponseEntity<>(improvementActionsService.analyze(id,yearInicio,yearFin),HttpStatus.OK);
         } catch (Exception e) {
             return new ResponseEntity<>(new StatusResponse("BAD",e.getMessage()),HttpStatus.BAD_REQUEST);
         }
