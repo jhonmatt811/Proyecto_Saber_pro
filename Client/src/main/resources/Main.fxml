@@ -24,15 +24,6 @@
                 </graphic>
             </Label>
 
-            <Button fx:id="btnInicio" onAction="#goInicio" styleClass="boton-invisible" text="Inicio">
-                <graphic>
-                    <ImageView fitHeight="14" fitWidth="14">
-                        <image>
-                            <Image url="@/img/icons8-home-50.png" />
-                        </image>
-                    </ImageView>
-                </graphic>
-            </Button>
 
             <Button fx:id="btnResultados" onAction="#goResultados" styleClass="boton-invisible" text="Resultados">
                 <graphic>

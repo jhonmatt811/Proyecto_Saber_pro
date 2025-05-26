@@ -93,7 +93,7 @@ public class ControllerLogin implements Initializable {
                     handleSuccessfulLogin(jsonResponse);
                 } else {
                     showAlert("Error de autenticación",
-                            "Credenciales inválidas. Código: " + response.statusCode());
+                            "Credenciales inválidas . Posible desactivacion");
                 }
             } catch (JSONException e) {
                 e.printStackTrace();
@@ -154,8 +154,9 @@ public class ControllerLogin implements Initializable {
     }
 
     private boolean isValidEmail(String email) {
-        return email.matches("^[\\w.-]+@[\\w.-]+\\.(com|net|org|edu|gov|co)$");
+        return email.matches("^[\\w.-]+@[\\w.-]+\\.[a-zA-Z]{2,}(\\.[a-zA-Z]{2,})?$");
     }
+
 
     private void showAlert(String title, String content) {
         Platform.runLater(() -> {

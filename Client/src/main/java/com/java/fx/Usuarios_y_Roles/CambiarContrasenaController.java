@@ -102,7 +102,7 @@ public class CambiarContrasenaController {
 
         // Validar nueva contraseña segura
         if (!esContrasenaSegura(nuevaPass)) {
-            mostrarMensaje("La contraseña debe tener al menos 8 caracteres, incluir números y símbolos.");
+            mostrarMensaje("La contraseña debe tener al menos 6 caracteres, incluir números y símbolos.");
             System.out.println(nuevaPass);
             return;
         }
@@ -141,7 +141,7 @@ public class CambiarContrasenaController {
 
     private boolean esContrasenaSegura(String password) {
         // Permite: letras, números y símbolos comunes (!@#$%^&*._-) con al menos 1 número y 1 símbolo
-        return password.matches("^(?=.*[0-9])(?=.*[!@#$%^&*._-])[A-Za-z0-9!@#$%^&*._-]{8,}$");
+        return password.matches("^(?=.*[0-9])(?=.*[!@#$%^&*._-])[A-Za-z0-9!@#$%^&*._-]{6,}$");
 
     }
 

@@ -67,7 +67,6 @@ public class ControllerMain {
     private void configurarInterfazPorRol() {
         PermisosRoles permisos = new PermisosRoles(Sesion.rol_id);
 
-        btnInicio.setVisible(permisos.tienePermiso("inicio"));
         btnResultados.setVisible(permisos.tienePermiso("resultados"));
         //btnCrearUsuarios.setVisible(permisos.tienePermiso("crearUsuarios"));
         btnAccMejora.setVisible(permisos.tienePermiso("accMejora"));
@@ -77,12 +76,6 @@ public class ControllerMain {
     }
 
 
-    @FXML
-    public void goInicio() {
-        resetButtonStyles();
-        btnInicio.getStyleClass().add("boton-rojo");
-        loadCenterView("/Inicio.fxml");
-    }
 
     @FXML
     public void goResultados() {
@@ -128,7 +121,6 @@ public class ControllerMain {
         }
     }
     private void resetButtonStyles() {
-        btnInicio.getStyleClass().remove("boton-rojo");
         btnResultados.getStyleClass().remove("boton-rojo");
         //btnCrearUsuarios.getStyleClass().remove("boton-rojo");
         btnAccMejora.getStyleClass().remove("boton-rojo");

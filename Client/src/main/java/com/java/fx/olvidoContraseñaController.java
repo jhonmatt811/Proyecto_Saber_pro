@@ -62,7 +62,7 @@ public class olvidoContraseñaController {
             return;
         }
 
-        if (!storedEmail.matches("^[\\w-.]+@[\\w-]+\\.[a-zA-Z]{2,}$")) {
+        if (!storedEmail.matches("^[\\w.-]+@[\\w.-]+\\.[a-zA-Z]{2,}(\\.[a-zA-Z]{2,})?$")) {
             updateStatus("Correo con formato inválido", "red");
             return;
         }
@@ -126,7 +126,7 @@ public class olvidoContraseñaController {
 
         // Validar contraseña segura
         if (!esContrasenaSegura(newPassword)) {
-            statusLabel.setText("La contraseña debe tener al menos 8 caracteres, incluir números y símbolos.");
+            statusLabel.setText("La contraseña debe tener al menos 6 caracteres, incluir números y símbolos.");
             return;
         }
 
@@ -167,7 +167,7 @@ public class olvidoContraseñaController {
         }
     }
     private boolean esContrasenaSegura(String password) {
-        return password.matches("^(?=.*[0-9])(?=.*[!@#$%^&*._-])[A-Za-z0-9!@#$%^&*._-]{8,}$");
+        return password.matches("^(?=.*[0-9])(?=.*[!@#$%^&*._-])[A-Za-z0-9!@#$%^&*._-]{6,}$");
     }
 
     @FXML
