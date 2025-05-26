@@ -38,11 +38,14 @@ public class AccionesMejoraController {
 
     @FXML private TextArea txtAnalisis; // mostrar el análisis
 
+    private SugerenciaMejora sugerenciaSeleccionada;
+
     @FXML
     public void initialize() {
         configurarColumnasTabla();
         cargarDatosIniciales();
         cargarDatosDesdeAPI();
+        configurarSeleccionTabla();
     }
 
 
@@ -143,6 +146,38 @@ public class AccionesMejoraController {
             mostrarAlerta("Error", "Error en el JSON: " + e.getOriginalMessage(), Alert.AlertType.ERROR);
         } catch (IOException | InterruptedException e) {
             mostrarAlerta("Error", "Error de conexión: " + e.getMessage(), Alert.AlertType.ERROR);
+        }
+    }
+
+    private void configurarSeleccionTabla() {
+        tablaMejoras.getSelectionModel().selectedItemProperty().addListener(
+                (obs, oldSelection, newSelection) -> {
+                    sugerenciaSeleccionada = newSelection; // Guarda la selección
+                }
+        );
+    }
+
+    @FXML
+    private void handleEliminarMejora() {
+        if (sugerenciaSeleccionada == null) {
+            mostrarAlerta("Error", "Selecciona una mejora de la tabla", Alert.AlertType.ERROR);
+            return;
+        }
+
+        Alert confirmacion = new Alert(Alert.AlertType.CONFIRMATION);
+        confirmacion.setTitle("Confirmar eliminación");
+        confirmacion.setHeaderText("¿Eliminar esta acción de mejora?");
+        confirmacion.setContentText("Esta acción no se puede deshacer");
+
+        Optional<ButtonType> resultado = confirmacion.showAndWait();
+        if (resultado.isPresent() && resultado.get() == ButtonType.OK) {
+            try {
+                resultadoService.eliminarMejora(sugerenciaSeleccionada.getId());
+                cargarDatosIniciales(); // Recarga la tabla
+                mostrarAlerta("Éxito", "Mejora eliminada correctamente", Alert.AlertType.INFORMATION);
+            } catch (IOException | InterruptedException e) {
+                mostrarAlerta("Error", "Error al eliminar: " + e.getMessage(), Alert.AlertType.ERROR);
+            }
         }
     }
 

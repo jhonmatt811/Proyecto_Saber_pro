@@ -32,6 +32,7 @@
 
     <HBox spacing="10" alignment="CENTER">
         <Button fx:id="btnGuardar" text="Guardar Acción" style="-fx-background-color: #4CAF50; -fx-text-fill: white;" onAction="#handleGuardarAccion"/>
+        <Button fx:id="btnEliminar" text="Eliminar Selección" style="-fx-background-color: #f44336; -fx-text-fill: white;" onAction="#handleEliminarMejora"/>
     </HBox>
     <!-- Tabla de Mejoras Registradas -->
     <Label style="-fx-font-size: 18px; -fx-font-weight: bold;" text="Mejoras Registradas" />
