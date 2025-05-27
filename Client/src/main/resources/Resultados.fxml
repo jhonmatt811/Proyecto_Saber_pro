@@ -14,7 +14,7 @@
             <Label style="-fx-font-size: 16px; -fx-font-weight: bold;" text="Gestión" />
             <TextField fx:id="inputYear" promptText="Año " prefWidth="70"/>
             <TextField fx:id="inputCiclo" promptText="Ciclo " prefWidth="70"/>
-            <Button onAction="#handleCargarArchivo"
+            <Button fx:id="btnCargarArchivo" onAction="#handleCargarArchivo"
                     style="-fx-background-color: #2196F3;
                     -fx-text-fill: white;" text="Cargar Archivo" />
             <!-- boton para hacer el get de resultados -->
@@ -79,7 +79,7 @@
     <HBox spacing="10" alignment="CENTER">
         <Button onAction="#handleMostrarGrafica" style="-fx-background-color: #2196F3; -fx-text-fill: white;" text="Gráfica de Barras"/>
         <Button text="Gráfica de Líneas" onAction="#handleMostrarTendencias" style="-fx-background-color: #273043; -fx-text-fill: white;"/>
-        <Button onAction="#handleExportarExcel" style="-fx-background-color: #4CAF50; -fx-text-fill: white;" text="Exportar a Excel" />
+        <Button fx:id="btnObtenerExportarExcel" onAction="#handleExportarExcel" style="-fx-background-color: #4CAF50; -fx-text-fill: white;" text="Exportar a Excel" />
     </HBox>
 
 </VBox>

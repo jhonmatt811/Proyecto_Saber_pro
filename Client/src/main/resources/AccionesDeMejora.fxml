@@ -2,48 +2,48 @@
 
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
-<?import javafx.scene.text.*?>
-<?import javafx.scene.image.*?>
-<?import java.lang.*?>
-<?import javafx.scene.control.DatePicker?>
 
-<VBox spacing="20" style="-fx-padding: 30;" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.java.fx.AccionesMejoraController">
-    <Label style="-fx-font-size: 24px; -fx-font-weight: bold;" text="Acciones de Mejora" />
+<VBox spacing="20" style="-fx-padding: 30;" xmlns="http://javafx.com/javafx/8"
+      xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="com.java.fx.controller.AccionesMejoraController"> <!-- Asegúrate de que el paquete coincida -->
+
+    <Label style="-fx-font-size: 24px; -fx-font-weight: bold;" text="Regustrar Acciones de Mejora" />
 
     <GridPane hgap="10" vgap="10">
-        <Label text="Nombre o título:" GridPane.columnIndex="0" GridPane.rowIndex="0"/>
-        <TextField fx:id="txtNombre" GridPane.columnIndex="1" GridPane.rowIndex="0" GridPane.columnSpan="2"/>
 
-        <Label text="Objetivo/Problema:" GridPane.columnIndex="0" GridPane.rowIndex="1"/>
-        <TextArea fx:id="txtObjetivo" GridPane.columnIndex="1" GridPane.rowIndex="1" GridPane.columnSpan="2" prefRowCount="3"/>
+        <!-- ComboBox Filas 2 y 3 -->
+        <Label text="Programa:" GridPane.columnIndex="0" GridPane.rowIndex="2"/>
+        <ComboBox fx:id="comboProgramas" GridPane.columnIndex="1" GridPane.rowIndex="2" GridPane.columnSpan="2"/>
 
-        <Label text="Área relacionada:" GridPane.columnIndex="0" GridPane.rowIndex="2"/>
-        <ComboBox fx:id="cbArea" GridPane.columnIndex="1" GridPane.rowIndex="2"/>
+        <Label text="Sugerencia de mejora:" GridPane.columnIndex="0" GridPane.rowIndex="10"/>
+        <TextArea fx:id="txtSugerencia" GridPane.columnIndex="1" GridPane.rowIndex="10" GridPane.columnSpan="2" prefRowCount="3"/>
 
-        <Label text="Descripción detallada:" GridPane.columnIndex="0" GridPane.rowIndex="3"/>
-        <TextArea fx:id="txtDescripcion" GridPane.columnIndex="1" GridPane.rowIndex="3" GridPane.columnSpan="2" prefRowCount="5"/>
+        <Label text="Módulo:" GridPane.columnIndex="0" GridPane.rowIndex="3"/>
+        <ComboBox fx:id="comboModulos" GridPane.columnIndex="1" GridPane.rowIndex="3" GridPane.columnSpan="2"/>
 
-        <Label text="Responsable:" GridPane.columnIndex="0" GridPane.rowIndex="4"/>
-        <TextField fx:id="txtResponsable" GridPane.columnIndex="1" GridPane.rowIndex="4"/>
-
-        <Label text="Fechas:" GridPane.columnIndex="0" GridPane.rowIndex="5"/>
-        <HBox spacing="10" GridPane.columnIndex="1" GridPane.rowIndex="5">
+        <!-- Fila 7: Fechas  -->
+        <Label text="Fechas:" GridPane.columnIndex="0" GridPane.rowIndex="7"/>
+        <HBox spacing="10" GridPane.columnIndex="1" GridPane.rowIndex="7">
             <DatePicker fx:id="dpFechaInicio" promptText="Inicio"/>
             <DatePicker fx:id="dpFechaFin" promptText="Fin"/>
         </HBox>
 
-        <Label text="Recursos:" GridPane.columnIndex="0" GridPane.rowIndex="6"/>
-        <TextArea fx:id="txtRecursos" GridPane.columnIndex="1" GridPane.rowIndex="6" GridPane.columnSpan="2" prefRowCount="2"/>
-
-        <Label text="Evidencia:" GridPane.columnIndex="0" GridPane.rowIndex="7"/>
-        <HBox spacing="10" GridPane.columnIndex="1" GridPane.rowIndex="7">
-            <Button fx:id="btnAdjuntar" text="Adjuntar archivo" onAction="#handleAdjuntarEvidencia"/>
-            <Label fx:id="lblArchivoAdjunto" text="Ningún archivo adjunto"/>
-        </HBox>
     </GridPane>
 
     <HBox spacing="10" alignment="CENTER">
         <Button fx:id="btnGuardar" text="Guardar Acción" style="-fx-background-color: #4CAF50; -fx-text-fill: white;" onAction="#handleGuardarAccion"/>
         <Button fx:id="btnLimpiar" text="Limpiar Formulario" onAction="#handleLimpiarFormulario"/>
     </HBox>
+    <!-- Tabla de Mejoras Registradas -->
+    <Label style="-fx-font-size: 18px; -fx-font-weight: bold;" text="Mejoras Registradas" />
+    <TableView fx:id="tablaMejoras">
+        <columns>
+            <TableColumn fx:id="columnaId" text="ID" />
+            <TableColumn fx:id="columnaPrograma" text="Programa" />
+            <TableColumn fx:id="columnaModulo" text="Módulo" />
+            <TableColumn fx:id="columnaSugerencia" text="Sugerencia" />
+            <TableColumn fx:id="columnaYearInicio" text="Año Inicio" />
+            <TableColumn fx:id="columnaYearFin" text="Año Fin" />
+        </columns>
+    </TableView>
 </VBox>

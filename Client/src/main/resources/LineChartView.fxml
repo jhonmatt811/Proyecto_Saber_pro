@@ -9,26 +9,29 @@
             fx:controller="com.java.fx.controller.LineaController"
             style="-fx-padding: 20;">
 
+    <top>
+        <HBox spacing="10" style="-fx-padding: 10;">
+            <Label text="Rango de años (ej: 2020-2023):"/>
+            <TextField fx:id="rangoAniosInput" prefWidth="150"/>
+            <Button text="Analizar" onAction="#handleAnalizarTendencias"
+                    style="-fx-background-color: #2196F3; -fx-text-fill: white;"/>
+            <Button text="Restablecer" onAction="#handleRestablecer"/>
+        </HBox>
+    </top>
     <center>
         <ScrollPane fitToWidth="true" fitToHeight="true">
             <LineChart fx:id="graficaTendencias"
                        prefWidth="1200"
                        prefHeight="600"
-                       title="Tendencias por Año y Ciclo"
+                       title="Tendencias por Año y Ciclo Basadas en Puntaje Global Promedio"
                        legendVisible="false">
                 <xAxis>
                     <NumberAxis fx:id="xAxis" label="Año y Ciclo" />
                 </xAxis>
                 <yAxis>
-                    <NumberAxis fx:id="yAxis" label="Puntaje Global Promedio" />
+                    <NumberAxis fx:id="yAxis" label="Puntaje" />
                 </yAxis>
             </LineChart>
         </ScrollPane>
     </center>
-
-    <bottom>
-        <Button text="Cerrar" onAction="#handleCerrar"
-                style="-fx-background-color: #f44336; -fx-text-fill: white;"/>
-    </bottom>
-
 </BorderPane>
