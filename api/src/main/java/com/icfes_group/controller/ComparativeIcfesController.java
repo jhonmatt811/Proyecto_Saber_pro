@@ -12,7 +12,7 @@ import java.util.Map;
 import java.util.UUID;
 
 @RestController
-@RequestMapping("/comparar/persona/{id}")
+@RequestMapping("/comparar")
 @AllArgsConstructor
 public class ComparativeIcfesController {
     private final ComparativeIcfesService comparativeIcfesService;
