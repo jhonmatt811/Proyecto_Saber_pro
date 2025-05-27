@@ -1,4 +1,4 @@
-package com.java.fx.Usuarios_y_Roles;
+package com.java.fx.model;
 
 
 public class Rol {

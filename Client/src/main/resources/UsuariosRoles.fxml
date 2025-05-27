@@ -1,37 +1,65 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import java.lang.*?>
-<?import java.util.*?>
-<?import javafx.scene.*?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
-<?import com.java.fx.ControllerMain.*?>
+<?import javafx.geometry.*?>
 
-<BorderPane fx:id="mainPane" xmlns:fx="http://javafx.com/fxml" stylesheets="@estilos.css" fx:controller="com.java.fx.Usuarios_y_Roles.UsuariosRolesController">
-    <!-- Aquí van los elementos interiores -->
+<BorderPane fx:id="mainPane" xmlns:fx="http://javafx.com/javafx"
+            fx:controller="com.java.fx.Usuarios_y_Roles.UsuariosRolesController"
+            prefHeight="600.0" prefWidth="1000.0"
+            style="-fx-background-color: #F4F6F8;">
+
+    <!-- Filtro superior -->
+
+    <padding>
+        <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
+    </padding>
+
+    <top>
+        <HBox spacing="40" alignment="CENTER_LEFT">
+            <VBox spacing="5">
+                <Label fx:id="label_nombre" text="Filtrar por Nombre:" style="-fx-font-weight: bold;" />
+                <TextField fx:id="txtFiltroNom" prefWidth="200" promptText="Nombre..." />
+            </VBox>
+            <VBox spacing="5">
+                <Label fx:id="label_rol" text="Filtrar por Rol:" style="-fx-font-weight: bold;" />
+                <ComboBox fx:id="comboFiltroRol" prefWidth="200" promptText="Todos" />
+            </VBox>
+        </HBox>
+    </top>
+
+    <!-- Tabla central -->
+    <center>
+        <TableView fx:id="tablaUsuarios" prefHeight="400" prefWidth="900"
+                   style="-fx-background-color: white; -fx-border-color: #CCCCCC; -fx-border-radius: 5;">
+            <columns>
+                <TableColumn fx:id="colNombre" text="Nombre" prefWidth="150"/>
+                <TableColumn fx:id="colSecNombre" text="Segundo Nombre" prefWidth="120"/>
+                <TableColumn fx:id="colApellido" text="Apellido" prefWidth="120"/>
+                <TableColumn fx:id="colSecApellido" text="Segundo Apellido" prefWidth="120"/>
+                <TableColumn fx:id="colCorreo" text="Correo" prefWidth="220"/>
+                <TableColumn fx:id="colNombreRol" text="ROL" prefWidth="160"/>
+                <TableColumn fx:id="accionCol" text="Acción" prefWidth="100"/>
 
 
-<AnchorPane xmlns="http://javafx.com/javafx"
-            xmlns:fx="http://javafx.com/fxml"
-            prefHeight="400.0" prefWidth="600.0">
+            </columns>
+        </TableView>
+    </center>
 
-    <TableView fx:id="tablaUsuarios" layoutX="20" layoutY="20" prefHeight="300" prefWidth="750">
-        <columns>
-            <TableColumn fx:id="colNombre" text="Nombre" prefWidth="150"/>
-            <TableColumn fx:id="colSecNombre" text="Segundo Nombre" prefWidth="100"/>
-            <TableColumn fx:id="colApellido" text="Apellido" prefWidth="100"/>
-            <TableColumn fx:id="colSecApellido" text="Segundo Apellido" prefWidth="100"/>
-            <TableColumn fx:id="colCorreo" text="Correo" prefWidth="150"/>
-            <TableColumn fx:id="colNombreRol" text="ROL" prefWidth="160"/>
-        </columns>
-    </TableView>
-
-    <ComboBox fx:id="comboNuevoRol" layoutX="20" layoutY="330" prefWidth="150"/>
-    <Button fx:id="btnCambiarRol"  layoutX="220" layoutY="330" style="-fx-background-color: #F02D3A; -fx-text-fill: white; -fx-font-weight: bold;" text="Cambiar Rol" />
-
-    <Button fx:id="btnCrearUsuarios" layoutX="330" layoutY="330" onAction="#goCrearUsuarios" style="-fx-background-color: #F02D3A; -fx-text-fill: white; -fx-font-weight: bold;" text="Crear usuarios"/>
-
-
-</AnchorPane>
+    <!-- Sección inferior -->
+    <bottom>
+        <VBox spacing="10" alignment="CENTER">
+            <HBox spacing="15" alignment="CENTER">
+                <ComboBox fx:id="comboNuevoRol" prefWidth="200" promptText="Seleccionar nuevo rol" />
+                <Button fx:id="btnCambiarRol" text="Cambiar Rol"
+                        style="-fx-background-color: #2196F3; -fx-text-fill: white; -fx-font-weight: bold; -fx-background-radius: 5; -fx-padding: 8 16;" />
+                <Button fx:id="btnCrearUsuarios" text="Crear usuarios" onAction="#goCrearUsuarios"
+                        style="-fx-background-color: #4CAF50; -fx-text-fill: white; -fx-font-weight: bold; -fx-background-radius: 5; -fx-padding: 8 16;" />
+                <Button fx:id="btnCargarUsuarios" text="Cargar usuarios" onAction="#onCargarUsuariosClick"
+                        style="-fx-background-color: #FF5722; -fx-text-fill: white; -fx-font-weight: bold; -fx-background-radius: 5; -fx-padding: 8 16;" />
+            </HBox>
+        </VBox>
+    </bottom>
+    <Label fx:id="statusLabel" layoutX="20" layoutY="500" text="" style="-fx-text-fill: green; -fx-font-weight: bold;" />
 
 </BorderPane>

@@ -2,69 +2,82 @@
 
 <?import javafx.geometry.*?>
 <?import javafx.scene.control.*?>
-<?import javafx.scene.image.*?>
 <?import javafx.scene.layout.*?>
 
-<AnchorPane fx:id="formularioUsuario" prefHeight="636.0" prefWidth="754.0" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.java.fx.Usuarios_y_Roles.CrearUsuariosController">
-    <VBox alignment="TOP_CENTER" layoutX="50.0" layoutY="30.0" prefHeight="606.0" prefWidth="511.0" spacing="15">
-        <padding>
-            <Insets bottom="20" left="20" right="20" top="20" />
-        </padding>
+<AnchorPane fx:id="formularioUsuario" prefHeight="636.0" prefWidth="754.0"
+            xmlns="http://javafx.com/javafx/17.0.12"
+            xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="com.java.fx.Usuarios_y_Roles.CrearUsuariosController"
+            style="-fx-background-color: #F4F6F8;">
+    <padding>
+        <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
+    </padding>
 
-        <Label style="-fx-font-size: 24px; -fx-font-weight: bold;" text="Nuevo Usuario" />
-        <VBox alignment="CENTER_LEFT" spacing="8">
-            <Label text="Numero de documento:" />
-            <TextField fx:id="ccField" prefWidth="250" promptText="Cedula " />
+    <VBox alignment="TOP_CENTER" spacing="20"
+          layoutX="100.0" layoutY="20.0" prefWidth="600">
+
+        <!-- Título -->
+        <Label text="Nuevo Usuario"
+               style="-fx-font-size: 28px; -fx-font-weight: bold; -fx-text-fill: #333;" />
+
+        <!-- Campo Documento -->
+        <VBox alignment="CENTER_LEFT" spacing="5">
+            <Label text="Número de documento:" style="-fx-font-weight: bold;" />
+            <TextField fx:id="ccField" promptText="Cédula" prefWidth="400"/>
         </VBox>
 
-        <VBox alignment="CENTER_LEFT" spacing="8">
-            <Label text="Nombre:" />
-            <TextField fx:id="nombreField" prefWidth="250" promptText="Ingrese su Nombre" />
-        </VBox>
-        <VBox alignment="CENTER_LEFT" spacing="8">
-            <Label text="Segundo Nombre:" />
-            <TextField fx:id="segundoNombreField" prefWidth="250" promptText="Ingrese su Nombre " />
+        <!-- Campo Nombre -->
+        <VBox alignment="CENTER_LEFT" spacing="5">
+            <Label text="Nombre:" style="-fx-font-weight: bold;" />
+            <TextField fx:id="nombreField" promptText="Ingrese su nombre" prefWidth="400"/>
         </VBox>
 
-        <VBox alignment="CENTER_LEFT" spacing="8">
-            <Label text="Apellido:" />
-            <TextField fx:id="apellidoField" prefWidth="250" promptText="Ingrese su apellido" />
-        </VBox>
-        <VBox alignment="CENTER_LEFT" spacing="8">
-            <Label text="Segundo Apellido:" />
-            <TextField fx:id="segundoApellidoField" prefWidth="250" promptText="Ingrese su apellido" />
+        <!-- Campo Segundo Nombre -->
+        <VBox alignment="CENTER_LEFT" spacing="5">
+            <Label text="Segundo Nombre:" style="-fx-font-weight: bold;" />
+            <TextField fx:id="segundoNombreField" promptText="Ingrese su segundo nombre" prefWidth="400"/>
         </VBox>
 
-
-        <VBox alignment="CENTER_LEFT" spacing="8">
-            <Label text="Correo Electrónico:" />
-            <TextField fx:id="correoField" prefWidth="250" promptText="Ingrese su correo" />
+        <!-- Campo Apellido -->
+        <VBox alignment="CENTER_LEFT" spacing="5">
+            <Label text="Apellido:" style="-fx-font-weight: bold;" />
+            <TextField fx:id="apellidoField" promptText="Ingrese su apellido" prefWidth="400"/>
         </VBox>
 
+        <!-- Campo Segundo Apellido -->
+        <VBox alignment="CENTER_LEFT" spacing="5">
+            <Label text="Segundo Apellido:" style="-fx-font-weight: bold;" />
+            <TextField fx:id="segundoApellidoField" promptText="Ingrese su segundo apellido" prefWidth="400"/>
+        </VBox>
 
+        <!-- Campo Correo -->
+        <VBox alignment="CENTER_LEFT" spacing="5">
+            <Label text="Correo Electrónico:" style="-fx-font-weight: bold;" />
+            <TextField fx:id="correoField" promptText="Ingrese su correo" prefWidth="400"/>
+        </VBox>
 
-        <VBox alignment="CENTER_LEFT" maxWidth="Infinity" prefHeight="44.0" prefWidth="563.0" spacing="8">
-            <Label text="Rol:" />
-            <HBox alignment="CENTER" prefHeight="18.0" prefWidth="429.0" spacing="20">
-                <RadioButton fx:id="opcion1" prefHeight="18.0" prefWidth="86.0" text="Decano " />
-                <RadioButton fx:id="opcion5" prefHeight="18.0" prefWidth="145.0" text="Docente y Estudiante" />
-
+        <!-- Selección de Rol - Primera fila -->
+        <VBox spacing="8">
+            <Label text="Rol:" style="-fx-font-weight: bold;" />
+            <HBox spacing="20" alignment="CENTER">
+                <RadioButton fx:id="opcion1" text="Decano" />
+                <RadioButton fx:id="opcion5" text="Docente y Estudiante" />
             </HBox>
         </VBox>
-        <VBox alignment="CENTER_LEFT" maxWidth="Infinity" prefHeight="47.0" prefWidth="563.0" spacing="8">
-            <HBox alignment="CENTER" prefHeight="18.0" prefWidth="429.0" spacing="20">
-                <RadioButton fx:id="opcion4" prefHeight="18.0" prefWidth="138.0" text="Comite del Programa " />
-                <RadioButton fx:id="opcion2" prefHeight="18.0" prefWidth="138.0" text="Director de Programa" />
-                <RadioButton fx:id="opcion3" prefHeight="18.0" prefWidth="153.0" text="Coordinador Saber Pro" />
-            </HBox>
-        </VBox>
 
-        <Button onAction="#registrarUsuario" prefWidth="150" style="-fx-background-color: #F02D3A; -fx-text-fill: white; -fx-font-weight: bold;" text="Registrar" />
-        <Button fx:id="btnVolver" style="-fx-background-color: #F02D3A; -fx-text-fill: white; -fx-font-weight: bold;"  text="Volver" onAction="#volverATabla" />
+        <!-- Selección de Rol - Segunda fila -->
+        <HBox spacing="20" alignment="CENTER">
+            <RadioButton fx:id="opcion4" text="Comité del Programa" />
+            <RadioButton fx:id="opcion2" text="Director de Programa" />
+            <RadioButton fx:id="opcion3" text="Coordinador Saber Pro" />
+        </HBox>
 
+        <!-- Botones -->
+        <HBox spacing="20" alignment="CENTER" >
+            <Button text="Registrar" onAction="#registrarUsuario"
+                    style="-fx-background-color: #4CAF50; -fx-text-fill: white; -fx-font-weight: bold; -fx-padding: 8 24; -fx-background-radius: 6;" />
+            <Button fx:id="btnVolver" text="Volver" onAction="#volverATabla"
+                    style="-fx-background-color: #F44336; -fx-text-fill: white; -fx-font-weight: bold; -fx-padding: 8 24; -fx-background-radius: 6;" />
+        </HBox>
     </VBox>
-    <HBox alignment="CENTER" spacing="10">
-        <ImageView fx:id="imagenUsuario" fitHeight="100" fitWidth="100" />
-    </HBox>
-
 </AnchorPane>

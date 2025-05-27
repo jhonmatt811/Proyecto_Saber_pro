@@ -7,6 +7,7 @@ import javafx.scene.control.Alert.AlertType;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.BorderPane;
 
+
 import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
@@ -20,6 +21,7 @@ public class CrearUsuariosController {
 
     private static final String API_URL = "http://localhost:8080/admin/personas";
     public AnchorPane formularioUsuario;
+
 
 
     @FXML private RadioButton opcion1 ;
@@ -36,9 +38,6 @@ public class CrearUsuariosController {
     @FXML private TextField correoField;
     @FXML private BorderPane mainPane;
     @FXML private Button btnVolver;
-
-
-
 
 
     @FXML
@@ -127,7 +126,7 @@ public class CrearUsuariosController {
 
             // 1) Creo la persona
             HttpRequest reqPersona = HttpRequest.newBuilder()
-                    .uri(URI.create("http://localhost:8080/admin/personas"))
+                    .uri(URI.create(" http://ec2-3-149-24-90.us-east-2.compute.amazonaws.com/admin/personas"))
                     .header("Content-Type", "application/json")
                     .header("Authorization", "Bearer " + Sesion.jwtToken)
                     .POST(HttpRequest.BodyPublishers.ofString(jsonPersona))
@@ -148,7 +147,7 @@ public class CrearUsuariosController {
 
                             // 4) Preparo el segundo POST a /admin/usuarios
                             HttpRequest reqUsuario = HttpRequest.newBuilder()
-                                    .uri(URI.create("http://localhost:8080/admin/usuarios"))
+                                    .uri(URI.create(" http://ec2-3-149-24-90.us-east-2.compute.amazonaws.com/admin/usuarios"))
                                     .header("Content-Type", "application/json")
                                     .header("Authorization", "Bearer " + Sesion.jwtToken)
                                     .POST(HttpRequest.BodyPublishers.ofString(jsonUsuario))
@@ -159,7 +158,7 @@ public class CrearUsuariosController {
                         } else {
                             // si persona no se creó, corto la cadena devolviendo un Future fallido
                             return CompletableFuture.<HttpResponse<String>>failedFuture(
-                                    new RuntimeException("Error creando persona: " + respPersona.statusCode())
+                                    new RuntimeException("Error creando persona . Verifique sus datos ")
                             );
                         }
                     })
@@ -233,8 +232,9 @@ public class CrearUsuariosController {
     }
 
     private boolean isValidEmail(String email) {
-        return email.matches("^[\\w.-]+@[\\w.-]+\\.(com|net|org|edu|gov|co)$");
+        return email.matches("^[\\w.-]+@[\\w.-]+\\.[a-zA-Z]{2,}(\\.[a-zA-Z]{2,})?$");
     }
+
 
 
     // Clase interna para representar los datos del usuario
@@ -277,14 +277,22 @@ public class CrearUsuariosController {
     @FXML
     public void volverATabla() {
         if (usuariosRolesController != null) {
-            usuariosRolesController.getMainPane().setCenter(null); // Oculta el formulario
-            usuariosRolesController.cargarUsuarios();              // ✅ Actualiza la tabla con el nuevo usuario
+            usuariosRolesController.getMainPane().setCenter(usuariosRolesController.getVistaPrincipalOriginal());
+            usuariosRolesController.cargarUsuarios(); // Actualiza datos
+
+            // Asegúrate de volver visibles los componentes si es necesario
             usuariosRolesController.getTablaUsuarios().setVisible(true);
             usuariosRolesController.getComboNuevoRol().setVisible(true);
             usuariosRolesController.getBtnCrearUsuarios().setVisible(true);
             usuariosRolesController.getBtnCambiarRol().setVisible(true);
+            usuariosRolesController.getbtnCargarUsuarios().setVisible(true);
+            usuariosRolesController.getTxtFiltroNom().setVisible(true);
+            usuariosRolesController.getLabel_nombre().setVisible(true);
+            usuariosRolesController.getLabel_rol().setVisible(true);
+            usuariosRolesController.getComboFiltroRol().setVisible(true);
         }
     }
+
 
 
 }
