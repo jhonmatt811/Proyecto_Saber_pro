@@ -44,9 +44,6 @@ public class ControllerMain {
     @FXML
     private Button btnResultadosIcfes;
 
-    //@FXML
-    //private Button btnCrearUsuarios;
-
     @FXML
     private Button btnAccMejora;
 
@@ -127,7 +124,6 @@ public class ControllerMain {
 
             // Mostrar la vista en el centro de la aplicación
             mainPane.setCenter(root);
-            // Asegúrate de que usas el BorderPane correcto
         } catch (IOException e) {
             e.printStackTrace();
         }

@@ -6,7 +6,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectWriter;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.java.fx.model.ResultadoIcfes;
-import org.apache.http.client.methods.HttpUriRequest;
 import org.springframework.stereotype.Service;
 
 import java.io.*;
@@ -39,13 +38,12 @@ import java.util.stream.Stream;
 
 @Service
 public class ResultadoService {
-    private static final String BASE_URL = "http://localhost:8080";
+    private static final String BASE_URL = " http://ec2-3-149-24-90.us-east-2.compute.amazonaws.com";
     private final HttpClient client = HttpClient.newHttpClient();
     private final ObjectMapper mapper = new ObjectMapper();
-    /*
-      Llama al endpoint GET /resultados con los filtros opcionales.
-      Crea la URL con query params si no son nulos.
-     */
+    //-----------------Resultados--------
+    /*Llama al endpoint GET /resultados con los filtros opcionales.*/
+
     public List<Resultado> obtenerResultados(
             Integer year,
             Integer ciclo,
@@ -66,10 +64,7 @@ public class ResultadoService {
         if (!params.isEmpty()) {
             sb.append("?").append(String.join("&", params));
         }
-        //
-        //String url = sb.toString();
-        //System.out.println("→ Llamando al GET " + url);
-        //
+
         HttpRequest req = HttpRequest.newBuilder()
                 .uri(URI.create(sb.toString()))
                 .header("Authorization", "Bearer " + Sesion.getJwtToken())
@@ -188,17 +183,11 @@ public class ResultadoService {
         );
     }
 
-    /**
-     * Normaliza valores de percentil, convirtiendo '-' en '0'.
-     */
+     //Normaliza valores de percentil, convirtiendo '-' en '0'.
     private String normalizePercentil(String raw) {
         return "-".equals(raw) ? "0" : raw;
     }
 
-    /**
-     * Envía la lista de resultados al backend vía HTTP POST,
-     * usando el token almacenado en Sesion.jwtToken.
-     */
     public void enviarResultadosAlBackend(List<Resultado> resultados) throws IOException {
         String token = Sesion.getJwtToken();
         if (token == null || token.isBlank()) {
@@ -207,7 +196,7 @@ public class ResultadoService {
 
         System.out.println("→ Filas a enviar al backend: " + resultados.size());
 
-        URL url = new URL("http://localhost:8080/resultados/file");
+        URL url = new URL(BASE_URL + "/resultados/file");
         HttpURLConnection con = (HttpURLConnection) url.openConnection();
         con.setRequestMethod("POST");
         con.setRequestProperty("Content-Type", "application/json; utf-8");
@@ -220,27 +209,20 @@ public class ResultadoService {
                 .writer()
                 .withDefaultPrettyPrinter();
         String json = ow.writeValueAsString(resultados);
-
-        //imprimir los json generados
-        //System.out.println(json);
-
         // Enviar cuerpo
         try (OutputStream os = con.getOutputStream()) {
             byte[] input = json.getBytes(StandardCharsets.UTF_8);
             os.write(input, 0, input.length);
         }
-
         int code = con.getResponseCode();
         if (code < 200 || code >= 300) {
             String errorBody = new String(con.getErrorStream().readAllBytes(), StandardCharsets.UTF_8);
             throw new IOException("Error al enviar (cód. " + code + "): " + errorBody);
         }
-
         con.disconnect();
     }
 
-
-    // Obtener todos los programas
+    // ---------------Obtener todos los programas
     public List<Programa> obtenerProgramas() throws IOException, InterruptedException {
         HttpRequest request = HttpRequest.newBuilder()
                 .uri(URI.create(BASE_URL + "/programas"))
@@ -252,7 +234,7 @@ public class ResultadoService {
         return mapper.readValue(resp.body(), new TypeReference<List<Programa>>() {});
     }
 
-    // Obtener todos los módulos
+    // -----------Obtener todos los módulos
     public List<Modulo> obtenerModulos() throws IOException, InterruptedException {
         HttpRequest request = HttpRequest.newBuilder()
                 .uri(URI.create(BASE_URL + "/modulos"))
@@ -263,6 +245,8 @@ public class ResultadoService {
         HttpResponse<String> resp = client.send(request, HttpResponse.BodyHandlers.ofString());
         return mapper.readValue(resp.body(), new TypeReference<List<Modulo>>() {});
     }
+
+    //--------------Acciones de mejora----------------
     public void enviarSugerencia(String jsonSugerencia) throws IOException, InterruptedException {
         HttpRequest request = HttpRequest.newBuilder()
                 .uri(URI.create(BASE_URL + "/mejoras"))
@@ -277,6 +261,7 @@ public class ResultadoService {
             throw new IOException("Error al enviar sugerencia: " + response.body());
         }
     }
+
     public List<SugerenciaMejora> obtenerMejoras() throws IOException, InterruptedException {
         HttpRequest request = HttpRequest.newBuilder()
                 .uri(URI.create(BASE_URL + "/mejoras"))
@@ -293,11 +278,28 @@ public class ResultadoService {
         return mapper.readValue(response.body(), new TypeReference<List<SugerenciaMejora>>() {});
     }
 
+    public void actualizarMejora(String id, String json) throws IOException, InterruptedException {
+        HttpRequest request = HttpRequest.newBuilder()
+                .uri(URI.create(BASE_URL + "/mejoras/" + id))
+                .header("Authorization", "Bearer " + Sesion.getJwtToken())
+                .header("Content-Type", "application/json")
+                .PUT(HttpRequest.BodyPublishers.ofString(json))
+                .build();
+
+        HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+
+        if (response.statusCode() == 403) {
+            throw new IOException("Modificación bloqueada: Vigencia expirada");
+        } else if (response.statusCode() != 200) {
+            throw new IOException("Error " + response.statusCode() + ": " + response.body());
+        }
+    }
+
     public void eliminarMejora(String id) throws IOException, InterruptedException {
         HttpRequest request = HttpRequest.newBuilder()
                 .uri(URI.create(BASE_URL + "/mejoras/" + id))
                 .header("Authorization", "Bearer " + Sesion.getJwtToken())
-                .DELETE() // Método HTTP DELETE
+                .DELETE()
                 .build();
 
         HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
@@ -307,19 +309,11 @@ public class ResultadoService {
         }
     }
 
-    public AnalisisMejora obtenerAnalisisMejora(SugerenciaMejora sugerencia) throws IOException, InterruptedException {
-        // Crear estructura del cuerpo esperado por el servidor
-        ObjectMapper mapper = new ObjectMapper();
-        Map<String, Object> requestBody = new HashMap<>();
-        requestBody.put("accionMejora", sugerencia);
-
-        String jsonBody = mapper.writeValueAsString(requestBody);
-
+    public AnalisisMejora obtenerAnalisisIA(String idMejora) throws IOException, InterruptedException {
         HttpRequest request = HttpRequest.newBuilder()
-                .uri(URI.create(BASE_URL + "/mejoras/sugerencias"))
+                .uri(URI.create(BASE_URL + "/mejoras/sugerencias/" + idMejora))
                 .header("Authorization", "Bearer " + Sesion.getJwtToken())
-                .header("Content-Type", "application/json")
-                .method("GET", HttpRequest.BodyPublishers.ofString(jsonBody)) // Enviar cuerpo en GET
+                .GET()
                 .build();
 
         HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
@@ -331,22 +325,7 @@ public class ResultadoService {
         return mapper.readValue(response.body(), AnalisisMejora.class);
     }
 
-    public AnalisisMejora obtenerAnalisisMejoral(GetAnalisisMejora getDTO) throws IOException, InterruptedException {
-        ObjectMapper mapper = new ObjectMapper();
-        String jsonBody = mapper.writeValueAsString(getDTO); // Serializa el DTO del GET
-
-        HttpRequest request = HttpRequest.newBuilder()
-                .uri(URI.create(BASE_URL + "/mejoras/sugerencias"))
-                .header("Authorization", "Bearer " + Sesion.getJwtToken())
-                .header("Content-Type", "application/json")
-                .method("GET", HttpRequest.BodyPublishers.ofString(jsonBody)) // GET con cuerpo
-                .build();
-
-        HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
-        return mapper.readValue(response.body(), AnalisisMejora.class);
-    }
-
-
+    //--------------Resultados Icfes---------------
     public List<ResultadoIcfes> obtenerResultadosIcfes(Integer limit, Integer periodo, Integer offset)
             throws IOException, InterruptedException {
 
@@ -371,16 +350,6 @@ public class ResultadoService {
         HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
 
         return mapper.readValue(response.body(), new TypeReference<List<ResultadoIcfes>>() {});
-    }
-
-
-    public String getSuggest(String id) throws IOException, InterruptedException {
-        HttpRequest request = HttpRequest.newBuilder()
-                .uri(URI.create(BASE_URL + "/sugerencias/" + id))
-                .GET()
-                .build();
-        HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
-        return response.body();
     }
 }
 

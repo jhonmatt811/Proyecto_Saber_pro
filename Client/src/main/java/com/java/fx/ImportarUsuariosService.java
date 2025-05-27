@@ -44,7 +44,7 @@ public class ImportarUsuariosService {
             nombreRolToId = apiService.obtenerRoles().stream()
                     .collect(Collectors.toMap(Rol::getNombre, Rol::getId));
         } catch (Exception e) {
-            throw new RuntimeException("❌ No se pudieron obtener los roles desde el backend: " + e.getMessage(), e);
+            throw new RuntimeException("No se pudieron obtener los roles desde el backend: " + e.getMessage(), e);
         }
 
         try (Workbook workbook = WorkbookFactory.create(archivoExcel)) {
@@ -94,7 +94,7 @@ public class ImportarUsuariosService {
 
                     } catch (Exception e) {
                         int fila = row.getRowNum() + 1;
-                        String mensaje = "⚠️ Error en fila " + fila + ": " + e.getMessage();
+                        String mensaje = "Error en fila " + fila + ": " + e.getMessage();
 
                         // Mostrar alerta en JavaFX
                         Platform.runLater(() -> {
@@ -113,7 +113,7 @@ public class ImportarUsuariosService {
 
         // Verifica que haya personas antes de continuar
         if (personas.isEmpty()) {
-            throw new RuntimeException("❌ No se encontró ninguna persona válida en el archivo.");
+            throw new RuntimeException("No se encontró ninguna persona válida en el archivo.");
         }
 
         // Crear personas en el backend
@@ -121,14 +121,14 @@ public class ImportarUsuariosService {
 
         // Validaciones post-creación
         if (personasCreadas.size() != usuarios.size()) {
-            throw new RuntimeException("❌ El número de personas creadas no coincide con los usuarios.");
+            throw new RuntimeException("El número de personas creadas no coincide con los usuarios.");
         }
 
         // Asignar personas creadas a usuarios
         for (int i = 0; i < usuarios.size(); i++) {
             Persona personaCreada = personasCreadas.get(i);
             if (personaCreada == null || personaCreada.getId() == null) {
-                throw new RuntimeException("❌ Persona inválida en la posición " + i);
+                throw new RuntimeException("Persona inválida en la posición " + i);
             }
             usuarios.get(i).setPersona(personaCreada);
         }
@@ -153,7 +153,7 @@ public class ImportarUsuariosService {
         persona.setSegundo_nombre(campos[2]);
         persona.setPrimer_apellido(campos[3]);
         persona.setSegundo_apellido(campos[4]);
-        persona.setEmail(campos[5]); // Asumiendo que en la columna 5 está el email
+        persona.setEmail(campos[5]); 
 
         String nombreRol = campos[6];
 

@@ -22,6 +22,10 @@
                     onAction="#handleObtenerResultados"
                     text="Obtener Resultados"
                     style="-fx-background-color: #009688; -fx-text-fill: white;" />
+            <Button onAction="#handleExportarFormato"
+                    style="-fx-background-color: #FF9800; -fx-text-fill: white;"
+                    text="Descargar Formato Xlsx"/>
+            <Button onAction="#handleConectarCFES" style="-fx-background-color: #4CAF50; -fx-text-fill: white;" text="Conectar al ICFES" />
 
             <Label fx:id="archivoCargadoLabel" />
         </HBox>
@@ -71,17 +75,12 @@
 
     <!-- Separador visual -->
     <Separator />
-    <!-- Separador visual -->
-    <Separator />
-
+    <Label text="Nota: Las acciones de estos botones se realizaran de acuerdo a los filtros (año y periodo aplican como filtro)." styleClass="section-title" />
     <!-- Botones de exportación -->
     <HBox spacing="10" alignment="CENTER">
         <Button onAction="#handleMostrarGrafica" style="-fx-background-color: #2196F3; -fx-text-fill: white;" text="Gráfica de Barras"/>
         <Button text="Gráfica de Líneas" onAction="#handleMostrarTendencias" style="-fx-background-color: #273043; -fx-text-fill: white;"/>
         <Button fx:id="btnObtenerExportarExcel" onAction="#handleExportarExcel" style="-fx-background-color: #4CAF50; -fx-text-fill: white;" text="Exportar a Excel" />
-        <Button fx:id="btnCompararconGrupo" onAction="#handleMostrarComparacion"
-                style="-fx-background-color: #FF9800; -fx-text-fill: white;"
-                text="Comparar con Grupo"/>
 
     </HBox>
 

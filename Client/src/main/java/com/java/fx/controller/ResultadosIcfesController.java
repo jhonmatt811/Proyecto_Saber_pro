@@ -86,7 +86,7 @@ public class ResultadosIcfesController {
             Integer limit = txtLimit.getText().isEmpty() ? null : Integer.parseInt(txtLimit.getText());
             Integer periodo = validarPeriodo(txtPeriodo.getText());
 
-            // Obtener resultados con offset=0 por defecto
+            // Obtener resultados con offset=2 por defecto
             List<ResultadoIcfes> resultados = icfesService.obtenerResultadosIcfes(
                     limit,
                     periodo,

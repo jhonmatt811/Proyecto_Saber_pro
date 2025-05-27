@@ -8,9 +8,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.List;
 
-/**
- * Componente que carga archivos y envío de resultados al backend.
- */
+/**Componente que carga archivos y envío de resultados al backend.*/
 @Component
 public class ResultadoUploader {
 

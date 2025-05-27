@@ -89,79 +89,48 @@ public class Resultado {
     public void setCiclo(int ciclo) {
         this.ciclo = ciclo;
     }
-
     public void setYear(int year) {
         this.year = year;
     }
-
     public void setDocumento(long documento) {
         this.documento = documento;
     }
-
     public void setTipoDocumento(String tipoDocumento) {
         this.tipoDocumento = tipoDocumento;
     }
-
     public void setNombre(String nombre) {
         this.nombre = nombre;
     }
-
     public void setNumeroRegistro(String numeroRegistro) {
         this.numeroRegistro = numeroRegistro;
     }
-
     public void setTipoEvaluado(String tipoEvaluado) {
         this.tipoEvaluado = tipoEvaluado;
     }
-
-    public void setSniesProgramaAcademico(String sniesProgramaAcademico) {
-        this.sniesProgramaAcademico = sniesProgramaAcademico;
-    }
-
+    public void setSniesProgramaAcademico(String sniesProgramaAcademico) {this.sniesProgramaAcademico = sniesProgramaAcademico;}
     public void setPrograma(String programa) {
         this.programa = programa;
     }
-
     public void setCiudad(String ciudad) {
         this.ciudad = ciudad;
     }
-
-    public void setNucleoBasicoConocimiento(String nucleoBasicoConocimiento) {
-        this.nucleoBasicoConocimiento = nucleoBasicoConocimiento;
-    }
-
+    public void setNucleoBasicoConocimiento(String nucleoBasicoConocimiento) {this.nucleoBasicoConocimiento = nucleoBasicoConocimiento;}
     public void setPuntajeGlobal(String puntajeGlobal) {
         this.puntajeGlobal = puntajeGlobal;
     }
-
-    public void setPercentilNacionalGlobal(String percentilNacionalGlobal) {
-        this.percentilNacionalGlobal = percentilNacionalGlobal;
-    }
-
-    public void setPercentilNacionalNbc(String percentilNacionalNbc) {
-        this.percentilNacionalNbc = percentilNacionalNbc;
-    }
-
+    public void setPercentilNacionalGlobal(String percentilNacionalGlobal) {this.percentilNacionalGlobal = percentilNacionalGlobal;}
+    public void setPercentilNacionalNbc(String percentilNacionalNbc) {this.percentilNacionalNbc = percentilNacionalNbc;}
     public void setModulo(String modulo) {
         this.modulo = modulo;
     }
-
     public void setPuntajeModulo(String puntajeModulo) {
         this.puntajeModulo = puntajeModulo;
     }
-
     public void setNivelDesempeno(String nivelDesempeno) {
         this.nivelDesempeno = nivelDesempeno;
     }
-
-    public void setPercentilNacionalModulo(String percentilNacionalModulo) {
-        this.percentilNacionalModulo = percentilNacionalModulo;
-    }
-
-    public void setPercentilGrupoNbcModulo(String percentilGrupoNbcModulo) {
-        this.percentilGrupoNbcModulo = percentilGrupoNbcModulo;
-    }
-
+    public void setPercentilNacionalModulo(String percentilNacionalModulo) {this.percentilNacionalModulo = percentilNacionalModulo;}
+    public void setPercentilGrupoNbcModulo(String percentilGrupoNbcModulo) {this.percentilGrupoNbcModulo = percentilGrupoNbcModulo;}
     public void setNovedades(String novedades) {
         this.novedades = novedades;
     }

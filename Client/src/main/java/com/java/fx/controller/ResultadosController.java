@@ -146,6 +146,7 @@ public class ResultadosController {
                 aplicarFiltros();
             });
 
+
         } catch (NumberFormatException nfe) {
             mostrarAlerta("Filtro inválido", "Formato numérico incorrecto", Alert.AlertType.ERROR);
         } catch (IOException | InterruptedException ex) {  // ¡Aquí se añade InterruptedException!
@@ -462,7 +463,6 @@ public class ResultadosController {
             }
         }
     }
-
     @FXML
     private void handleMostrarGrafica() {
         try {
@@ -507,6 +507,57 @@ public class ResultadosController {
         alert.setHeaderText(null);
         alert.setContentText(mensaje);
         alert.showAndWait();
+    }
+
+    @FXML
+    public void handleExportarFormato() {
+        PermisosRoles permisos = new PermisosRoles(Sesion.getRol_id());
+        if (!permisos.tienePermiso("cargarArchivo")) {
+            mostrarAlerta("Acceso denegado", "No tienes permisos para esta acción.", Alert.AlertType.ERROR);
+            return;
+        }
+
+        FileChooser fileChooser = new FileChooser();
+        fileChooser.setTitle("Guardar formato vacío");
+        fileChooser.getExtensionFilters().add(
+                new FileChooser.ExtensionFilter("Excel Files", "*.xlsx")
+        );
+        File file = fileChooser.showSaveDialog(null);
+
+        if (file != null) {
+            try (XSSFWorkbook workbook = new XSSFWorkbook()) {
+                XSSFSheet sheet = workbook.createSheet("Formato Saber Pro");
+
+                // Encabezados (mismos que en handleExportarExcel)
+                String[] headers = {
+                        "Tipo Documento", "Documento", "Nombre", "Número Registro",
+                        "Tipo Evaluado", "SNIES Programa", "Programa", "Ciudad",
+                        "Núcleo Básico", "Puntaje Global", "% Nal. Global", "% Nal. NBC",
+                        "Módulo", "Puntaje Módulo", "Nivel Desempeño", "% Nal. Módulo",
+                        "% Grupo NBC Módulo", "Novedades"
+                };
+
+                // Solo escribimos los encabezados
+                XSSFRow headerRow = sheet.createRow(0);
+                for (int i = 0; i < headers.length; i++) {
+                    headerRow.createCell(i).setCellValue(headers[i]);
+                }
+
+                // Autoajustar columnas
+                for (int i = 0; i < headers.length; i++) {
+                    sheet.autoSizeColumn(i);
+                }
+
+                // Guardar archivo
+                try (FileOutputStream outputStream = new FileOutputStream(file)) {
+                    workbook.write(outputStream);
+                    mostrarAlerta("Éxito", "Formato descargado correctamente.", Alert.AlertType.INFORMATION);
+                }
+            } catch (IOException e) {
+                mostrarAlerta("Error", "No se pudo generar el formato.", Alert.AlertType.ERROR);
+                e.printStackTrace();
+            }
+        }
     }
 }
 

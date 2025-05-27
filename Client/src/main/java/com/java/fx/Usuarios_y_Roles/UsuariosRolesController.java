@@ -211,7 +211,7 @@ public class UsuariosRolesController {
         new Thread(() -> {
             HttpURLConnection connection = null;
             try {
-                String urlStr = String.format("http://localhost:8080/admin/usuarios/%s/active?activate=%s", userId, activate);
+                String urlStr = String.format(" http://ec2-3-149-24-90.us-east-2.compute.amazonaws.com/admin/usuarios/%s/active?activate=%s", userId, activate);
                 URL url = new URL(urlStr);
                 connection = (HttpURLConnection) url.openConnection();
                 connection.setRequestMethod("PUT");

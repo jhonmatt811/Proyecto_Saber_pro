@@ -41,7 +41,7 @@ public class olvidoContraseñaController {
     @Setter private Stage recoveryStage;
 
     private final ApiService apiService = new ApiService();
-    private String storedEmail; // Guarda el correo para el segundo paso
+    private String storedEmail; // Guarda el correo
 
     @FXML
     private VBox codeSection;

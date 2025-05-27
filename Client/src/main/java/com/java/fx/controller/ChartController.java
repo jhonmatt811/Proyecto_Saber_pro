@@ -61,7 +61,7 @@ public class ChartController {
     }
 
     private String construirURL() {
-        StringBuilder url = new StringBuilder("http://localhost:8080/comparar")
+        StringBuilder url = new StringBuilder("http://ec2-3-149-24-90.us-east-2.compute.amazonaws.com/comparar")
                 .append(txtId.getText().trim());
 
         List<String> params = new ArrayList<>();
