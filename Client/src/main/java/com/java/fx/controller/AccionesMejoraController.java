@@ -252,7 +252,7 @@ public class AccionesMejoraController {
         Alert progreso = new Alert(Alert.AlertType.INFORMATION);
         progreso.setTitle("Generando análisis");
         progreso.setHeaderText("Solicitando análisis a Gemmini AI");
-        progreso.setContentText("Por favor espere...");
+        progreso.setContentText("Por favor espere, este proceso puede tardar de 15 a 30 segundos");
         progreso.show();
 
         Task<AnalisisMejora> task = new Task<>() {
