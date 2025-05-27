@@ -12,7 +12,7 @@ import java.util.Map;
 import java.util.UUID;
 
 @RestController
-@RequestMapping("/comparar")
+@RequestMapping("/comparar/persona/{id}")
 @AllArgsConstructor
 public class ComparativeIcfesController {
     private final ComparativeIcfesService comparativeIcfesService;
@@ -24,7 +24,11 @@ public class ComparativeIcfesController {
             @RequestParam(required = true)  Integer year
     ){
         try{
-            return new ResponseEntity<>(comparativeIcfesService.comparePerson(documento,year,programa,grupo), HttpStatus.OK);
+            if(documento != null){
+                return new ResponseEntity<>(comparativeIcfesService.comparePerson(documento,year,programa,grupo), HttpStatus.OK);
+            }else{
+                return new ResponseEntity<>(comparativeIcfesService.compareGroup(programa), HttpStatus.OK);
+            }
         } catch (Exception e) {
             return new ResponseEntity<>(new StatusResponse("BAD",e.getMessage()), HttpStatus.BAD_REQUEST);
         }

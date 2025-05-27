@@ -1,5 +1,6 @@
 package com.icfes_group.service;
 
+import com.icfes_group.dto.ComparativeIcfesGroupDTO;
 import com.icfes_group.dto.ComparativeIcfesPersonDTO;
 import com.icfes_group.repository.ComparativeIcfesRepository;
 import com.icfes_group.repository.proyections.ComparativeIcfesProjectionGroup;
@@ -57,6 +58,45 @@ public class ComparativeIcfesService {
         dto.setResultados(resultsAnalyze);
         dto.setResultadosGrupo(resultadosGrupo);
         dto.setTotalEstudiante(resAnalyze.getFirst().getPuntajeGlobal());
+        return dto;
+    }
+
+    public ComparativeIcfesPersonDTO compareGroup(Long programa) throws Exception{
+        List<ComparativeIcfesProjectionGroup> mwGroup = comparativeIcfesRepository.getComparativeIcfesMeGroup(programa);
+        List<ComparativeIcfesProjectionGroup> groups = comparativeIcfesRepository.getComparativeIcfesGroup(programa);
+        if(mwGroup.isEmpty()){
+            throw new Exception("No hay resultados para el programa");
+        }
+        ComparativeIcfesPersonDTO dto = new ComparativeIcfesPersonDTO();
+        dto.setNombrePrograma(mwGroup.getFirst().getProgramaAcademico());
+        List<Map<String, Object>> resultados = mwGroup.stream()
+                .map(g -> {
+                    Map<String, Object> map = new HashMap<>();
+                    map.put("nombreModulo", g.getNombreModulo());
+                    map.put("programaAcademico", g.getProgramaAcademico());
+                    map.put("nombreGrupoReferencia", g.getNombreGrupoReferencia());
+                    map.put("promedioGrupoGlobal", g.getPromedioGrupoGlobal());
+                    map.put("promedioGrupoModulo", g.getPromedioGrupoModulo());
+                    map.put("varianzaGlobal", g.getVarianzaGlobal());
+                    map.put("varianzaModulo", g.getVarianzaModulo());
+                    return map;
+                }).toList();
+        List<Map<String, Object>> resultadosGrupo = groups.stream()
+                .map(g -> {
+                    Map<String, Object> map = new HashMap<>();
+                    map.put("nombreModulo", g.getNombreModulo());
+                    map.put("programaAcademico", g.getProgramaAcademico());
+                    map.put("nombreGrupoReferencia", g.getNombreGrupoReferencia());
+                    map.put("promedioGrupoGlobal", g.getPromedioGrupoGlobal());
+                    map.put("promedioGrupoModulo", g.getPromedioGrupoModulo());
+                    map.put("varianzaGlobal", g.getVarianzaGlobal());
+                    map.put("varianzaModulo", g.getVarianzaModulo());
+                    return map;
+                }).toList();
+
+        dto.setResultados(resultados);
+        dto.setResultadosGrupo(resultadosGrupo);
+        dto.setNombrePrograma(mwGroup.getFirst().getProgramaAcademico());
         return dto;
     }
 }

@@ -90,4 +90,44 @@ public interface ComparativeIcfesRepository extends JpaRepository<RootEntityComp
                 AND re.year = :year
             """,nativeQuery = true)
         List<ComparativeIcfesProjection> getResumen(@Param("documento") Integer documento, @Param("year") Integer year, @Param("programa") Long programa);
+        
+    @Query(value = """
+        SELECT
+            cm.nombre AS nombreModulo,
+            gr.nombre AS nombreGrupoReferencia,
+            pa.nombre AS programaAcademico,
+            ROUND(AVG(CAST(rg.puntaje_global AS INTEGER)), 2) AS promedioGrupoGlobal,
+            ROUND(AVG(CAST(rm.puntaje_modulo AS INTEGER)), 2) AS promedioGrupoModulo,
+            ROUND(VAR_SAMP(CAST(rg.puntaje_global AS INTEGER)), 2) AS varianzaGlobal,
+            ROUND(VAR_SAMP(CAST(rm.puntaje_modulo AS INTEGER)), 2) AS varianzaModulo
+        FROM registros_evaluaciones re
+        JOIN programas_academicos pa ON pa.id = re.programa_id 
+        JOIN resultados_globales rg ON rg.id = re.id
+        JOIN resultados_modulos rm ON rm.resultado_global_id = rg.id
+        JOIN catalogos_modulos cm ON cm.id = rm.catalogo_modulo_id
+        JOIN grupos_referencias gr ON gr.id = rg.grupo_referencia_id
+        WHERE pa.id != :programa
+        GROUP BY cm.nombre, gr.nombre, pa.nombre
+    """, nativeQuery = true)
+    List<ComparativeIcfesProjectionGroup> getComparativeIcfesGroup(@Param("programa") Long programa);
+
+    @Query(value = """
+        SELECT
+            cm.nombre AS nombreModulo,
+            gr.nombre AS nombreGrupoReferencia,
+            pa.nombre AS programaAcademico,
+            ROUND(AVG(CAST(rg.puntaje_global AS INTEGER)), 2) AS promedioGrupoGlobal,
+            ROUND(AVG(CAST(rm.puntaje_modulo AS INTEGER)), 2) AS promedioGrupoModulo,
+            ROUND(VAR_SAMP(CAST(rg.puntaje_global AS INTEGER)), 2) AS varianzaGlobal,
+            ROUND(VAR_SAMP(CAST(rm.puntaje_modulo AS INTEGER)), 2) AS varianzaModulo
+        FROM registros_evaluaciones re
+        JOIN programas_academicos pa ON pa.id = re.programa_id 
+        JOIN resultados_globales rg ON rg.id = re.id
+        JOIN resultados_modulos rm ON rm.resultado_global_id = rg.id
+        JOIN catalogos_modulos cm ON cm.id = rm.catalogo_modulo_id
+        JOIN grupos_referencias gr ON gr.id = rg.grupo_referencia_id
+        WHERE pa.id = :programa
+        GROUP BY cm.nombre, gr.nombre, pa.nombre
+    """, nativeQuery = true)
+    List<ComparativeIcfesProjectionGroup> getComparativeIcfesMeGroup(@Param("programa") Long programa);
 }
