@@ -1,0 +1,45 @@
+package com.icfes_group.controller;
+
+import com.icfes_group.controller.responses.StatusResponse;
+import com.icfes_group.service.ComparativeIcfesService;
+import lombok.AllArgsConstructor;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.HashMap;
+import java.util.Map;
+import java.util.UUID;
+
+@RestController
+@RequestMapping("/comparar")
+@AllArgsConstructor
+public class ComparativeIcfesController {
+    private final ComparativeIcfesService comparativeIcfesService;
+    @GetMapping("/persona/{documento}")
+    public ResponseEntity<?> comparePerson(
+            @PathVariable Integer documento,
+            @RequestParam(required = false) Long programa,
+            @RequestParam(required = false) Long grupo,
+            @RequestParam(required = true)  Integer year
+    ){
+        try{
+            return new ResponseEntity<>(comparativeIcfesService.comparePerson(documento,year,programa,grupo), HttpStatus.OK);
+        } catch (Exception e) {
+            return new ResponseEntity<>(new StatusResponse("BAD",e.getMessage()), HttpStatus.BAD_REQUEST);
+        }
+    }
+
+    @GetMapping("/programa/{id}")
+    public ResponseEntity<?> comparePrograma(
+            @PathVariable UUID id,
+            @RequestParam(required = false) Long programa,
+            @RequestParam(required = false) Long grupo
+    ){
+        try{
+            return new ResponseEntity<>("response", HttpStatus.OK);
+        } catch (Exception e) {
+            return new ResponseEntity<>(new StatusResponse("BAD",e.getMessage()), HttpStatus.BAD_REQUEST);
+        }
+    }
+}

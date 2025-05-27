@@ -6,6 +6,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectWriter;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.java.fx.model.ResultadoIcfes;
+import org.apache.http.client.methods.HttpUriRequest;
 import org.springframework.stereotype.Service;
 
 import java.io.*;
@@ -373,5 +374,14 @@ public class ResultadoService {
         return mapper.readValue(response.body(), new TypeReference<List<ResultadoIcfes>>() {});
     }
 
+
+    public String getSuggest(String id) throws IOException, InterruptedException {
+        HttpRequest request = HttpRequest.newBuilder()
+                .uri(URI.create(BASE_URL + "/sugerencias/" + id))
+                .GET()
+                .build();
+        HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+        return response.body();
+    }
 }
 
