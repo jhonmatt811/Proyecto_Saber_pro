@@ -80,8 +80,7 @@ public class ResultadoService {
                 client.send(req, HttpResponse.BodyHandlers.ofString());
 
         if (resp.statusCode() != 200) {
-            throw new IOException("Error al obtener resultados: " + resp.statusCode()
-                    + " / " + resp.body());
+            throw new IOException("Error al obtener resultados");
         }
 
         // Parseamos directamente un array de Resultado

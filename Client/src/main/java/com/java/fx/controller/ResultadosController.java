@@ -2,6 +2,8 @@ package com.java.fx.controller;
 
 import com.java.fx.Usuarios_y_Roles.PermisosRoles;
 import com.java.fx.Usuarios_y_Roles.Sesion;
+import com.java.fx.controller.GraficaModulosController;
+import com.java.fx.controller.LineaController;
 import com.java.fx.model.Resultado;
 import com.java.fx.service.ResultadoService;
 import com.java.fx.service.ResultadoUploader;
@@ -9,13 +11,17 @@ import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.collections.transformation.FilteredList;
+import javafx.concurrent.Task;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.image.Image;
 import javafx.stage.FileChooser;
+import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.scene.control.Alert;
 
@@ -28,51 +34,86 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.List;
+import java.util.concurrent.ExecutionException;
 
 // Apache POI
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFRow;
 
+import javax.swing.*;
+
 @Component
 @Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)
 public class ResultadosController {
-    @FXML private TextField inputYear;
-    @FXML private TextField inputCiclo;
-    @FXML private TableView<Resultado> tablaResultados;
-    @FXML private TableColumn<Resultado, String> colTipoDocumento;
-    @FXML private TableColumn<Resultado, String> colDocumento;
-    @FXML private TableColumn<Resultado, String> colNombre;
-    @FXML private TableColumn<Resultado, String> colNumeroRegistro;
-    @FXML private TableColumn<Resultado, String> colTipoEvaluado;
-    @FXML private TableColumn<Resultado, String> colSniesPrograma;
-    @FXML private TableColumn<Resultado, String> colPrograma;
-    @FXML private TableColumn<Resultado, String> colCiudad;
-    @FXML private TableColumn<Resultado, String> colGrupoReferencia;
-    @FXML private TableColumn<Resultado, String> colPuntajeGlobal;
-    @FXML private TableColumn<Resultado, String> colPercentilNacionalGlobal;
-    @FXML private TableColumn<Resultado, String> colPercentilNacionalNbc;
-    @FXML private TableColumn<Resultado, String> colModulo;
-    @FXML private TableColumn<Resultado, String> colPuntajeModulo;
-    @FXML private TableColumn<Resultado, String> colNivelDesempeno;
-    @FXML private TableColumn<Resultado, String> colPercentilNacionalModulo;
-    @FXML private TableColumn<Resultado, String> colPercentilGrupoNbcModulo;
-    @FXML private TableColumn<Resultado, String> colNovedades;
 
-    @FXML private TextField inputDocumento;
-    @FXML private ComboBox<String> filtroPrograma;
-    @FXML private ComboBox<String> filtroModulo;
-    @FXML private Label archivoCargadoLabel;
+    @FXML
+    private TextField inputYear;
+    @FXML
+    private TextField inputCiclo;
+    @FXML
+    private TableView<Resultado> tablaResultados;
+    @FXML
+    private TableColumn<Resultado, String> colTipoDocumento;
+    @FXML
+    private TableColumn<Resultado, String> colDocumento;
+    @FXML
+    private TableColumn<Resultado, String> colNombre;
+    @FXML
+    private TableColumn<Resultado, String> colNumeroRegistro;
+    @FXML
+    private TableColumn<Resultado, String> colTipoEvaluado;
+    @FXML
+    private TableColumn<Resultado, String> colSniesPrograma;
+    @FXML
+    private TableColumn<Resultado, String> colPrograma;
+    @FXML
+    private TableColumn<Resultado, String> colCiudad;
+    @FXML
+    private TableColumn<Resultado, String> colGrupoReferencia;
+    @FXML
+    private TableColumn<Resultado, String> colPuntajeGlobal;
+    @FXML
+    private TableColumn<Resultado, String> colPercentilNacionalGlobal;
+    @FXML
+    private TableColumn<Resultado, String> colPercentilNacionalNbc;
+    @FXML
+    private TableColumn<Resultado, String> colModulo;
+    @FXML
+    private TableColumn<Resultado, String> colPuntajeModulo;
+    @FXML
+    private TableColumn<Resultado, String> colNivelDesempeno;
+    @FXML
+    private TableColumn<Resultado, String> colPercentilNacionalModulo;
+    @FXML
+    private TableColumn<Resultado, String> colPercentilGrupoNbcModulo;
+    @FXML
+    private TableColumn<Resultado, String> colNovedades;
+
+    @FXML
+    private TextField inputDocumento;
+    @FXML
+    private ComboBox<String> filtroPrograma;
+    @FXML
+    private ComboBox<String> filtroModulo;
+    @FXML
+    private Label archivoCargadoLabel;
 
     private ObservableList<Resultado> datosOriginales;
     private FilteredList<Resultado> datosFiltrados;
     // Inyectamos los servicios por campo
-    @Autowired private ResultadoService resultadoService;
-    @Autowired private ResultadoUploader uploader;
+    @Autowired
+    private ResultadoService resultadoService;
+    @Autowired
+    private ResultadoUploader uploader;
 
-    @FXML private Button btnObtenerResultados;
-    @FXML private Button btnCargarArchivo;
-    @FXML private Button btnObtenerExportarExcel;
+    @FXML
+    private Button btnObtenerResultados;
+    @FXML
+    private Button btnCargarArchivo;
+    @FXML
+    private Button btnObtenerExportarExcel;
+
 
     @Autowired
     private ResultadoService apiService;
@@ -81,10 +122,10 @@ public class ResultadosController {
     public void handleObtenerResultados() {
         try {
             // Leer filtros (si el campo está vacío, lo pasamos como null)
-            Integer year    = inputYear.getText().isBlank()    ? null : Integer.parseInt(inputYear.getText());
-            Integer ciclo   = inputCiclo.getText().isBlank()   ? null : Integer.parseInt(inputCiclo.getText());
-            Long documento  = inputDocumento.getText().isBlank()? null : Long.parseLong(inputDocumento.getText());
-            Integer progId  = null;
+            Integer year = inputYear.getText().isBlank() ? null : Integer.parseInt(inputYear.getText());
+            Integer ciclo = inputCiclo.getText().isBlank() ? null : Integer.parseInt(inputCiclo.getText());
+            Long documento = inputDocumento.getText().isBlank() ? null : Long.parseLong(inputDocumento.getText());
+            Integer progId = null;
 
             // Llamada al API
             List<Resultado> lista = apiService.obtenerResultados(year, ciclo, documento, progId);
@@ -94,7 +135,7 @@ public class ResultadosController {
 
             // Actualizar la tabla y gráfica
             datosOriginales.setAll(lista);
-            datosFiltrados = new FilteredList<>(datosOriginales, r->true);
+            datosFiltrados = new FilteredList<>(datosOriginales, r -> true);
             tablaResultados.setItems(datosFiltrados);
             actualizarOpcionesFiltros();
             aplicarFiltros();
@@ -103,25 +144,13 @@ public class ResultadosController {
                 aplicarFiltros();
             });
 
-
         } catch (NumberFormatException nfe) {
-            mostrarAlerta("Filtro inválido", "Año, ciclo o documento no tienen un formato numérico correcto.", Alert.AlertType.ERROR);
-        } catch (IOException | InterruptedException ex) {
-            ex.printStackTrace();  // para ver el stack en la consola
-            mostrarAlerta("Error al obtener resultados", ex.getMessage(), Alert.AlertType.ERROR);
+            mostrarAlerta("Filtro inválido", "Formato numérico incorrecto", Alert.AlertType.ERROR);
+        } catch (IOException | InterruptedException ex) {  // ¡Aquí se añade InterruptedException!
+            ex.printStackTrace();
+            mostrarAlerta("Error", ex.getMessage(), Alert.AlertType.ERROR);
         }
     }
-
-    public ResultadosController() {
-        // constructor vacío para JavaFX
-    }
-
-    public ResultadosController(ResultadoService resultadoService,
-                                ResultadoUploader uploader) {
-        this.resultadoService = resultadoService;
-        this.uploader = uploader;
-    }
-
 
     @FXML
     public void initialize() {
@@ -137,13 +166,15 @@ public class ResultadosController {
 
         configurarFiltros();
         filtroPrograma.setButtonCell(new ListCell<>() {
-            @Override protected void updateItem(String item, boolean empty) {
+            @Override
+            protected void updateItem(String item, boolean empty) {
                 super.updateItem(item, empty);
                 setText(empty || item == null ? filtroPrograma.getPromptText() : item);
             }
         });
         filtroModulo.setButtonCell(new ListCell<>() {
-            @Override protected void updateItem(String item, boolean empty) {
+            @Override
+            protected void updateItem(String item, boolean empty) {
                 super.updateItem(item, empty);
                 setText(empty || item == null ? filtroModulo.getPromptText() : item);
             }
@@ -189,9 +220,9 @@ public class ResultadosController {
         String progF = filtroPrograma.getValue();
         String modF = filtroModulo.getValue();
         datosFiltrados.setPredicate(r ->
-                (docF==null||docF.isBlank()||String.valueOf(r.getDocumento()).contains(docF))
-                        &&(progF==null||progF.equals(r.getPrograma()))
-                        &&(modF==null||modF.equals(r.getModulo()))
+                (docF == null || docF.isBlank() || String.valueOf(r.getDocumento()).contains(docF))
+                        && (progF == null || progF.equals(r.getPrograma()))
+                        && (modF == null || modF.equals(r.getModulo()))
         );
         Platform.runLater(() -> {
             System.out.println("Filtros aplicados. Gráfica actualizada."); // Debug
@@ -205,6 +236,7 @@ public class ResultadosController {
             mostrarAlerta("Acceso denegado", "No tienes permisos para cargar archivos.", Alert.AlertType.ERROR);
             return;
         }
+
         int year, cycle;
         try {
             year = Integer.parseInt(inputYear.getText());
@@ -213,56 +245,143 @@ public class ResultadosController {
             mostrarAlerta("Error", "Año o ciclo inválido.", Alert.AlertType.ERROR);
             return;
         }
+
         FileChooser fc = new FileChooser();
         fc.setTitle("Seleccionar archivo de resultados");
         fc.getExtensionFilters().addAll(
                 new FileChooser.ExtensionFilter("Archivos de datos", "*.xlsx", "*.csv"),
                 new FileChooser.ExtensionFilter("Todos los archivos", "*")
         );
-        File archivo = fc.showOpenDialog(null);
+
+        File archivo = fc.showOpenDialog(tablaResultados.getScene().getWindow());
         if (archivo != null) {
-            archivoCargadoLabel.setText("Archivo: "+archivo.getName()+" | Año: "+year+" | Ciclo: "+cycle+" | Cargado Correctamente ");
-            try {
-                // Cargar datos y actualizar UI
-                List<Resultado> nuevos = resultadoService.cargarDatosDesdeArchivo(archivo, cycle, year);
-                datosOriginales.setAll(nuevos);
-                datosFiltrados = new FilteredList<>(datosOriginales, r->true);
-                tablaResultados.setItems(datosFiltrados);
-                actualizarOpcionesFiltros();
-                aplicarFiltros();
-                Platform.runLater(() -> {
-                    actualizarOpcionesFiltros();
-                    aplicarFiltros();
-                });
-                // Enviar al backend
-                uploader.subirArchivo(archivo, cycle, year);
-            } catch (IOException ex) {
-                mostrarAlerta("Error al procesar archivo", ex.getMessage(), Alert.AlertType.ERROR);
-            }
+            // Crear diálogo de carga modal
+            Stage loadingDialog = new Stage();
+            ProgressIndicator progress = new ProgressIndicator();
+            Scene scene = new Scene(progress, 200, 200);
+
+            loadingDialog.initModality(Modality.APPLICATION_MODAL);
+            loadingDialog.initOwner(tablaResultados.getScene().getWindow());
+            loadingDialog.setTitle("Cargando archivo...");
+            loadingDialog.setScene(scene);
+            loadingDialog.show();
+
+            // Crear Task para la carga en segundo plano
+            Task<List<Resultado>> cargaTask = new Task<>() {
+                @Override
+                protected List<Resultado> call() throws Exception {
+                    try {
+                        return resultadoService.cargarDatosDesdeArchivo(archivo, cycle, year);
+                    } catch (IOException ex) {
+                        throw new Exception("Error al leer el archivo: " + ex.getMessage(), ex);
+                    }
+                }
+            };
+
+            // Manejar finalización
+            cargaTask.setOnSucceeded(e -> {
+                loadingDialog.close();
+                try {
+                    List<Resultado> nuevos = cargaTask.get();
+                    archivoCargadoLabel.setText("Archivo: " + archivo.getName() + " | Año: " + year + " | Ciclo: " + cycle + " | Cargado Correctamente ");
+
+                    // Actualizar UI
+                    Platform.runLater(() -> {
+                        datosOriginales.setAll(nuevos);
+                        datosFiltrados = new FilteredList<>(datosOriginales, r -> true);
+                        tablaResultados.setItems(datosFiltrados);
+                        actualizarOpcionesFiltros();
+                        aplicarFiltros();
+                    });
+
+                    // Enviar al backend (manejar posibles IOException aquí)
+                    try {
+                        uploader.subirArchivo(archivo, cycle, year);
+                    } catch (IOException ex) {
+                        mostrarAlerta("Error al subir archivo", ex.getMessage(), Alert.AlertType.ERROR);
+                    }
+
+                } catch (InterruptedException | ExecutionException ex) {
+                    mostrarAlerta("Error", "Error al obtener resultados: " + ex.getCause().getMessage(), Alert.AlertType.ERROR);
+                }
+            });
+
+            cargaTask.setOnFailed(e -> {
+                loadingDialog.close();
+                Throwable error = cargaTask.getException().getCause();
+                mostrarAlerta("Error al procesar archivo", error.getMessage(), Alert.AlertType.ERROR);
+            });
+
+            // Ejecutar en hilo separado
+            new Thread(cargaTask).start();
         }
     }
 
-    @FXML public void handleRestablecerFiltros() {
+
+    @FXML
+    public void handleRestablecerFiltros() {
         inputDocumento.clear();
         filtroPrograma.setValue(null);
         filtroModulo.setValue(null);
-        datosFiltrados.setPredicate(r->true);
-    }
-
-    private void mostrarAlerta(String titulo, String mensaje, Alert.AlertType tipo) {
-        Alert alerta = new Alert(tipo);
-        alerta.setTitle(titulo);
-        alerta.setHeaderText(null);
-        alerta.setContentText(mensaje);
-        alerta.showAndWait();
+        datosFiltrados.setPredicate(r -> true);
     }
 
     @FXML
     public void handleConectarCFES() {
-        // Lógica para conectar al ICFES
-        System.out.println("Conectando al ICFES...");
+        try {
+            // Cargar el archivo FXML
+            FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/resultados-icfes.fxml"));
+            Parent root = fxmlLoader.load();
+
+            // Crear una nueva ventana
+            Stage stage = new Stage();
+            stage.setTitle("Resultados ICFES");
+            stage.setScene(new Scene(root));
+            Image icon = new Image(getClass().getResourceAsStream("/img/images.png"));
+            stage.getIcons().add(icon);
+            stage.show();
+
+        } catch (IOException e) {
+            mostrarAlerta("Error", "No se pudo cargar la ventana de resultados ICFES", Alert.AlertType.ERROR);
+            e.printStackTrace();
+        }
     }
 
+    // ComboBox para área/grupo
+
+    @FXML
+    private void handleMostrarComparacion() {
+        try {
+            // Validar que haya un ID ingresado
+            String idEstudiante = inputDocumento.getText().trim();
+            if (idEstudiante.isEmpty()) {
+                mostrarAlerta("Error", "Debe ingresar un documento de estudiante", Alert.AlertType.ERROR);
+                return;
+            }
+
+            // Cargar la vista de comparación
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/java/fx/view/comparar-view.fxml"));
+            Parent root = loader.load();
+
+            // Obtener el controlador y pasar parámetros
+            ChartController chartController = loader.getController();
+            chartController.configurarParametros(
+                    idEstudiante,
+                    inputYear.getText(),
+                    filtroPrograma.getValue(),  // Programa seleccionado
+                    filtroModulo.getValue()     // Grupo/Núcleo seleccionado
+            );
+
+            // Mostrar en nueva ventana
+            Stage stage = new Stage();
+            stage.setScene(new Scene(root));
+            stage.setTitle("Comparación con Grupo");
+            stage.show();
+
+        } catch (IOException e) {
+            mostrarAlerta("Error", "No se pudo abrir la gráfica", Alert.AlertType.ERROR);
+        }
+    }
 
     @FXML
     public void handleExportarExcel() {
@@ -338,6 +457,7 @@ public class ResultadosController {
             }
         }
     }
+
     @FXML
     private void handleMostrarGrafica() {
         try {
@@ -375,4 +495,13 @@ public class ResultadosController {
             mostrarAlerta("Error", "No se pudo cargar la gráfica de tendencias.", Alert.AlertType.ERROR);
         }
     }
+
+    private void mostrarAlerta(String titulo, String mensaje, Alert.AlertType tipo) {
+        Alert alert = new Alert(tipo);
+        alert.setTitle(titulo);
+        alert.setHeaderText(null);
+        alert.setContentText(mensaje);
+        alert.showAndWait();
+    }
 }
+
