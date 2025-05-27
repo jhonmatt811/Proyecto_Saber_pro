@@ -1,7 +1,6 @@
 package com.icfes_group.controller;
 
 import com.icfes_group.controller.responses.StatusResponse;
-import com.icfes_group.dto.ImprovementActionsAnalyzeDTO;
 import com.icfes_group.dto.ImprovementActionsDTO;
 import com.icfes_group.model.IcfesTest.ImprovementActions;
 import com.icfes_group.service.ImprovementActionsService;
@@ -56,14 +55,9 @@ public class ImprovementActionsController {
     }
 
     @GetMapping("/sugerencias/{id}")
-    public ResponseEntity<?> getSuggest(
-            @PathVariable UUID id,
-            @RequestParam(required = true) Integer yearInicio,
-            @RequestParam(required = true) Integer yearFin
-
-    ){
+    public ResponseEntity<?> getSuggest(@PathVariable UUID id){
         try {
-            return new ResponseEntity<>(improvementActionsService.analyze(id,yearInicio,yearFin),HttpStatus.OK);
+            return new ResponseEntity<>(improvementActionsService.analyze(id),HttpStatus.OK);
         } catch (Exception e) {
             return new ResponseEntity<>(new StatusResponse("BAD",e.getMessage()),HttpStatus.BAD_REQUEST);
         }
