@@ -28,6 +28,7 @@ public class PermisosRoles {
         nivelMinimoPorAccion.put("accMejora", 1);          // Comité en adelante
         nivelMinimoPorAccion.put("configuracion", 1);      // Todos pueden cambiar contraseña
         nivelMinimoPorAccion.put("salir", 0);
+        nivelMinimoPorAccion.put("resultadosIcfes",1);
 
 
         this.nivelActual = jerarquiaRoles.getOrDefault(rol.toLowerCase(), 0);

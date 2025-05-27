@@ -93,7 +93,7 @@ public class ControllerLogin implements Initializable {
                     handleSuccessfulLogin(jsonResponse);
                 } else {
                     showAlert("Error de autenticación",
-                            "Credenciales inválidas . Posible desactivacion");
+                            "Credenciales inválidas , Revise que Correo y Contraseña esten correctamente  ");
                 }
             } catch (JSONException e) {
                 e.printStackTrace();

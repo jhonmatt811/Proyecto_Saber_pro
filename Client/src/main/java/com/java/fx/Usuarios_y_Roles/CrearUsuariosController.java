@@ -162,7 +162,7 @@ public class CrearUsuariosController {
                         } else {
                             // si persona no se creó, corto la cadena devolviendo un Future fallido
                             return CompletableFuture.<HttpResponse<String>>failedFuture(
-                                    new RuntimeException("Error creando persona: " + respPersona.statusCode())
+                                    new RuntimeException("Error creando persona . Verifique sus datos ")
                             );
                         }
                     })

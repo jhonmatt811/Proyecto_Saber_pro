@@ -4,6 +4,8 @@ import com.fasterxml.jackson.databind.exc.InvalidFormatException;
 import com.java.fx.Usuarios_y_Roles.Persona;
 import com.java.fx.Usuarios_y_Roles.Usuario;
 import com.java.fx.model.Rol;
+import javafx.application.Platform;
+import javafx.scene.control.Alert;
 import org.apache.poi.ss.usermodel.*;
 import java.io.File;
 import java.io.IOException;
@@ -30,11 +32,12 @@ public class ImportarUsuariosService {
         return true;
     }
 
+
+
     public List<Usuario> importarUsuariosDesdeExcel(File archivoExcel) throws IOException, InterruptedException, InvalidFormatException {
         List<Usuario> usuarios = new ArrayList<>();
         List<Persona> personas = new ArrayList<>();
         Map<String, Integer> nombreRolToId;
-
 
         // Obtener roles del backend
         try {
@@ -75,9 +78,8 @@ public class ImportarUsuariosService {
                         persona.setPrimer_apellido(campos[3]);
                         persona.setSegundo_apellido(campos[4]);
                         persona.setEmail(campos[5]);
-                        personas.add(persona);
 
-                        // Crear Usuario (sin asignar persona aún)
+                        // Crear Usuario asociado a Persona
                         Usuario usuario = new Usuario();
                         usuario.setCorreo(campos[5]);
 
@@ -87,9 +89,23 @@ public class ImportarUsuariosService {
                         }
                         usuario.setRol_id(rolId);
 
+                        personas.add(persona);
                         usuarios.add(usuario);
+
                     } catch (Exception e) {
-                        System.err.println("⚠️ Error en fila " + (row.getRowNum() + 1) + ": " + e.getMessage());
+                        int fila = row.getRowNum() + 1;
+                        String mensaje = "⚠️ Error en fila " + fila + ": " + e.getMessage();
+
+                        // Mostrar alerta en JavaFX
+                        Platform.runLater(() -> {
+                            Alert alert = new Alert(Alert.AlertType.WARNING);
+                            alert.setTitle("Error al importar usuario");
+                            alert.setHeaderText("Error en la fila " + fila);
+                            alert.setContentText(e.getMessage());
+                            alert.showAndWait();
+                        });
+
+                        System.err.println(mensaje);
                     }
                 }
             }
@@ -108,18 +124,21 @@ public class ImportarUsuariosService {
             throw new RuntimeException("❌ El número de personas creadas no coincide con los usuarios.");
         }
 
+        // Asignar personas creadas a usuarios
         for (int i = 0; i < usuarios.size(); i++) {
-            Persona p = personasCreadas.get(i);
-            if (p == null || p.getId() == null) {
+            Persona personaCreada = personasCreadas.get(i);
+            if (personaCreada == null || personaCreada.getId() == null) {
                 throw new RuntimeException("❌ Persona inválida en la posición " + i);
             }
-            usuarios.get(i).setPersona(p);
+            usuarios.get(i).setPersona(personaCreada);
         }
 
+        // Crear usuarios en el backend
         List<Usuario> usuariosCreados = apiService.crearUsuariosEnLote(usuarios);
 
         return usuariosCreados;
-        }
+    }
+
 
     private Usuario parsearUsuario(String[] campos, Map<String, Integer> nombreRolToId) {
         Persona persona = new Persona();

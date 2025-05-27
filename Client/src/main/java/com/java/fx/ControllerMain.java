@@ -77,6 +77,7 @@ public class ControllerMain {
         btnUsuariosRoles.setVisible(permisos.tienePermiso("usuariosRoles"));
         btnConfiguracion.setVisible(permisos.tienePermiso("configuracion"));
         btnSalir.setVisible(permisos.tienePermiso("salir"));
+        btnResultadosIcfes.setVisible(permisos.tienePermiso("resultadosIcfes"));
     }
 
 

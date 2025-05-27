@@ -81,10 +81,20 @@ public class ApiService {
             Type personaListType = new TypeToken<List<Persona>>() {}.getType();
             return gson.fromJson(response.body(), personaListType);
         } else {
-            // 👀 Imprimir el error detallado del backend
-            System.err.println("Error al crear personas en lote: " + response.statusCode());
-            System.err.println("Respuesta del servidor: " + response.body());
-            throw new RuntimeException("Error al crear personas: " + response.body());
+            String mensaje = "Error al crear personas. Puede que algunas ya existan.\n Revise los datos ";
+
+            System.err.println(mensaje);
+
+            // Mostrar alerta en JavaFX (de forma segura)
+            Platform.runLater(() -> {
+                Alert alerta = new Alert(Alert.AlertType.ERROR);
+                alerta.setTitle("Error al crear personas");
+                alerta.setHeaderText("Error del servidor");
+                alerta.setContentText(mensaje);
+                alerta.showAndWait();
+            });
+
+            throw new RuntimeException("Error al crear personas. Las personas ya existen o hubo un error.");
         }
     }
     public List<Usuario> crearUsuariosEnLote(List<Usuario> usuarios) {
@@ -136,8 +146,8 @@ public class ApiService {
                         .filter(u -> u.getPersona() != null)
                         .collect(Collectors.toList()));
             } else {
-                System.err.println("Error al crear usuarios. Código: " + status + ", respuesta: " + responseBody);
-                throw new RuntimeException("Error al crear usuarios: " + responseBody);
+                System.err.println("Error al crear usuarios"+responseBody);
+                throw new RuntimeException("Error al crear usuarios , Los usuarios ya existen " );
             }
 
         } catch (Exception e) {

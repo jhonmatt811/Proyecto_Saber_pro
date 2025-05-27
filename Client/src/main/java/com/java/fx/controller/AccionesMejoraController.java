@@ -67,7 +67,7 @@ public class AccionesMejoraController {
             tablaMejoras.getItems().setAll(resultadoService.obtenerMejoras());
 
         } catch (IOException | InterruptedException e) {
-            mostrarAlerta("Error", "Error al cargar datos: " + e.getMessage(), Alert.AlertType.ERROR);
+
         }
     }
 
@@ -82,7 +82,7 @@ public class AccionesMejoraController {
             comboModulos.getItems().setAll(Modulos);
 
         } catch (IOException | InterruptedException e) {
-            mostrarAlerta("Error", "Error al cargar datos.", Alert.AlertType.ERROR);
+            mostrarAlerta("Aviso", "No existen acciones de mejora ", Alert.AlertType.ERROR);
         }
     }
 
