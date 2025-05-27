@@ -9,7 +9,8 @@ import java.util.Map;
 @Data
 public class ComparativeIcfesPersonDTO {
     private String nombreEstudiante;
-    private List<Map<String,Object>> resultadosEstudiante;
+    private String nombrePrograma;
+    private List<Map<String,Object>> resultados;
     private List<Map<String,Object>> resultadosGrupo;
     private Double totalEstudiante;
 }
