@@ -5,4 +5,7 @@ public interface ComparativeIcfesProjectionGroup {
     Double getPromedioGrupoModulo();
     Double getVarianzaGlobal();
     Double getVarianzaModulo();
+    String getNombreModulo();
+    String getNombreGrupoReferencia();
+    String getProgramaAcademico();
 }

@@ -16,9 +16,9 @@ import java.util.UUID;
 @AllArgsConstructor
 public class ComparativeIcfesController {
     private final ComparativeIcfesService comparativeIcfesService;
-    @GetMapping("/persona/{documento}")
+    @GetMapping()
     public ResponseEntity<?> comparePerson(
-            @PathVariable Integer documento,
+            @RequestParam(required = false) Integer documento,
             @RequestParam(required = false) Long programa,
             @RequestParam(required = false) Long grupo,
             @RequestParam(required = true)  Integer year
@@ -30,16 +30,4 @@ public class ComparativeIcfesController {
         }
     }
 
-    @GetMapping("/programa/{id}")
-    public ResponseEntity<?> comparePrograma(
-            @PathVariable UUID id,
-            @RequestParam(required = false) Long programa,
-            @RequestParam(required = false) Long grupo
-    ){
-        try{
-            return new ResponseEntity<>("response", HttpStatus.OK);
-        } catch (Exception e) {
-            return new ResponseEntity<>(new StatusResponse("BAD",e.getMessage()), HttpStatus.BAD_REQUEST);
-        }
-    }
 }
