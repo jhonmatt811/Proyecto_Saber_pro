@@ -30,7 +30,7 @@
 
     </GridPane>
 
-    <HBox alignment="CENTER">
+    <HBox spacing="10" alignment="CENTER">
         <Button fx:id="btnGuardar" text="Guardar Acción" style="-fx-background-color: #4CAF50; -fx-text-fill: white;" onAction="#handleGuardarAccion"/>
         <Button fx:id="btnEditar" text="Editar Selección" style="-fx-background-color: #2196F3; -fx-text-fill: white;" onAction="#handleEditarMejora"/>
         <Button fx:id="btnEliminar" text="Eliminar Selección" style="-fx-background-color: #f44336; -fx-text-fill: white;" onAction="#handleEliminarMejora"/>

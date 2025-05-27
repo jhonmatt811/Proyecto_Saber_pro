@@ -240,11 +240,13 @@ public class AccionesMejoraController {
     }
 
     private void configurarSeleccionTabla() {
-        tablaMejoras.getSelectionModel().selectedItemProperty().addListener(
-                (obs, oldSelection, newSelection) -> {
-                    sugerenciaSeleccionada = newSelection; // Guarda la selección
-                }
-        );
+        tablaMejoras.getSelectionModel().selectedItemProperty().addListener((obs, oldVal, newVal) -> {
+            sugerenciaSeleccionada = newVal;
+            tablaMejoras.getStyleClass().remove("tabla-seleccion-activa");
+            if (newVal != null) {
+                tablaMejoras.getStyleClass().add("tabla-seleccion-activa");
+            }
+        });
     }
 
     @FXML
