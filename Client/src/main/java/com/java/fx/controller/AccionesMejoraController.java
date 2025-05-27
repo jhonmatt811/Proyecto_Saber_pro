@@ -266,11 +266,19 @@ public class AccionesMejoraController {
             progreso.close();
             AnalisisMejora analisis = task.getValue();
 
+            // Validación del porcentaje
+            String headerText;
+            if (analisis.getPorcentajeMejora() == null
+                    || Double.isInfinite(analisis.getPorcentajeMejora())
+                    || Double.isNaN(analisis.getPorcentajeMejora())) {
+                headerText = "Porcentaje de mejora: N/A (No disponible)";
+            } else {
+                headerText = String.format("Porcentaje de mejora: %.2f%%", analisis.getPorcentajeMejora());
+            }
             // Crear alerta personalizada
             Alert alertaResultado = new Alert(Alert.AlertType.INFORMATION);
             alertaResultado.setTitle("Análisis de IA");
-            alertaResultado.setHeaderText(String.format("Porcentaje de mejora: %.2f%%",
-                    analisis.getPorcentajeMejora()));
+            alertaResultado.setHeaderText(headerText);
 
             // Área de texto con scroll
             TextArea textoAnalisis = new TextArea(analisis.getMessage());
