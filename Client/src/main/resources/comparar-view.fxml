@@ -3,9 +3,14 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.chart.*?>
 
+<?import javafx.geometry.Insets?>
 <BorderPane xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml" fx:controller="com.java.fx.controller.ChartController">
     <top>
-        <GridPane padding="10" hgap="10" vgap="10">
+        <GridPane hgap="10" vgap="10">
+            <padding>
+                <Insets top="30" right="30" bottom="30" left="30"/>
+            </padding>
+
             <Label text="ID del Estudiante:" GridPane.rowIndex="0" GridPane.columnIndex="0"/>
             <TextField fx:id="txtId" GridPane.rowIndex="0" GridPane.columnIndex="1"/>
 
@@ -19,7 +24,7 @@
             <TextField fx:id="txtGrupo" GridPane.rowIndex="3" GridPane.columnIndex="1"/>
 
             <Button text="Comparar" onAction="#handleComparar" GridPane.rowIndex="4" GridPane.columnIndex="1"/>
-            <ProgressIndicator fx:id="progress" progress="0" visible="false"/>
+            <ProgressIndicator fx:id="progressIndicator" progress="0" visible="false" GridPane.rowIndex="5" GridPane.columnIndex="1"/>
         </GridPane>
     </top>
 

@@ -22,7 +22,6 @@
                     onAction="#handleObtenerResultados"
                     text="Obtener Resultados"
                     style="-fx-background-color: #009688; -fx-text-fill: white;" />
-            <Button onAction="#handleConectarCFES" style="-fx-background-color: #4CAF50; -fx-text-fill: white;" text="Conectar al ICFES" />
 
             <Label fx:id="archivoCargadoLabel" />
         </HBox>
@@ -80,7 +79,7 @@
         <Button onAction="#handleMostrarGrafica" style="-fx-background-color: #2196F3; -fx-text-fill: white;" text="Gráfica de Barras"/>
         <Button text="Gráfica de Líneas" onAction="#handleMostrarTendencias" style="-fx-background-color: #273043; -fx-text-fill: white;"/>
         <Button fx:id="btnObtenerExportarExcel" onAction="#handleExportarExcel" style="-fx-background-color: #4CAF50; -fx-text-fill: white;" text="Exportar a Excel" />
-        <Button onAction="#handleMostrarComparacion"
+        <Button fx:id="btnCompararconGrupo" onAction="#handleMostrarComparacion"
                 style="-fx-background-color: #FF9800; -fx-text-fill: white;"
                 text="Comparar con Grupo"/>
 

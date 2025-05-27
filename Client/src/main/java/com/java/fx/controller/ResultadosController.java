@@ -113,6 +113,8 @@ public class ResultadosController {
     private Button btnCargarArchivo;
     @FXML
     private Button btnObtenerExportarExcel;
+    @FXML
+    private Button btnCompararconGrupo;
 
 
     @Autowired
@@ -360,7 +362,7 @@ public class ResultadosController {
             }
 
             // Cargar la vista de comparación
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/java/fx/view/comparar-view.fxml"));
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/comparar-view.fxml"));
             Parent root = loader.load();
 
             // Obtener el controlador y pasar parámetros
@@ -379,7 +381,10 @@ public class ResultadosController {
             stage.show();
 
         } catch (IOException e) {
-            mostrarAlerta("Error", "No se pudo abrir la gráfica", Alert.AlertType.ERROR);
+            e.printStackTrace(); // Debug en consola
+            mostrarAlerta("Error",
+                    "Error al cargar: " + e.getMessage(), // Mensaje específico
+                    Alert.AlertType.ERROR);
         }
     }
 

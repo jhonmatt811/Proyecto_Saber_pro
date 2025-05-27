@@ -2,8 +2,8 @@ package com.java.fx.controller;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonSyntaxException;
+import com.java.fx.Usuarios_y_Roles.Sesion;
 import com.java.fx.model.dto.ComparacionResponse;
-import com.java.fx.model.dto.ModuloGrupo;
 import com.java.fx.model.dto.ResultadoEstudiante;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
@@ -22,10 +22,7 @@ import java.util.List;
 
 public class ChartController {
 
-    @FXML private TextField txtId;
-    @FXML private TextField txtYear;
-    @FXML private TextField txtPrograma;
-    @FXML private TextField txtGrupo;
+    @FXML private TextField txtId, txtYear, txtPrograma, txtGrupo;
     @FXML private BarChart<String, Number> barChart;
     @FXML private ProgressIndicator progressIndicator;
 
@@ -34,12 +31,12 @@ public class ChartController {
 
     public void configurarParametros(String id, String year, String programa, String grupo) {
         Platform.runLater(() -> {
-            txtId.setText(validarNumero(id) ? id : "");
-            txtYear.setText(validarNumero(year) ? year : "");
-            txtPrograma.setText(programa != null ? programa : "");
-            txtGrupo.setText(grupo != null ? grupo : "");
+            txtId.setText(isNumeric(id) ? id : "");
+            txtYear.setText(isNumeric(year) ? year : "");
+            txtPrograma.setText(safeText(programa));
+            txtGrupo.setText(safeText(grupo));
 
-            if(!txtId.getText().isEmpty()) {
+            if (!txtId.getText().isEmpty()) {
                 iniciarCargaDatos();
             }
         });
@@ -47,13 +44,11 @@ public class ChartController {
 
     @FXML
     private void handleComparar() {
-        final String id = txtId.getText().trim();
-
-        if(!validarId(id)) {
-            mostrarAlerta("Error de Validación", "ID debe ser numérico");
+        String id = txtId.getText().trim();
+        if (!isNumeric(id)) {
+            mostrarAlerta("Error de Validación", "El ID debe ser numérico.");
             return;
         }
-
         iniciarCargaDatos();
     }
 
@@ -66,44 +61,44 @@ public class ChartController {
     }
 
     private String construirURL() {
-        StringBuilder urlBuilder = new StringBuilder("http://localhost:8080/comparar/persona/")
+        StringBuilder url = new StringBuilder("http://localhost:8080/comparar")
                 .append(txtId.getText().trim());
 
         List<String> params = new ArrayList<>();
-        agregarParametro(params, "year", txtYear.getText().trim());
-        agregarParametro(params, "programa", txtPrograma.getText().trim());
-        agregarParametro(params, "grupo", txtGrupo.getText().trim());
+        agregarParametro(params, "year", txtYear.getText());
+        agregarParametro(params, "programa", txtPrograma.getText());
+        agregarParametro(params, "grupo", txtGrupo.getText());
 
-        if(!params.isEmpty()) {
-            urlBuilder.append("?").append(String.join("&", params));
+        if (!params.isEmpty()) {
+            url.append("?").append(String.join("&", params));
         }
 
-        return urlBuilder.toString();
+        return url.toString();
     }
 
-    private void agregarParametro(List<String> params, String nombre, String valor) {
-        if(valor != null && !valor.isEmpty()) {
-            params.add(nombre + "=" + valor);
+    private void agregarParametro(List<String> params, String clave, String valor) {
+        if (valor != null && !valor.trim().isEmpty()) {
+            params.add(clave + "=" + valor.trim());
         }
     }
 
     private void realizarPeticion(String url) {
         HttpRequest request = HttpRequest.newBuilder()
                 .uri(URI.create(url))
+                .header("Authorization", "Bearer " + Sesion.jwtToken)
                 .GET()
                 .build();
 
         httpClient.sendAsync(request, HttpResponse.BodyHandlers.ofString())
                 .thenApply(response -> {
-                    if(response.statusCode() != 200) {
-                        throw new RuntimeException("Error en el servidor: Código " + response.statusCode());
+                    if (response.statusCode() != 200) {
+                        throw new RuntimeException("Error del servidor: " + response.statusCode());
                     }
                     return response.body();
                 })
                 .thenAccept(this::procesarRespuesta)
                 .exceptionally(ex -> {
-                    Platform.runLater(() ->
-                            mostrarAlerta("Error de Conexión", ex.getCause().getMessage()));
+                    Platform.runLater(() -> mostrarAlerta("Error", ex.getMessage()));
                     return null;
                 })
                 .thenRun(() -> Platform.runLater(() -> progressIndicator.setVisible(false)));
@@ -113,37 +108,31 @@ public class ChartController {
         Platform.runLater(() -> {
             try {
                 ComparacionResponse respuesta = gson.fromJson(json, ComparacionResponse.class);
-                if(respuesta == null || respuesta.getResultadosEstudiante() == null) {
+                if (respuesta == null || respuesta.getResultadosEstudiante() == null) {
                     throw new JsonSyntaxException("Estructura JSON inválida");
                 }
                 actualizarGrafica(respuesta);
             } catch (JsonSyntaxException e) {
-                mostrarAlerta("Error de Datos", "Formato de respuesta inválido");
+                mostrarAlerta("Error de Datos", "Formato de respuesta inválido.");
             }
         });
     }
 
     private void actualizarGrafica(ComparacionResponse respuesta) {
-        barChart.getData().clear();
         barChart.setTitle("Comparación: " + respuesta.getNombreEstudiante());
-
-        XYChart.Series<String, Number> serieEstudiante = crearSerie("Estudiante", respuesta.getResultadosEstudiante());
-        XYChart.Series<String, Number> serieGrupo = crearSerieGrupo(respuesta);
-
-        barChart.getData().addAll(serieEstudiante, serieGrupo);
+        barChart.getData().setAll(
+                crearSerie("Estudiante", respuesta.getResultadosEstudiante()),
+                crearSerieGrupo(respuesta)
+        );
     }
 
     private XYChart.Series<String, Number> crearSerie(String nombre, List<ResultadoEstudiante> resultados) {
         XYChart.Series<String, Number> serie = new XYChart.Series<>();
         serie.setName(nombre);
 
-        resultados.forEach(r ->
-                serie.getData().add(new XYChart.Data<>(
-                        r.getNombreModulo(),
-                        r.getPuntajeModulo()
-                ))
-        );
-
+        for (ResultadoEstudiante r : resultados) {
+            serie.getData().add(new XYChart.Data<>(r.getNombreModulo(), r.getPuntajeModulo()));
+        }
         return serie;
     }
 
@@ -151,27 +140,23 @@ public class ChartController {
         XYChart.Series<String, Number> serie = new XYChart.Series<>();
         serie.setName("Grupo");
 
-        respuesta.getResultadosEstudiante().forEach(estudiante -> {
+        for (ResultadoEstudiante est : respuesta.getResultadosEstudiante()) {
             respuesta.getResultadosGrupo().stream()
-                    .filter(g -> g.getNombreModulo().equals(estudiante.getNombreModulo()))
+                    .filter(g -> g.getNombreModulo().equals(est.getNombreModulo()))
                     .findFirst()
-                    .ifPresent(grupo ->
-                            serie.getData().add(new XYChart.Data<>(
-                                    grupo.getNombreModulo(),
-                                    grupo.getPromedioGrupoModulo()
-                            ))
-                    );
-        });
-
+                    .ifPresent(grupo -> serie.getData().add(new XYChart.Data<>(
+                            grupo.getNombreModulo(), grupo.getPromedioGrupoModulo()
+                    )));
+        }
         return serie;
     }
 
-    private boolean validarId(String id) {
-        return validarNumero(id);
+    private boolean isNumeric(String text) {
+        return text != null && text.matches("\\d+");
     }
 
-    private boolean validarNumero(String input) {
-        return input != null && input.matches("\\d+");
+    private String safeText(String text) {
+        return text != null ? text.trim() : "";
     }
 
     private void mostrarAlerta(String titulo, String mensaje) {
