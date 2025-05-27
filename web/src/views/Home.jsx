@@ -23,7 +23,7 @@ const Home = () => {
               La herramienta diseñada para que instituciones educativas analicen y gestionen de forma integral los resultados de las pruebas Saber Pro del ICFES.
             </p>
             <button className="bg-primary-500 text-white px-6 py-2 rounded-lg hover:bg-primary-700 transition-colors font-semibold cursor-pointer">
-              <a>Obtener Plataforma</a>
+              <a target="_blank" href="https://www.jdeploy.com/~proyecto-saber-pro">Obtener Plataforma</a>
             </button>
           </div>
         </main>
