@@ -1,0 +1,80 @@
+<mxfile host="app.diagrams.net" agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/136.0.0.0 Safari/537.36" version="27.0.9">
+  <diagram name="Página-1" id="W4rULqUDbjKW4zX-dyBw">
+    <mxGraphModel grid="1" page="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" pageScale="1" pageWidth="1654" pageHeight="2336" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="Zg2RwI3bCPtanBzoQ3vK-2" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=open;endFill=0;endSize=8;" edge="1" parent="1" source="ywd59SVErPVPnXJvX7KZ-2" target="Zg2RwI3bCPtanBzoQ3vK-1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="ywd59SVErPVPnXJvX7KZ-2" value="" style="ellipse;fillColor=strokeColor;html=1;" vertex="1" parent="1">
+          <mxGeometry x="30" y="241.87" width="30" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="ywd59SVErPVPnXJvX7KZ-16" value="" style="ellipse;html=1;shape=endState;fillColor=strokeColor;" vertex="1" parent="1">
+          <mxGeometry x="1250" y="241.87" width="30" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="Zg2RwI3bCPtanBzoQ3vK-49" style="edgeStyle=orthogonalEdgeStyle;shape=connector;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=default;align=center;verticalAlign=middle;fontFamily=Helvetica;fontSize=11;fontColor=default;labelBackgroundColor=default;endArrow=open;endFill=0;endSize=8;" edge="1" parent="1" source="Zg2RwI3bCPtanBzoQ3vK-1" target="Zg2RwI3bCPtanBzoQ3vK-33">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="Zg2RwI3bCPtanBzoQ3vK-1" value="Usuario accede a la sección acciones de mejora" style="rounded=1;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="140" y="229.37" width="140" height="55" as="geometry" />
+        </mxCell>
+        <mxCell id="Zg2RwI3bCPtanBzoQ3vK-77" style="edgeStyle=orthogonalEdgeStyle;shape=connector;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0;entryY=0.5;entryDx=0;entryDy=0;strokeColor=default;align=center;verticalAlign=middle;fontFamily=Helvetica;fontSize=11;fontColor=default;labelBackgroundColor=default;endArrow=open;endFill=0;endSize=8;" edge="1" parent="1" source="Zg2RwI3bCPtanBzoQ3vK-33" target="Zg2RwI3bCPtanBzoQ3vK-76">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="Zg2RwI3bCPtanBzoQ3vK-33" value="Completa los datos de la acción de mejora" style="rounded=1;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="360" y="233.12" width="130" height="46.88" as="geometry" />
+        </mxCell>
+        <mxCell id="Zg2RwI3bCPtanBzoQ3vK-90" style="edgeStyle=orthogonalEdgeStyle;shape=connector;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0;entryY=0.5;entryDx=0;entryDy=0;strokeColor=default;align=center;verticalAlign=middle;fontFamily=Helvetica;fontSize=11;fontColor=default;labelBackgroundColor=default;endArrow=open;endFill=0;endSize=8;" edge="1" parent="1" source="Zg2RwI3bCPtanBzoQ3vK-58" target="ywd59SVErPVPnXJvX7KZ-16">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="Zg2RwI3bCPtanBzoQ3vK-58" value="Acción de mejora se añade a la tabla" style="rounded=1;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="1050" y="231.24" width="120" height="50.63" as="geometry" />
+        </mxCell>
+        <mxCell id="Zg2RwI3bCPtanBzoQ3vK-71" style="edgeStyle=orthogonalEdgeStyle;shape=connector;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;strokeColor=default;align=center;verticalAlign=middle;fontFamily=Helvetica;fontSize=11;fontColor=default;labelBackgroundColor=default;endArrow=open;endFill=0;endSize=8;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="1164.9999999999995" y="296.8699999999999" as="sourcePoint" />
+            <mxPoint x="1164.9999999999995" y="296.8699999999999" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="Zg2RwI3bCPtanBzoQ3vK-79" style="edgeStyle=orthogonalEdgeStyle;shape=connector;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=default;align=center;verticalAlign=middle;fontFamily=Helvetica;fontSize=11;fontColor=default;labelBackgroundColor=default;endArrow=open;endFill=0;endSize=8;" edge="1" parent="1" source="Zg2RwI3bCPtanBzoQ3vK-76" target="Zg2RwI3bCPtanBzoQ3vK-78">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="Zg2RwI3bCPtanBzoQ3vK-76" value="¿Todos los campos completados?" style="rounded=1;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="570" y="229.37" width="130" height="53.75" as="geometry" />
+        </mxCell>
+        <mxCell id="Zg2RwI3bCPtanBzoQ3vK-83" style="edgeStyle=orthogonalEdgeStyle;shape=connector;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=1;entryY=0.5;entryDx=0;entryDy=0;strokeColor=default;align=center;verticalAlign=middle;fontFamily=Helvetica;fontSize=11;fontColor=default;labelBackgroundColor=default;endArrow=open;endFill=0;endSize=8;" edge="1" parent="1" source="Zg2RwI3bCPtanBzoQ3vK-78" target="Zg2RwI3bCPtanBzoQ3vK-80">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="785" y="127" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="Zg2RwI3bCPtanBzoQ3vK-85" style="edgeStyle=orthogonalEdgeStyle;shape=connector;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=default;align=center;verticalAlign=middle;fontFamily=Helvetica;fontSize=11;fontColor=default;labelBackgroundColor=default;endArrow=open;endFill=0;endSize=8;" edge="1" parent="1" source="Zg2RwI3bCPtanBzoQ3vK-78" target="Zg2RwI3bCPtanBzoQ3vK-84">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="Zg2RwI3bCPtanBzoQ3vK-78" value="" style="rhombus;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="760" y="236.56" width="50" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="Zg2RwI3bCPtanBzoQ3vK-82" style="edgeStyle=orthogonalEdgeStyle;shape=connector;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0.5;entryY=0;entryDx=0;entryDy=0;strokeColor=default;align=center;verticalAlign=middle;fontFamily=Helvetica;fontSize=11;fontColor=default;labelBackgroundColor=default;endArrow=open;endFill=0;endSize=8;" edge="1" parent="1" source="Zg2RwI3bCPtanBzoQ3vK-80" target="Zg2RwI3bCPtanBzoQ3vK-33">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="Zg2RwI3bCPtanBzoQ3vK-80" value="Error" style="rounded=1;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="580" y="106.87" width="70" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="Zg2RwI3bCPtanBzoQ3vK-88" style="edgeStyle=orthogonalEdgeStyle;shape=connector;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0;entryY=0.5;entryDx=0;entryDy=0;strokeColor=default;align=center;verticalAlign=middle;fontFamily=Helvetica;fontSize=11;fontColor=default;labelBackgroundColor=default;endArrow=open;endFill=0;endSize=8;" edge="1" parent="1" source="Zg2RwI3bCPtanBzoQ3vK-84" target="Zg2RwI3bCPtanBzoQ3vK-58">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="Zg2RwI3bCPtanBzoQ3vK-84" value="Acción de mejora creada" style="rounded=1;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="880" y="230.93" width="110" height="50.63" as="geometry" />
+        </mxCell>
+        <mxCell id="Zg2RwI3bCPtanBzoQ3vK-86" value="No" style="text;html=1;align=center;verticalAlign=middle;resizable=0;points=[];autosize=1;strokeColor=none;fillColor=none;fontFamily=Helvetica;fontSize=11;fontColor=default;labelBackgroundColor=default;" vertex="1" parent="1">
+          <mxGeometry x="780" y="211.87" width="40" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="Zg2RwI3bCPtanBzoQ3vK-87" value="Si" style="text;html=1;align=center;verticalAlign=middle;resizable=0;points=[];autosize=1;strokeColor=none;fillColor=none;fontFamily=Helvetica;fontSize=11;fontColor=default;labelBackgroundColor=default;" vertex="1" parent="1">
+          <mxGeometry x="797" y="230.93" width="30" height="30" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>
