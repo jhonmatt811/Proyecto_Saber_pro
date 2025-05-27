@@ -162,7 +162,7 @@ public class CrearUsuariosController {
                         } else {
                             // si persona no se creó, corto la cadena devolviendo un Future fallido
                             return CompletableFuture.<HttpResponse<String>>failedFuture(
-                                    new RuntimeException("Error creando persona: " + respPersona.statusCode())
+                                    new RuntimeException("Error creando persona . Verifique sus datos ")
                             );
                         }
                     })
@@ -236,8 +236,9 @@ public class CrearUsuariosController {
     }
 
     private boolean isValidEmail(String email) {
-        return email.matches("^[\\w.-]+@[\\w.-]+\\.(com|net|org|edu|gov|co)$");
+        return email.matches("^[\\w.-]+@[\\w.-]+\\.[a-zA-Z]{2,}(\\.[a-zA-Z]{2,})?$");
     }
+
 
 
     // Clase interna para representar los datos del usuario

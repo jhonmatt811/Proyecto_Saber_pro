@@ -12,14 +12,12 @@ import com.icfes_group.service.TestIcfesResultService;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
 /**
  *
@@ -62,6 +60,7 @@ public class TestIcfesResult {
                 params.put("$limit", limit.toString());
             }
             if (offset != null) {
+
                 params.put("$offset", offset.toString()); // $offset es como lo espera la API de datos.gov.co
             }
 
@@ -72,5 +71,4 @@ public class TestIcfesResult {
             return new ResponseEntity<>(new StatusResponse("BAD", e.getMessage()), HttpStatus.BAD_REQUEST);
         }
     }
-
 }

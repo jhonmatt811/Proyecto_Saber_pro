@@ -14,6 +14,7 @@ import org.springframework.stereotype.Component;
 
 import javafx.scene.control.ComboBox;
 import java.io.IOException;
+import java.time.LocalDate;
 import java.time.Year;
 import java.util.*;
 
@@ -27,6 +28,7 @@ public class AccionesMejoraController {
     @FXML private TextArea txtSugerencia;
     @FXML private DatePicker dpFechaInicio;
     @FXML private DatePicker dpFechaFin;
+    @FXML private Button btnGuardar;
 
     // Campos de la tabla
     @FXML private TableView<SugerenciaMejora> tablaMejoras;
@@ -45,7 +47,6 @@ public class AccionesMejoraController {
     public void initialize() {
         configurarColumnasTabla();
         cargarDatosIniciales();
-        cargarDatosDesdeAPI();
         configurarSeleccionTabla();
     }
 
@@ -68,22 +69,7 @@ public class AccionesMejoraController {
             tablaMejoras.getItems().setAll(resultadoService.obtenerMejoras());
 
         } catch (IOException | InterruptedException e) {
-            mostrarAlerta("Error", "Error al cargar datos: " + e.getMessage(), Alert.AlertType.ERROR);
-        }
-    }
 
-    private void cargarDatosDesdeAPI() {
-        try {
-            // Obtener todos los programas
-            List<Programa> programas = resultadoService.obtenerProgramas();
-            comboProgramas.getItems().setAll(programas);
-
-            // Obtener resultados para listar módulos
-            List<Modulo> Modulos = resultadoService.obtenerModulos();
-            comboModulos.getItems().setAll(Modulos);
-
-        } catch (IOException | InterruptedException e) {
-            mostrarAlerta("Error", "Error al cargar datos.", Alert.AlertType.ERROR);
         }
     }
 
@@ -93,6 +79,109 @@ public class AccionesMejoraController {
         alert.setHeaderText(null);
         alert.setContentText(mensaje);
         alert.showAndWait();
+    }
+
+    @FXML
+    private void handleEditarMejora() {
+        if (sugerenciaSeleccionada == null) {
+            mostrarAlerta("Error", "Selecciona una mejora de la tabla", Alert.AlertType.ERROR);
+            return;
+        }
+
+        // Validar vigencia de 1 año
+        int añoActual = Year.now().getValue();
+        if (añoActual - sugerenciaSeleccionada.getYearInicio() >= 1) {
+            mostrarAlerta("Error", "No se puede modificar después de 1 año de vigencia", Alert.AlertType.ERROR);
+            return;
+        }
+
+        // Cargar datos en el formulario
+        comboProgramas.setValue(sugerenciaSeleccionada.getPrograma());
+        comboModulos.setValue(sugerenciaSeleccionada.getModulo());
+        txtSugerencia.setText(sugerenciaSeleccionada.getSugerenciaMejora());
+        dpFechaInicio.setValue(LocalDate.of(sugerenciaSeleccionada.getYearInicio(), 1, 1));
+        dpFechaFin.setValue(LocalDate.of(sugerenciaSeleccionada.getYearFin(), 1, 1));
+
+        // Cambiar comportamiento del botón Guardar
+        btnGuardar.setOnAction(e -> handleActualizarMejora());
+    }
+
+    @FXML
+    private void handleActualizarMejora() {
+        try {
+            // Validaciones
+            if (!validarCamposActualizacion()) return;
+
+            // Construir objeto actualizado
+            SugerenciaMejora mejoraActualizada = construirMejoraDesdeFormulario();
+            mejoraActualizada.setId(sugerenciaSeleccionada.getId());
+
+            // Serializar y enviar
+            String json = new ObjectMapper().writeValueAsString(mejoraActualizada);
+            resultadoService.actualizarMejora(mejoraActualizada.getId(), json);
+
+            // Actualizar UI
+            cargarDatosIniciales();
+            mostrarAlerta("Éxito", "Mejora actualizada", Alert.AlertType.INFORMATION);
+            resetearFormulario();
+
+        } catch (JsonProcessingException e) {
+            mostrarAlerta("Error", "Error en formato JSON", Alert.AlertType.ERROR);
+        } catch (IOException | InterruptedException e) {
+            mostrarAlerta("Error", "Error de conexión: " + e.getMessage(), Alert.AlertType.ERROR);
+        }
+    }
+
+    private boolean validarCamposActualizacion() {
+        if (dpFechaInicio.getValue() == null || dpFechaFin.getValue() == null) {
+            mostrarAlerta("Error", "Fechas inválidas", Alert.AlertType.ERROR);
+            return false;
+        }
+        return true;
+    }
+
+    private SugerenciaMejora construirMejoraDesdeFormulario() {
+        SugerenciaMejora mejora = new SugerenciaMejora();
+        mejora.setPrograma(comboProgramas.getValue());
+        mejora.setModulo(comboModulos.getValue());
+        mejora.setSugerenciaMejora(txtSugerencia.getText());
+        mejora.setYearInicio(dpFechaInicio.getValue().getYear());
+        mejora.setYearFin(dpFechaFin.getValue().getYear());
+        return mejora;
+    }
+
+    private void resetearFormulario() {
+        handleLimpiarFormulario();
+        btnGuardar.setOnAction(e -> handleGuardarAccion());
+        sugerenciaSeleccionada = null;
+    }
+
+    private String getSueggest(){
+        try {
+            String id = tablaMejoras.getSelectionModel().getSelectedItem().getId();
+            String response = resultadoService.getSuggest(id);
+            ObjectMapper objectMapper = new ObjectMapper();
+
+            // Parseamos el JSON a un Map
+            Map<String, Object> map = objectMapper.readValue(response, Map.class);
+
+            // Obtener el objeto "accionMejora"
+            Map<String, Object> accionMejora = (Map<String, Object>) map.get("accionMejora");
+
+            // Acceder a "sugerenciaMejora"
+            String sugerencia = (String) accionMejora.get("sugerenciaMejora");
+
+            // Imprimir la sugerencia
+            System.out.println("Sugerencia: " + sugerencia);
+
+            // También puedes acceder a los anidados, por ejemplo "programa" > "nombre":
+            Map<String, Object> programa = (Map<String, Object>) accionMejora.get("programa");
+            String nombrePrograma = (String) programa.get("nombre");
+            System.out.println("Programa: " + nombrePrograma);
+        }catch (IOException | InterruptedException e){
+            this.mostrarAlerta("Error", "Error al obtener sueggestión: " + e.getMessage(), Alert.AlertType.ERROR);
+        }
+        return "";
     }
 
     @FXML

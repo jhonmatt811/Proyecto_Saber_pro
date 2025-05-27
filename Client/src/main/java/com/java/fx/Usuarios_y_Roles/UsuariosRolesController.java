@@ -1,5 +1,6 @@
 package com.java.fx.Usuarios_y_Roles;
 
+import com.fasterxml.jackson.databind.exc.InvalidFormatException;
 import com.java.fx.ApiService;
 import com.java.fx.ImportarUsuariosService;
 import com.java.fx.model.Rol;
@@ -447,10 +448,16 @@ public class UsuariosRolesController {
                             mostrarError("No se crearon usuarios o la respuesta fue vacía.");
                         }
                     });
-                } catch (Exception e) {
-                    e.printStackTrace();
-                    Platform.runLater(() -> mostrarError("Error al importar usuarios: " + e.getMessage()));
+                } catch (RuntimeException | IOException | InterruptedException e) {
+                    Platform.runLater(() -> {
+                        Alert alert = new Alert(Alert.AlertType.ERROR);
+                        alert.setTitle("Error de importación");
+                        alert.setHeaderText("No se pudo importar usuarios");
+                        alert.setContentText(e.getMessage());
+                        alert.showAndWait();
+                    });
                 }
+
             }).start();
         }
     }

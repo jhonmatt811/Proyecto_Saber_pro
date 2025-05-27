@@ -6,6 +6,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectWriter;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.java.fx.model.ResultadoIcfes;
+import org.apache.http.client.methods.HttpUriRequest;
 import org.springframework.stereotype.Service;
 
 import java.io.*;
@@ -293,20 +294,20 @@ public class ResultadoService {
         return mapper.readValue(response.body(), new TypeReference<List<SugerenciaMejora>>() {});
     }
 
-    public void actualizarMejora(SugerenciaMejora mejora) throws IOException, InterruptedException {
-        String jsonBody = mapper.writeValueAsString(mejora);
-
+    public void actualizarMejora(String id, String json) throws IOException, InterruptedException {
         HttpRequest request = HttpRequest.newBuilder()
-                .uri(URI.create(BASE_URL + "/mejoras/" + mejora.getId()))
+                .uri(URI.create(BASE_URL + "/mejoras/" + id))
                 .header("Authorization", "Bearer " + Sesion.getJwtToken())
                 .header("Content-Type", "application/json")
-                .PUT(HttpRequest.BodyPublishers.ofString(jsonBody))
+                .PUT(HttpRequest.BodyPublishers.ofString(json))
                 .build();
 
         HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
 
-        if (response.statusCode() != 200) {
-            throw new IOException("Error al actualizar: " + response.body());
+        if (response.statusCode() == 403) {
+            throw new IOException("Modificación bloqueada: Vigencia expirada");
+        } else if (response.statusCode() != 200) {
+            throw new IOException("Error " + response.statusCode() + ": " + response.body());
         }
     }
 
@@ -323,8 +324,6 @@ public class ResultadoService {
             throw new IOException("Error al eliminar mejora: " + response.body());
         }
     }
-
-
 
     public AnalisisMejora obtenerAnalisisMejora(SugerenciaMejora sugerencia) throws IOException, InterruptedException {
         // Crear estructura del cuerpo esperado por el servidor
@@ -393,5 +392,13 @@ public class ResultadoService {
     }
 
 
+    public String getSuggest(String id) throws IOException, InterruptedException {
+        HttpRequest request = HttpRequest.newBuilder()
+                .uri(URI.create(BASE_URL + "/sugerencias/" + id))
+                .GET()
+                .build();
+        HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+        return response.body();
+    }
 }
 
