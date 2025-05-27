@@ -295,9 +295,9 @@ public class ResultadoService {
         return mapper.readValue(response.body(), new TypeReference<List<SugerenciaMejora>>() {});
     }
 
-    public String getSuggest(String id, Integer yearInicio, Integer yearFin) throws IOException, InterruptedException {
+    public String getSuggest(String id) throws IOException, InterruptedException {
         HttpRequest request = HttpRequest.newBuilder()
-                .uri(URI.create(BASE_URL + "/sugerencias/" + id + "?yearInicio=" + yearInicio + "&yearFin=" + yearFin))
+                .uri(URI.create(BASE_URL + "/sugerencias/" + id))
                 .GET()
                 .build();
         HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());

@@ -100,9 +100,7 @@ public class AccionesMejoraController {
     private String getSueggest(){
         try {
             String id = tablaMejoras.getSelectionModel().getSelectedItem().getId();
-            Integer yearInicio = tablaMejoras.getSelectionModel().getSelectedItem().getYearInicio();
-            Integer yearFin = tablaMejoras.getSelectionModel().getSelectedItem().getYearFin();
-            String response = resultadoService.getSuggest(id,yearInicio,yearFin);
+            String response = resultadoService.getSuggest(id);
             ObjectMapper objectMapper = new ObjectMapper();
 
             // Parseamos el JSON a un Map
