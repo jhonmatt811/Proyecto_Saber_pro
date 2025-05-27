@@ -293,6 +293,23 @@ public class ResultadoService {
         return mapper.readValue(response.body(), new TypeReference<List<SugerenciaMejora>>() {});
     }
 
+    public void actualizarMejora(SugerenciaMejora mejora) throws IOException, InterruptedException {
+        String jsonBody = mapper.writeValueAsString(mejora);
+
+        HttpRequest request = HttpRequest.newBuilder()
+                .uri(URI.create(BASE_URL + "/mejoras/" + mejora.getId()))
+                .header("Authorization", "Bearer " + Sesion.getJwtToken())
+                .header("Content-Type", "application/json")
+                .PUT(HttpRequest.BodyPublishers.ofString(jsonBody))
+                .build();
+
+        HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+
+        if (response.statusCode() != 200) {
+            throw new IOException("Error al actualizar: " + response.body());
+        }
+    }
+
     public void eliminarMejora(String id) throws IOException, InterruptedException {
         HttpRequest request = HttpRequest.newBuilder()
                 .uri(URI.create(BASE_URL + "/mejoras/" + id))
@@ -306,6 +323,8 @@ public class ResultadoService {
             throw new IOException("Error al eliminar mejora: " + response.body());
         }
     }
+
+
 
     public AnalisisMejora obtenerAnalisisMejora(SugerenciaMejora sugerencia) throws IOException, InterruptedException {
         // Crear estructura del cuerpo esperado por el servidor
@@ -372,6 +391,7 @@ public class ResultadoService {
 
         return mapper.readValue(response.body(), new TypeReference<List<ResultadoIcfes>>() {});
     }
+
 
 }
 
