@@ -6,6 +6,7 @@ public class AnalisisMejora {
     private String message;
     private double porcentajeMejora;
 
+
     public SugerenciaMejora getAccionMejora() {return accionMejora;}
     public String getMessage() {return message;}
     public double getPorcentajeMejora() {return porcentajeMejora;}

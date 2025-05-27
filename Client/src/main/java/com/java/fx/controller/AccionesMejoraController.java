@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import com.java.fx.model.AccionesDeMejora.*;
 import com.java.fx.service.ResultadoService;
+import javafx.application.Platform;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.fxml.FXML;
@@ -18,6 +19,8 @@ import java.time.LocalDate;
 import java.time.Year;
 import java.util.*;
 
+import javafx.application.Platform;  // Para Platform.runLater()
+import javafx.concurrent.Task;       // Para la clase Task
 
 @Component
 public class AccionesMejoraController {
@@ -29,6 +32,7 @@ public class AccionesMejoraController {
     @FXML private DatePicker dpFechaInicio;
     @FXML private DatePicker dpFechaFin;
     @FXML private Button btnGuardar;
+    @FXML private Button btnAnalisisIA;
 
     // Campos de la tabla
     @FXML private TableView<SugerenciaMejora> tablaMejoras;
@@ -222,15 +226,15 @@ public class AccionesMejoraController {
             handleLimpiarFormulario();
 
             // Obtener el análisis después de guardar
-            AnalisisMejora analisis = resultadoService.obtenerAnalisisMejora(sugerencia);
+            //AnalisisMejora analisis = resultadoService.obtenerAnalisisMejora(sugerencia);
 
             // Mostrar el análisis en el TextArea
-            String textoAnalisis = String.format(
+            /*String textoAnalisis = String.format(
                     "Porcentaje de Mejora: %.2f%%\n\n%s",
                     analisis.getPorcentajeMejora(),
                     analisis.getMessage()
             );
-            txtAnalisis.setText(textoAnalisis);
+            txtAnalisis.setText(textoAnalisis);*/
 
         } catch (JsonProcessingException e) {
             mostrarAlerta("Error", "Error en el JSON: " + e.getOriginalMessage(), Alert.AlertType.ERROR);
@@ -271,6 +275,52 @@ public class AccionesMejoraController {
                 mostrarAlerta("Error", "Error al eliminar: " + e.getMessage(), Alert.AlertType.ERROR);
             }
         }
+    }
+
+    @FXML
+    private void handleObtenerAnalisisIA() {
+        if (sugerenciaSeleccionada == null) {
+            mostrarAlerta("Error", "Selecciona una mejora de la tabla", Alert.AlertType.ERROR);
+            return;
+        }
+
+        Alert progreso = new Alert(Alert.AlertType.INFORMATION);
+        progreso.setTitle("Generando análisis");
+        progreso.setHeaderText("El análisis IA está siendo generado...");
+        progreso.setContentText("Por favor espere, esto puede tomar unos segundos");
+        progreso.show();
+
+        Task<AnalisisMejora> task = new Task<>() {
+            @Override
+            protected AnalisisMejora call() throws Exception {
+                return resultadoService.obtenerAnalisisIA(sugerenciaSeleccionada.getId());
+            }
+        };
+
+        task.setOnSucceeded(e -> {
+            progreso.close();
+            AnalisisMejora analisis = task.getValue();
+            mostrarAnalisisEnUI(analisis);
+        });
+
+        task.setOnFailed(e -> {
+            progreso.close();
+            mostrarAlerta("Error", "Error al generar análisis: " + task.getException().getMessage(),
+                    Alert.AlertType.ERROR);
+        });
+
+        new Thread(task).start();
+    }
+
+    private void mostrarAnalisisEnUI(AnalisisMejora analisis) {
+        Platform.runLater(() -> {
+            String textoAnalisis = String.format(
+                    "Porcentaje de Mejora: %.2f%%\n\n%s",
+                    analisis.getPorcentajeMejora(),
+                    analisis.getMessage()
+            );
+            txtAnalisis.setText(textoAnalisis);
+        });
     }
 
 

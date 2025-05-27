@@ -325,6 +325,22 @@ public class ResultadoService {
         }
     }
 
+    public AnalisisMejora obtenerAnalisisIA(String idMejora) throws IOException, InterruptedException {
+        HttpRequest request = HttpRequest.newBuilder()
+                .uri(URI.create(BASE_URL + "/mejoras/sugerencias/" + idMejora))
+                .header("Authorization", "Bearer " + Sesion.getJwtToken())
+                .GET()
+                .build();
+
+        HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+
+        if (response.statusCode() != 200) {
+            throw new IOException("Error al obtener análisis: " + response.body());
+        }
+
+        return mapper.readValue(response.body(), AnalisisMejora.class);
+    }
+
     public AnalisisMejora obtenerAnalisisMejora(SugerenciaMejora sugerencia) throws IOException, InterruptedException {
         // Crear estructura del cuerpo esperado por el servidor
         ObjectMapper mapper = new ObjectMapper();
