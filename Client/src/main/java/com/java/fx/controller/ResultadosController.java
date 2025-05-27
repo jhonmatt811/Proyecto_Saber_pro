@@ -357,7 +357,7 @@ public class ResultadosController {
         }
     }
 
-    // Método para abrir gráfica de líneas
+    // Metodo para abrir gráfica de líneas
     @FXML
     private void handleMostrarTendencias() {
         try {

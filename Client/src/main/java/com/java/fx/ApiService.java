@@ -76,7 +76,7 @@ public class ApiService {
 
         HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
 
-        // ✅ Verificar si la respuesta fue exitosa (2xx)
+        // Verificar si la respuesta fue exitosa (2xx)
         if (response.statusCode() >= 200 && response.statusCode() < 300) {
             Type personaListType = new TypeToken<List<Persona>>() {}.getType();
             return gson.fromJson(response.body(), personaListType);
@@ -141,7 +141,7 @@ public class ApiService {
 
             if (status == 200 || status == 201) {
                 System.out.println("Usuarios creados correctamente.");
-                // ✅ Devolver lista nueva y modificable
+                // Devolver lista nueva y modificable
                 return new ArrayList<>(usuarios.stream()
                         .filter(u -> u.getPersona() != null)
                         .collect(Collectors.toList()));
@@ -155,7 +155,6 @@ public class ApiService {
             throw new RuntimeException("Excepción al crear usuarios: " + e.getMessage(), e);
         }
     }
-
 
 
     // ---------------------- ROLES ------------------------
@@ -247,9 +246,6 @@ public class ApiService {
     }
 
     // ---------------------- UTILIDADES ------------------------
-
-
-
     private void manejarErrores(HttpResponse<String> response) {
         if (response.statusCode() >= 400) {
             throw new RuntimeException("Error del servidor (" + response.statusCode() + "): " + response.body());
@@ -275,6 +271,4 @@ public class ApiService {
             alert.showAndWait();
         });
     }
-
-
 }
