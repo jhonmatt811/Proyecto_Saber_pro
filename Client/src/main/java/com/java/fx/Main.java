@@ -24,7 +24,7 @@ public class Main extends Application {
 
 	@Override
 	public void init() {
-		// Este método se ejecuta antes de start, ideal para iniciar Spring Boot
+		// Este metodo se ejecuta antes de start, para iniciar Spring Boot
 		springContext = SpringApplication.run(Main.class, savedArgs);
 	}
 
@@ -56,7 +56,7 @@ public class Main extends Application {
 		super.stop();
 	}
 
-	// Bean simple para el título, inyectable
+	// Bean para el título
 	@Bean
 	public String titular() {
 		return "Login";

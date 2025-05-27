@@ -60,6 +60,9 @@
     -fx-background-color: #FF5722, white; /* Naranja al pasar el mouse */
 }
 
+.tabla-seleccion-activa {
+    -fx-effect: dropshadow(gaussian, #2196F3, 10, 0.5, 0, 0);
+}
 
 
 

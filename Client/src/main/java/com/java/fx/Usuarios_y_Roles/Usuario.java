@@ -1,6 +1,10 @@
 package com.java.fx.Usuarios_y_Roles;
 
+import com.java.fx.model.Rol;
+
 import java.util.UUID;
+import javafx.beans.property.BooleanProperty;
+import javafx.beans.property.SimpleBooleanProperty;
 
 public class Usuario {
 
@@ -11,6 +15,10 @@ public class Usuario {
     private boolean is_active;
     private String password;
     private Rol rol;
+    private boolean isActive;
+
+    private BooleanProperty active = new SimpleBooleanProperty();
+
 
     public Usuario() {}
 
@@ -26,6 +34,10 @@ public class Usuario {
     }
 
     // Getters y setters
+
+    public BooleanProperty activeProperty() {
+        return active;
+    }
 
 
     public Rol getRol() {
@@ -75,6 +87,7 @@ public class Usuario {
     public void setRol_id(int rol_id) {
         this.rol_id = rol_id;
     }
+    public Persona getCc(Persona cc){return cc; }
 
     public Persona getPersona() {
         return persona;
@@ -84,4 +97,11 @@ public class Usuario {
         this.persona = persona;
     }
 
+    public boolean isActive() {
+        return is_active;
+    }
+
+    public void setActive(boolean activate) {
+
+    }
 }

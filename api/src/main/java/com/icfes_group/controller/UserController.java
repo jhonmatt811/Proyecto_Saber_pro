@@ -12,6 +12,7 @@ import com.icfes_group.security.componets.JwtUtil;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 
+
 @RestController
 @RequestMapping("/usuarios")
 @AllArgsConstructor
@@ -44,7 +45,7 @@ public class UserController {
         }
     }
 
-    @PostMapping("/contraseña/olvidado")
+    @PostMapping("/contrasena/olvidado")
     public ResponseEntity<?> forgetPassword(@Valid @RequestBody UserDTO dto){
         try{
             userService.forgetPassword(dto.getEmail());
