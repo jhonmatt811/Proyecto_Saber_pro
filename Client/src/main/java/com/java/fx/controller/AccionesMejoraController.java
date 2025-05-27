@@ -201,6 +201,9 @@ public class AccionesMejoraController {
             mostrarAlerta("Éxito", "Sugerencia guardada.", Alert.AlertType.INFORMATION);
             handleLimpiarFormulario();
 
+            cargarDatosIniciales();
+            tablaMejoras.refresh();
+
         } catch (JsonProcessingException e) {
             mostrarAlerta("Error", "Error en el JSON: " + e.getOriginalMessage(), Alert.AlertType.ERROR);
         } catch (IOException | InterruptedException e) {

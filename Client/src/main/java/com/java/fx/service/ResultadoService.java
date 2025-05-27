@@ -201,7 +201,7 @@ public class ResultadoService {
 
         System.out.println("→ Filas a enviar al backend: " + resultados.size());
 
-        URL url = new URL("http://localhost:8080/resultados/file");
+        URL url = new URL(BASE_URL + "/resultados/file");
         HttpURLConnection con = (HttpURLConnection) url.openConnection();
         con.setRequestMethod("POST");
         con.setRequestProperty("Content-Type", "application/json; utf-8");
