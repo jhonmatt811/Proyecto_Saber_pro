@@ -40,10 +40,6 @@ public class CrearUsuariosController {
     @FXML private Button btnVolver;
 
 
-
-
-
-
     @FXML
     public void initialize() {
         grupoOpciones = new ToggleGroup();
@@ -130,7 +126,7 @@ public class CrearUsuariosController {
 
             // 1) Creo la persona
             HttpRequest reqPersona = HttpRequest.newBuilder()
-                    .uri(URI.create("http://localhost:8080/admin/personas"))
+                    .uri(URI.create(" http://ec2-3-149-24-90.us-east-2.compute.amazonaws.com/admin/personas"))
                     .header("Content-Type", "application/json")
                     .header("Authorization", "Bearer " + Sesion.jwtToken)
                     .POST(HttpRequest.BodyPublishers.ofString(jsonPersona))
@@ -151,7 +147,7 @@ public class CrearUsuariosController {
 
                             // 4) Preparo el segundo POST a /admin/usuarios
                             HttpRequest reqUsuario = HttpRequest.newBuilder()
-                                    .uri(URI.create("http://localhost:8080/admin/usuarios"))
+                                    .uri(URI.create(" http://ec2-3-149-24-90.us-east-2.compute.amazonaws.com/admin/usuarios"))
                                     .header("Content-Type", "application/json")
                                     .header("Authorization", "Bearer " + Sesion.jwtToken)
                                     .POST(HttpRequest.BodyPublishers.ofString(jsonUsuario))

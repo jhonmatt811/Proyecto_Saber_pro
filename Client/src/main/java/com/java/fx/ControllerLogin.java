@@ -55,7 +55,7 @@ public class ControllerLogin implements Initializable {
 
         HttpClient client = HttpClient.newHttpClient();
         HttpRequest request = HttpRequest.newBuilder()
-                .uri(URI.create("http://localhost:8080/usuarios/inicio-sesion"))
+                .uri(URI.create(" http://ec2-3-149-24-90.us-east-2.compute.amazonaws.com/usuarios/inicio-sesion"))
                 .header("Content-Type", "application/json")
                 .POST(HttpRequest.BodyPublishers.ofString(
                         String.format("{\"email\":\"%s\", \"password\":\"%s\"}", email, password)))
