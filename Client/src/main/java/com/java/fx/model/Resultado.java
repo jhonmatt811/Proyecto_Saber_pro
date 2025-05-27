@@ -1,6 +1,8 @@
 package com.java.fx.model;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.java.fx.model.AccionesDeMejora.Modulo;
+import com.java.fx.model.AccionesDeMejora.Programa;
 
 public class Resultado {
     private int ciclo;
@@ -24,6 +26,7 @@ public class Resultado {
     private String percentilNacionalModulo;
     private String percentilGrupoNbcModulo;
     private String novedades;
+
 
     // 1) Constructor vacío para Jackson
     public Resultado() { }

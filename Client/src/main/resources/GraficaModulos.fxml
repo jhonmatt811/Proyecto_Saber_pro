@@ -8,6 +8,15 @@
             stylesheets="@estilos.css"
             fx:controller="com.java.fx.controller.GraficaModulosController"
             style="-fx-padding: 20;">
+    <top>
+        <HBox spacing="10" style="-fx-padding: 10;">
+            <Label text="Umbral crítico:"/>
+            <TextField fx:id="umbralCriticoInput" promptText="Ej: 60" prefWidth="100"/>
+            <Button text="Identificar Módulos Críticos" onAction="#filtrarModulosCriticos"
+                    style="-fx-background-color: #FF5722; -fx-text-fill: white;"/>
+            <Button text="Restablecer" onAction="#restablecerFiltros"/>
+        </HBox>
+    </top>
 
     <center>
         <ScrollPane fitToWidth="true" fitToHeight="true">
@@ -26,11 +35,5 @@
         </ScrollPane>
     </center>
 
-    <bottom>
-        <Button text="Cerrar"
-                onAction="#handleCerrar"
-                style="-fx-background-color: #f44336; -fx-text-fill: white;"
-                BorderPane.alignment="CENTER"/>
-    </bottom>
 
 </BorderPane>

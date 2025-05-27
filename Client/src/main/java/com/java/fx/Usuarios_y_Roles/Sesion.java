@@ -4,6 +4,10 @@ public class Sesion {
     public static String jwtToken ;
     public static String rol_id;
 
+    public static String getRol_id() {
+        return rol_id;
+    }
+
     public static void setJwtToken(String token) {
         jwtToken = token;
     }

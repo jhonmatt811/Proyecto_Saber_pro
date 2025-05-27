@@ -1,5 +1,7 @@
 package com.java.fx.controller;
 
+import com.java.fx.Usuarios_y_Roles.PermisosRoles;
+import com.java.fx.Usuarios_y_Roles.Sesion;
 import com.java.fx.model.Resultado;
 import com.java.fx.service.ResultadoService;
 import com.java.fx.service.ResultadoUploader;
@@ -69,6 +71,8 @@ public class ResultadosController {
     @Autowired private ResultadoUploader uploader;
 
     @FXML private Button btnObtenerResultados;
+    @FXML private Button btnCargarArchivo;
+    @FXML private Button btnObtenerExportarExcel;
 
     @Autowired
     private ResultadoService apiService;
@@ -99,6 +103,7 @@ public class ResultadosController {
                 aplicarFiltros();
             });
 
+
         } catch (NumberFormatException nfe) {
             mostrarAlerta("Filtro inválido", "Año, ciclo o documento no tienen un formato numérico correcto.", Alert.AlertType.ERROR);
         } catch (IOException | InterruptedException ex) {
@@ -117,9 +122,13 @@ public class ResultadosController {
         this.uploader = uploader;
     }
 
+
     @FXML
     public void initialize() {
         configurarColumnas();
+        PermisosRoles permisos = new PermisosRoles(Sesion.getRol_id());
+        btnCargarArchivo.setVisible(permisos.tienePermiso("cargarArchivo"));
+        btnObtenerExportarExcel.setVisible(permisos.tienePermiso("cargarArchivo"));
 
         // Inicializar listas vacías
         datosOriginales = FXCollections.observableArrayList();
@@ -191,6 +200,11 @@ public class ResultadosController {
 
     @FXML
     public void handleCargarArchivo() {
+        PermisosRoles permisos = new PermisosRoles(Sesion.getRol_id());
+        if (!permisos.tienePermiso("cargarArchivo")) {
+            mostrarAlerta("Acceso denegado", "No tienes permisos para cargar archivos.", Alert.AlertType.ERROR);
+            return;
+        }
         int year, cycle;
         try {
             year = Integer.parseInt(inputYear.getText());
@@ -252,6 +266,12 @@ public class ResultadosController {
 
     @FXML
     public void handleExportarExcel() {
+        PermisosRoles permisos = new PermisosRoles(Sesion.getRol_id());
+        if (!permisos.tienePermiso("cargarArchivo")) {
+            mostrarAlerta("Acceso denegado", "No tienes permisos para cargar archivos.", Alert.AlertType.ERROR);
+            return;
+        }
+
         FileChooser fileChooser = new FileChooser();
         fileChooser.setTitle("Guardar como Excel");
         fileChooser.getExtensionFilters().add(

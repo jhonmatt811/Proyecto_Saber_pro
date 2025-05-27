@@ -6,6 +6,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.java.fx.Usuarios_y_Roles.Rol;
 import com.java.fx.Usuarios_y_Roles.Sesion;
 import com.java.fx.Usuarios_y_Roles.Usuario;
+import com.java.fx.model.AccionesDeMejora.SugerenciaMejora;
 import javafx.application.Platform;
 import javafx.scene.control.Alert;
 
@@ -114,5 +115,7 @@ public class ApiService {
         alert.setContentText(mensaje); // Mensaje principal
         alert.showAndWait(); // Muestra la alerta y espera
     }
+
+
 
 }
