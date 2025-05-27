@@ -19,8 +19,12 @@ import java.time.LocalDate;
 import java.time.Year;
 import java.util.*;
 
-import javafx.application.Platform;  // Para Platform.runLater()
 import javafx.concurrent.Task;       // Para la clase Task
+//mostrar analisis de la ia en ventana emergente
+import javafx.scene.control.ScrollPane;
+import javafx.scene.input.Clipboard;
+import javafx.scene.input.ClipboardContent;
+import javafx.scene.control.ButtonBar;
 
 @Component
 public class AccionesMejoraController {
@@ -160,34 +164,6 @@ public class AccionesMejoraController {
         sugerenciaSeleccionada = null;
     }
 
-    private String getSueggest(){
-        try {
-            String id = tablaMejoras.getSelectionModel().getSelectedItem().getId();
-            String response = resultadoService.getSuggest(id);
-            ObjectMapper objectMapper = new ObjectMapper();
-
-            // Parseamos el JSON a un Map
-            Map<String, Object> map = objectMapper.readValue(response, Map.class);
-
-            // Obtener el objeto "accionMejora"
-            Map<String, Object> accionMejora = (Map<String, Object>) map.get("accionMejora");
-
-            // Acceder a "sugerenciaMejora"
-            String sugerencia = (String) accionMejora.get("sugerenciaMejora");
-
-            // Imprimir la sugerencia
-            System.out.println("Sugerencia: " + sugerencia);
-
-            // También puedes acceder a los anidados, por ejemplo "programa" > "nombre":
-            Map<String, Object> programa = (Map<String, Object>) accionMejora.get("programa");
-            String nombrePrograma = (String) programa.get("nombre");
-            System.out.println("Programa: " + nombrePrograma);
-        }catch (IOException | InterruptedException e){
-            this.mostrarAlerta("Error", "Error al obtener sueggestión: " + e.getMessage(), Alert.AlertType.ERROR);
-        }
-        return "";
-    }
-
     @FXML
     private void handleGuardarAccion() {
         try {
@@ -224,17 +200,6 @@ public class AccionesMejoraController {
             // Éxito
             mostrarAlerta("Éxito", "Sugerencia guardada.", Alert.AlertType.INFORMATION);
             handleLimpiarFormulario();
-
-            // Obtener el análisis después de guardar
-            //AnalisisMejora analisis = resultadoService.obtenerAnalisisMejora(sugerencia);
-
-            // Mostrar el análisis en el TextArea
-            /*String textoAnalisis = String.format(
-                    "Porcentaje de Mejora: %.2f%%\n\n%s",
-                    analisis.getPorcentajeMejora(),
-                    analisis.getMessage()
-            );
-            txtAnalisis.setText(textoAnalisis);*/
 
         } catch (JsonProcessingException e) {
             mostrarAlerta("Error", "Error en el JSON: " + e.getOriginalMessage(), Alert.AlertType.ERROR);
@@ -286,8 +251,8 @@ public class AccionesMejoraController {
 
         Alert progreso = new Alert(Alert.AlertType.INFORMATION);
         progreso.setTitle("Generando análisis");
-        progreso.setHeaderText("El análisis IA está siendo generado...");
-        progreso.setContentText("Por favor espere, esto puede tomar unos segundos");
+        progreso.setHeaderText("Solicitando análisis a Gemmini AI");
+        progreso.setContentText("Por favor espere...");
         progreso.show();
 
         Task<AnalisisMejora> task = new Task<>() {
@@ -300,7 +265,38 @@ public class AccionesMejoraController {
         task.setOnSucceeded(e -> {
             progreso.close();
             AnalisisMejora analisis = task.getValue();
-            mostrarAnalisisEnUI(analisis);
+
+            // Crear alerta personalizada
+            Alert alertaResultado = new Alert(Alert.AlertType.INFORMATION);
+            alertaResultado.setTitle("Análisis de IA");
+            alertaResultado.setHeaderText(String.format("Porcentaje de mejora: %.2f%%",
+                    analisis.getPorcentajeMejora()));
+
+            // Área de texto con scroll
+            TextArea textoAnalisis = new TextArea(analisis.getMessage());
+            textoAnalisis.setEditable(false);
+            textoAnalisis.setWrapText(true);
+            textoAnalisis.setPrefSize(600, 400); // Tamaño personalizable
+
+            ScrollPane scroll = new ScrollPane(textoAnalisis);
+            scroll.setFitToWidth(true);
+
+            alertaResultado.getDialogPane().setContent(scroll);
+            alertaResultado.getDialogPane().setPrefSize(620, 450);
+            alertaResultado.setResizable(true);
+
+            // Botón adicional para copiar
+            ButtonType copiarBoton = new ButtonType("Copiar análisis", ButtonBar.ButtonData.OTHER);
+            alertaResultado.getButtonTypes().add(copiarBoton);
+
+            alertaResultado.showAndWait().ifPresent(buttonType -> {
+                if (buttonType == copiarBoton) {
+                    Clipboard clipboard = Clipboard.getSystemClipboard();
+                    ClipboardContent content = new ClipboardContent();
+                    content.putString(analisis.getMessage());
+                    clipboard.setContent(content);
+                }
+            });
         });
 
         task.setOnFailed(e -> {
@@ -311,18 +307,6 @@ public class AccionesMejoraController {
 
         new Thread(task).start();
     }
-
-    private void mostrarAnalisisEnUI(AnalisisMejora analisis) {
-        Platform.runLater(() -> {
-            String textoAnalisis = String.format(
-                    "Porcentaje de Mejora: %.2f%%\n\n%s",
-                    analisis.getPorcentajeMejora(),
-                    analisis.getMessage()
-            );
-            txtAnalisis.setText(textoAnalisis);
-        });
-    }
-
 
     @FXML
     private void handleLimpiarFormulario() {

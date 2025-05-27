@@ -6,7 +6,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectWriter;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.java.fx.model.ResultadoIcfes;
-import org.apache.http.client.methods.HttpUriRequest;
 import org.springframework.stereotype.Service;
 
 import java.io.*;
@@ -189,17 +188,11 @@ public class ResultadoService {
         );
     }
 
-    /**
-     * Normaliza valores de percentil, convirtiendo '-' en '0'.
-     */
+     //Normaliza valores de percentil, convirtiendo '-' en '0'.
     private String normalizePercentil(String raw) {
         return "-".equals(raw) ? "0" : raw;
     }
 
-    /**
-     * Envía la lista de resultados al backend vía HTTP POST,
-     * usando el token almacenado en Sesion.jwtToken.
-     */
     public void enviarResultadosAlBackend(List<Resultado> resultados) throws IOException {
         String token = Sesion.getJwtToken();
         if (token == null || token.isBlank()) {
@@ -221,25 +214,18 @@ public class ResultadoService {
                 .writer()
                 .withDefaultPrettyPrinter();
         String json = ow.writeValueAsString(resultados);
-
-        //imprimir los json generados
-        //System.out.println(json);
-
         // Enviar cuerpo
         try (OutputStream os = con.getOutputStream()) {
             byte[] input = json.getBytes(StandardCharsets.UTF_8);
             os.write(input, 0, input.length);
         }
-
         int code = con.getResponseCode();
         if (code < 200 || code >= 300) {
             String errorBody = new String(con.getErrorStream().readAllBytes(), StandardCharsets.UTF_8);
             throw new IOException("Error al enviar (cód. " + code + "): " + errorBody);
         }
-
         con.disconnect();
     }
-
 
     // Obtener todos los programas
     public List<Programa> obtenerProgramas() throws IOException, InterruptedException {
@@ -264,6 +250,7 @@ public class ResultadoService {
         HttpResponse<String> resp = client.send(request, HttpResponse.BodyHandlers.ofString());
         return mapper.readValue(resp.body(), new TypeReference<List<Modulo>>() {});
     }
+
     public void enviarSugerencia(String jsonSugerencia) throws IOException, InterruptedException {
         HttpRequest request = HttpRequest.newBuilder()
                 .uri(URI.create(BASE_URL + "/mejoras"))
@@ -278,6 +265,7 @@ public class ResultadoService {
             throw new IOException("Error al enviar sugerencia: " + response.body());
         }
     }
+
     public List<SugerenciaMejora> obtenerMejoras() throws IOException, InterruptedException {
         HttpRequest request = HttpRequest.newBuilder()
                 .uri(URI.create(BASE_URL + "/mejoras"))
@@ -341,46 +329,6 @@ public class ResultadoService {
         return mapper.readValue(response.body(), AnalisisMejora.class);
     }
 
-    public AnalisisMejora obtenerAnalisisMejora(SugerenciaMejora sugerencia) throws IOException, InterruptedException {
-        // Crear estructura del cuerpo esperado por el servidor
-        ObjectMapper mapper = new ObjectMapper();
-        Map<String, Object> requestBody = new HashMap<>();
-        requestBody.put("accionMejora", sugerencia);
-
-        String jsonBody = mapper.writeValueAsString(requestBody);
-
-        HttpRequest request = HttpRequest.newBuilder()
-                .uri(URI.create(BASE_URL + "/mejoras/sugerencias"))
-                .header("Authorization", "Bearer " + Sesion.getJwtToken())
-                .header("Content-Type", "application/json")
-                .method("GET", HttpRequest.BodyPublishers.ofString(jsonBody)) // Enviar cuerpo en GET
-                .build();
-
-        HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
-
-        if (response.statusCode() != 200) {
-            throw new IOException("Error al obtener análisis: " + response.body());
-        }
-
-        return mapper.readValue(response.body(), AnalisisMejora.class);
-    }
-
-    public AnalisisMejora obtenerAnalisisMejoral(GetAnalisisMejora getDTO) throws IOException, InterruptedException {
-        ObjectMapper mapper = new ObjectMapper();
-        String jsonBody = mapper.writeValueAsString(getDTO); // Serializa el DTO del GET
-
-        HttpRequest request = HttpRequest.newBuilder()
-                .uri(URI.create(BASE_URL + "/mejoras/sugerencias"))
-                .header("Authorization", "Bearer " + Sesion.getJwtToken())
-                .header("Content-Type", "application/json")
-                .method("GET", HttpRequest.BodyPublishers.ofString(jsonBody)) // GET con cuerpo
-                .build();
-
-        HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
-        return mapper.readValue(response.body(), AnalisisMejora.class);
-    }
-
-
     public List<ResultadoIcfes> obtenerResultadosIcfes(Integer limit, Integer periodo, Integer offset)
             throws IOException, InterruptedException {
 
@@ -405,16 +353,6 @@ public class ResultadoService {
         HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
 
         return mapper.readValue(response.body(), new TypeReference<List<ResultadoIcfes>>() {});
-    }
-
-
-    public String getSuggest(String id) throws IOException, InterruptedException {
-        HttpRequest request = HttpRequest.newBuilder()
-                .uri(URI.create(BASE_URL + "/sugerencias/" + id))
-                .GET()
-                .build();
-        HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
-        return response.body();
     }
 }
 

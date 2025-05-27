@@ -7,7 +7,7 @@
       xmlns:fx="http://javafx.com/fxml/1"
       fx:controller="com.java.fx.controller.AccionesMejoraController"> <!-- Asegúrate de que el paquete coincida -->
 
-    <Label style="-fx-font-size: 24px; -fx-font-weight: bold;" text="Regustrar Acciones de Mejora" />
+    <Label style="-fx-font-size: 24px; -fx-font-weight: bold;" text="Registrar Acciones de Mejora" />
 
     <GridPane hgap="10" vgap="10">
 
@@ -36,8 +36,6 @@
         <Button fx:id="btnEliminar" text="Eliminar Selección" style="-fx-background-color: #f44336; -fx-text-fill: white;" onAction="#handleEliminarMejora"/>
         <Button fx:id="btnAnalisisIA" text="Análisis IA" style="-fx-background-color: #9C27B0; -fx-text-fill: white;" onAction="#handleObtenerAnalisisIA"/>
     </HBox>
-
-    <TextArea fx:id="txtAnalisis" prefHeight="200" prefWidth="600"/>
     <!-- Tabla de Mejoras Registradas -->
     <Label style="-fx-font-size: 18px; -fx-font-weight: bold;" text="Mejoras Registradas" />
     <TableView fx:id="tablaMejoras">
